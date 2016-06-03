@@ -40,4 +40,15 @@ describe('tools reducer', () => {
             expect(nextState.get('activeStyleTool')).to.eq(undefined);
         });
     });
+
+    describe('SET_SHARED_OPTION', () => {
+        const action = actions.setSharedOption('primaryColor', 'new color');
+        const initialState = gridEditor.withoutActiveTool.get('tools');
+        const nextState = reducer(initialState, action);
+
+        it('changes shared option', () => {
+            expect(nextState.getIn(['sharedOptions', 'primaryColor'])).to
+                .eq('new color');
+        });
+    });
 });
