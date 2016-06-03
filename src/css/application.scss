@@ -1,1 +1,19 @@
-/* scss goes here */
+$black: #000;
+
+.grid-cell {
+    border-left: 1px solid $black;
+    border-top: 1px solid $black;
+    display: inline-block;
+    height: 50px;
+    width: 50px;
+
+    &:last-child {
+        border-right: 1px solid $black;
+    }
+}
+
+.grid-row:last-child {
+    .grid-cell {
+        border-bottom: 1px solid $black;
+    }
+}

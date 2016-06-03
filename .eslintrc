@@ -1,0 +1,14 @@
+{
+    "extends": "airbnb",
+    "plugins": ["mocha"],
+    "env": {
+        "mocha": true
+    },
+    "rules": {
+        "indent": ["error", 4],
+        "react/jsx-indent": ["error", 4],
+        "react/jsx-indent-props": ["error", 4],
+        "arrow-body-style": ["warn", "always"],
+        "no-console": "off"
+    }
+}
