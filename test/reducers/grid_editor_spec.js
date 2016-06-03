@@ -5,8 +5,7 @@ import { Map } from 'immutable';
 import actions from '../../src/actions/action_creators';
 import reducer from '../../src/reducers/grid_editor';
 
-import { gridEditorWithoutActiveTool, gridEditorWithActiveTool }
-    from '../fixtures/grid_editor';
+import gridEditor from '../fixtures/grid_editor';
 
 describe('grid editor reducer', () => {
     context('with undefined initial state and unknown action', () => {
@@ -30,7 +29,7 @@ describe('grid editor reducer', () => {
         const action = actions.applyActiveStyleTool(0, 0);
 
         context('without active tool', () => {
-            const initialState = gridEditorWithoutActiveTool;
+            const initialState = gridEditor.withoutActiveTool;
             const nextState = reducer(initialState, action);
 
             it('does not change state', () => {
@@ -39,7 +38,7 @@ describe('grid editor reducer', () => {
         });
 
         context('with active tool', () => {
-            const initialState = gridEditorWithActiveTool;
+            const initialState = gridEditor.withActiveTool;
             const nextState = reducer(initialState, action);
 
             it('changes style of first element', () => {
