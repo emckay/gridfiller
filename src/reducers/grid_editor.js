@@ -3,11 +3,35 @@ import { Map } from 'immutable';
 import gridReducer from './grid';
 import toolsReducer from './tools';
 
+const fillSharedOptions = (dynamicTool, sharedOptions) => {
+    let tool = dynamicTool;
+    if (tool !== undefined) {
+        if (tool !== undefined) {
+            tool.forEach((v, k) => {
+                if (v instanceof Map) {
+                    for (const [style, value] of v) {
+                        if (typeof value === 'function') {
+                            tool = tool.setIn(
+                                [k, style],
+                                value(sharedOptions)
+                            );
+                        }
+                    }
+                }
+            });
+        }
+    }
+    return tool;
+};
+
 const handleApplyActiveStyleTool = (currentState, action) => {
-    if (currentState.getIn(['tools', 'activeStyleTool', 'style']) !== undefined) {
+    let tool = currentState.getIn(['tools', 'activeStyleTool']);
+
+    if (tool !== undefined) {
+        tool = fillSharedOptions(tool, currentState.getIn(['tools', 'sharedOptions']));
         return currentState.setIn(
             ['grid', 'cells', action.row, action.col, 'style'],
-            currentState.getIn(['tools', 'activeStyleTool', 'style'])
+            tool.get('style')
         );
     }
 

@@ -4,9 +4,10 @@ import actions from '../../src/actions/action_creators';
 import reducer from '../../src/reducers/tools';
 
 import gridEditor from '../fixtures/grid_editor';
+import staticTool from '../fixtures/tools';
 
 describe('tools reducer', () => {
-    const tool = { test_tool: 'test' };
+    const tool = staticTool;
 
     describe('TOGGLE_ACTIVE_STYLE_TOOL', () => {
         context('with no currently active tool', () => {

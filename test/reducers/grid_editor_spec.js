@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { Map } from 'immutable';
+import { Map, fromJS } from 'immutable';
 
 import actions from '../../src/actions/action_creators';
 import reducer from '../../src/reducers/grid_editor';
@@ -37,14 +37,26 @@ describe('grid editor reducer', () => {
             });
         });
 
-        context('with active tool', () => {
-            const initialState = gridEditor.withActiveTool;
+        context('with static active tool', () => {
+            const initialState = gridEditor.withStaticTool;
             const nextState = reducer(initialState, action);
 
             it('changes style of first element', () => {
                 const fristElementStylePos = ['grid', 'cells', 0, 0, 'style'];
                 expect(nextState.getIn(fristElementStylePos)).to
                     .eql(initialState.getIn(['tools', 'activeStyleTool', 'style']));
+            });
+        });
+
+        context('with dynamic active tool', () => {
+            const initialState = gridEditor.withDynamicTool;
+            console.log('is ast', initialState.getIn(['tools', 'activeStyleTool']));
+            const nextState = reducer(initialState, action);
+
+            it('changes style of first element', () => {
+                const fristElementStylePos = ['grid', 'cells', 0, 0, 'style'];
+                expect(nextState.getIn(fristElementStylePos)).to
+                    .eql(fromJS({ backgroundColor: 'red' }));
             });
         });
     });

@@ -7,5 +7,10 @@ export default fromJS({
     grid: {
         cells: tenByTen,
     },
-    tools: { availableTools: initialTools },
+    tools: {
+        availableTools: initialTools,
+        sharedOptions: {
+            primaryColor: 'blue',
+        },
+    },
 });
