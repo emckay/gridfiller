@@ -1,4 +1,5 @@
 import React from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 import { List } from 'immutable';
 import { connect } from 'react-redux';
 
@@ -7,6 +8,9 @@ import actions from '../../actions/action_creators';
 import { Cell } from './cell';
 
 export class Grid extends React.Component {
+    shouldComponentUpdate(nextProps, nextState) {
+        return shallowCompare(this, nextProps, nextState);
+    }
     render() {
         return (
             <div className="grid">

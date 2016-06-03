@@ -12,6 +12,7 @@
         "no-console": "off",
         "no-trailing-spaces": "warn",
         "no-unused-vars": "warn",
-        "eol-last": "warn"
+        "eol-last": "warn",
+        global-require: "off"
     }
 }

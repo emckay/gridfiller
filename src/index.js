@@ -18,7 +18,12 @@ const initialState = {
 
 const store = configureStore(initialState);
 
-// Render application to DOM
+if (process.env.NODE_ENV !== 'production') {
+    const Perf = require('react-addons-perf');
+    Perf.start();
+    window.Perf = Perf;
+}
+
 ReactDOM.render(
     <Provider store={store}>
         <App />
