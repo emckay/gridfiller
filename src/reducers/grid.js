@@ -10,9 +10,9 @@ const handleSetStyle = (currentState, action) => {
 
 export default function (currentState = new Map(), action) {
     switch (action.type) {
-    case 'SET_STYLE':
-        return handleSetStyle(currentState, action);
-    default:
-        return currentState;
+        case 'SET_STYLE':
+            return handleSetStyle(currentState, action);
+        default:
+            return currentState;
     }
 }

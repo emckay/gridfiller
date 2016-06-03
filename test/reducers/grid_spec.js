@@ -4,7 +4,9 @@ import { fromJS } from 'immutable';
 import * as actions from '../../src/actions/grid';
 import reducer from '../../src/reducers/grid';
 
-import { tenByTen } from '../fixtures/grids';
+import initialGrids from '../../src/store/data/grids/initial_grids';
+
+const tenByTen = initialGrids[0];
 
 describe('grid reducer', () => {
     describe('SET_STYLE', () => {

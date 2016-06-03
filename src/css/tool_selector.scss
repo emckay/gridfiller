@@ -1,0 +1,12 @@
+.tool-selector {
+    .tool-icon {
+        border: 1px solid $black;
+        display: inline-block;
+        font-size: 20px;
+        padding: 0 3px;
+
+        &.active {
+            background-color: $active-tool;
+        }
+    }
+}

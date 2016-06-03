@@ -2,51 +2,52 @@ import React from 'react';
 import { List } from 'immutable';
 import { connect } from 'react-redux';
 
+import actions from '../../actions/action_creators';
+
 import { Cell } from './cell';
-
-const renderRow = (row, i) => {
-    const cells = row.map((cell, j) => {
-        return (
-            <Cell
-                key={`${row}-${j}`}
-                row={i}
-                col={j}
-                {...cell.toObject()}
-            />
-        );
-    });
-    return (
-        <div key={i} className="grid-row">
-            {cells}
-        </div>
-    );
-};
-
-const renderGrid = (rows) => {
-    return (
-        <div className="grid">
-            {rows.map((row, i) => {
-                return renderRow(row, i);
-            })}
-        </div>
-    );
-};
-
 
 export class Grid extends React.Component {
     render() {
-        return renderGrid(this.props.rows);
+        return (
+            <div className="grid">
+                {this.props.rows.map((row, i) => {
+                    return (
+                        <div key={i} className="grid-row">
+                            {row.map((cell, j) => {
+                                return (
+                                    <Cell
+                                        key={`${row}-${j}`}
+                                        row={i}
+                                        col={j}
+                                        clickHandler={this.props.applyActiveStyleTool}
+                                        {...cell.toObject()}
+                                    />
+                                );
+                            })}
+                        </div>
+                    );
+                })}
+            </div>
+        );
     }
 }
 Grid.propTypes = {
     rows: React.PropTypes.instanceOf(List).isRequired,
+    applyActiveStyleTool: React.PropTypes.func,
 };
-
 
 const mapStateToProps = (state) => {
     return {
-        rows: state.grid.get('cells'),
+        rows: state.gridEditor.getIn(['grid', 'cells']),
     };
 };
 
-export const GridContainer = connect(mapStateToProps)(Grid);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        applyActiveStyleTool: (row, col) => {
+            dispatch(actions.applyActiveStyleTool(row, col));
+        },
+    };
+};
+
+export const GridContainer = connect(mapStateToProps, mapDispatchToProps)(Grid);

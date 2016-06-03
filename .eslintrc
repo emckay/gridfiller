@@ -5,10 +5,13 @@
         "mocha": true
     },
     "rules": {
-        "indent": ["error", 4],
+        "indent": ["error", 4, { "SwitchCase": 1}],
         "react/jsx-indent": ["error", 4],
         "react/jsx-indent-props": ["error", 4],
         "arrow-body-style": ["warn", "always"],
-        "no-console": "off"
+        "no-console": "off",
+        "no-trailing-spaces": "warn",
+        "no-unused-vars": "warn",
+        "eol-last": "warn"
     }
 }

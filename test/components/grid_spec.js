@@ -5,7 +5,7 @@ import { shallow } from 'enzyme';
 import { Map } from 'immutable';
 
 import { Grid } from '../../src/components/grid/grid';
-import { tenByTen } from '../fixtures/grids';
+import { tenByTen } from '../../src/store/data/grids/initial_grids';
 
 describe('<Grid />', () => {
     describe('render()', () => {

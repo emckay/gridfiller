@@ -1,30 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
 import { Provider } from 'react-redux';
-
-import { fromJS } from 'immutable';
-import cloner from 'cloner';
 
 import { App } from './components/app';
 
 import configureStore from './store/configureStore';
 
+import gridEditor from './store/data/grid_editor';
+
 // Add CSS files to bundle
 require('../src/css/application.scss');
+require('font-awesome-webpack');
 
-const cell = { content: '0', style: {} };
-
-const grid = [];
-
-for (let i = 0; i < 10; i++) {
-    grid.push([]);
-    for (let j = 0; j < 10; j++) {
-        grid[grid.length - 1].push(cloner.deep.copy(cell));
-    }
-}
-
-const initialState = { grid: fromJS({ cells: grid }) };
+const initialState = {
+    gridEditor,
+};
 
 const store = configureStore(initialState);
 
