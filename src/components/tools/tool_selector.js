@@ -5,7 +5,7 @@ import { List } from 'immutable';
 import actions from '../../actions/action_creators';
 import { ToolIcon } from './tool_icon';
 
-export const ToolSelector = ({ tools, activeStyleTool, setActiveStyleTool }) => {
+export const ToolSelector = ({ tools, activeStyleTool, toggleActiveStyleTool }) => {
     return (
         <div className="tool-selector">
             {tools.map((tool) => {
@@ -13,7 +13,7 @@ export const ToolSelector = ({ tools, activeStyleTool, setActiveStyleTool }) => 
                     <ToolIcon
                         key={tool.get('name')}
                         tool={tool}
-                        clickHandler={setActiveStyleTool}
+                        clickHandler={toggleActiveStyleTool}
                         active={tool === activeStyleTool}
                     />
                 );
@@ -25,7 +25,7 @@ export const ToolSelector = ({ tools, activeStyleTool, setActiveStyleTool }) => 
 ToolSelector.propTypes = {
     tools: React.PropTypes.instanceOf(List).isRequired,
     activeStyleTool: React.PropTypes.object,
-    setActiveStyleTool: React.PropTypes.func,
+    toggleActiveStyleTool: React.PropTypes.func,
 };
 
 const mapStateToProps = (state) => {
@@ -37,8 +37,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        setActiveStyleTool: (tool) => {
-            dispatch(actions.setActiveStyleTool(tool));
+        toggleActiveStyleTool: (tool) => {
+            dispatch(actions.toggleActiveStyleTool(tool));
         },
     };
 };

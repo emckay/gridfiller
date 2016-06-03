@@ -1,6 +1,10 @@
 import { Map } from 'immutable';
 
-const handleSetActiveStyleTool = (currentState, action) => {
+const handletoggleActiveStyleTool = (currentState, action) => {
+    if (currentState.get('activeStyleTool') === action.tool) {
+        return currentState.set('activeStyleTool', undefined);
+    }
+
     return currentState.set('activeStyleTool', action.tool);
 };
 
@@ -10,8 +14,8 @@ const handleClearActiveStyleTool = (currentState) => {
 
 export default function (currentState = new Map(), action) {
     switch (action.type) {
-        case 'SET_ACTIVE_STYLE_TOOL':
-            return handleSetActiveStyleTool(currentState, action);
+        case 'TOGGLE_ACTIVE_STYLE_TOOL':
+            return handletoggleActiveStyleTool(currentState, action);
         case 'CLEAR_ACTIVE_STYLE_TOOL':
             return handleClearActiveStyleTool(currentState);
         default:
