@@ -16,3 +16,7 @@ export const setSharedOption = (key, value) => {
         value,
     };
 };
+
+export const swapColors = () => {
+    return { type: 'SWAP_COLORS' };
+};
