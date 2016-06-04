@@ -9,7 +9,7 @@ import configureStore from './store/configureStore';
 import gridEditor from './store/data/grid_editor';
 
 // Add CSS files to bundle
-require('../src/css/application.scss');
+require('./css/application.scss');
 require('font-awesome-webpack');
 
 const initialState = {

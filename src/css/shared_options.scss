@@ -1,0 +1,11 @@
+.shared-options {
+    .color-picker {
+        display: block;
+        height: 100px;
+        width: 100px;
+
+        input {
+            visibility: hidden;
+        }
+    }
+}
