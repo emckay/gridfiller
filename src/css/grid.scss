@@ -1,11 +1,10 @@
 .editor {
     align-items: flex-start;
     display: flex;
-    justify-content: space-between;
 }
 
 .grid {
-    margin: 0 auto;
+    margin: 10px;
     white-space: nowrap;
 
     .grid-row {
