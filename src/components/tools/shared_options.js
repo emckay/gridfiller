@@ -3,39 +3,51 @@ import { connect } from 'react-redux';
 
 import actions from '../../actions/action_creators';
 
-export const SharedOptions = ({ primaryColor, setPrimaryColor }) => {
+export const SharedOptions = ({ primaryColor, secondaryColor, setSharedOption }) => {
+    const props = { primaryColor, secondaryColor };
     return (
         <div className="shared-options">
-            <label
-                className="color-picker"
-                style={{ backgroundColor: primaryColor }}
-            >
-                <input
-                    className="color-picker-input"
-                    type="color"
-                    defaultValue={primaryColor}
-                    onChange={(e) => { setPrimaryColor(e.target.value); }}
-                />
-            </label>
+            <div className="color-pickers">
+                {['primaryColor', 'secondaryColor'].map((opt) => {
+                    return (
+                        <label
+                            key={opt}
+                            className="color-picker"
+                            style={{ backgroundColor: props[opt] }}
+                        >
+                            <input
+                                className="color-picker-input"
+                                type="color"
+                                defaultValue={props[opt]}
+                                onChange={(e) => {
+                                    setSharedOption(opt, e.target.value);
+                                }}
+                            />
+                        </label>
+                    );
+                })}
+            </div>
         </div>
     );
 };
 
 SharedOptions.propTypes = {
     primaryColor: React.PropTypes.string.isRequired,
-    setPrimaryColor: React.PropTypes.func,
+    secondaryColor: React.PropTypes.string.isRequired,
+    setSharedOption: React.PropTypes.func,
 };
 
 const mapStateToProps = (state) => {
     return {
         primaryColor: state.gridEditor.getIn(['tools', 'sharedOptions', 'primaryColor']),
+        secondaryColor: state.gridEditor.getIn(['tools', 'sharedOptions', 'secondaryColor']),
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        setPrimaryColor: (newColor) => {
-            dispatch(actions.setSharedOption('primaryColor', newColor));
+        setSharedOption: (option, newColor) => {
+            dispatch(actions.setSharedOption(option, newColor));
         },
     };
 };

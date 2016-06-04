@@ -1,7 +1,10 @@
 .shared-options {
+    display: inline-block;
+    vertical-align: top;
+
     .color-picker {
-        display: block;
-        height: 100px;
+        display: inline-block;
+        height: 50px;
         width: 100px;
 
         input {

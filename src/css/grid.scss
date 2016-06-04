@@ -1,4 +1,17 @@
+.editor {
+    align-items: flex-start;
+    display: flex;
+    justify-content: space-between;
+}
+
 .grid {
+    margin: 0 auto;
+    white-space: nowrap;
+
+    .grid-row {
+        height: 50px;
+    }
+
     .grid-cell {
         border-left: 1px solid $black;
         border-top: 1px solid $black;
