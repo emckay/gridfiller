@@ -17,10 +17,10 @@ describe('grid editor reducer', () => {
             expect(nextState).to.be.instanceOf(Map);
         });
 
-        for (const substate of ['grid', 'tools']) {
+        for (const [substate, type] of [['grid', Object], ['tools', Map]]) {
             it(`returns empty ${substate} sub-state`, () => {
                 expect(nextState).to.include.key(substate);
-                expect(nextState.get(substate)).to.be.instanceOf(Map);
+                expect(nextState.get(substate)).to.be.instanceOf(type);
             });
         }
     });
@@ -42,20 +42,19 @@ describe('grid editor reducer', () => {
             const nextState = reducer(initialState, action);
 
             it('changes style of first element', () => {
-                const fristElementStylePos = ['grid', 'cells', 0, 0, 'style'];
-                expect(nextState.getIn(fristElementStylePos)).to
+                const firstElementStylePos = ['cells', 0, 0, 'style'];
+                expect(nextState.get('grid').present.getIn(firstElementStylePos)).to
                     .eql(initialState.getIn(['tools', 'activeStyleTool', 'style']));
             });
         });
 
         context('with dynamic active tool', () => {
             const initialState = gridEditor.withDynamicTool;
-            console.log('is ast', initialState.getIn(['tools', 'activeStyleTool']));
             const nextState = reducer(initialState, action);
 
             it('changes style of first element', () => {
-                const fristElementStylePos = ['grid', 'cells', 0, 0, 'style'];
-                expect(nextState.getIn(fristElementStylePos)).to
+                const firstElementStylePos = ['cells', 0, 0, 'style'];
+                expect(nextState.get('grid').present.getIn(firstElementStylePos)).to
                     .eql(fromJS({ backgroundColor: 'red' }));
             });
         });

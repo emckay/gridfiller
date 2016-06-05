@@ -1,6 +1,7 @@
 
-export const getGridEditor = (state) => state.gridEditor.present;
-export const getCells = (state) => getGridEditor(state).getIn(['grid', 'cells']);
+export const getGridEditor = (state) => state.gridEditor;
+export const getGrid = (state) => getGridEditor(state).get('grid').present;
+export const getCells = (state) => getGrid(state).get('cells');
 export const getTools = (state) => getGridEditor(state).get('tools');
 export const getAvailableTools = (state) => getTools(state).get('availableTools');
 export const getActiveStyleTool = (state) => getTools(state).get('activeStyleTool');

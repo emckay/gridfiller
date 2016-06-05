@@ -1,3 +1,5 @@
+import { combineReducers } from 'redux-immutable';
+import undoable from 'redux-undo';
 import { Map } from 'immutable';
 
 import gridReducer from './grid';
@@ -24,33 +26,48 @@ const fillSharedOptions = (dynamicTool, sharedOptions) => {
     return tool;
 };
 
+function insert(history, state, limit) {
+    const { past, present } = history;
+    const historyOverflow = limit && length(history) >= limit;
+
+    const newPast = history.wasFiltered ? past : [
+        ...past.slice(historyOverflow ? 1 : 0),
+        present,
+    ];
+
+    return {
+        past: newPast,
+        present: state,
+        future: [],
+    };
+}
+
 const handleApplyActiveStyleTool = (currentState, action) => {
     let tool = currentState.getIn(['tools', 'activeStyleTool']);
 
     if (tool !== undefined) {
+        const presentGrid = currentState.get('grid').present;
         tool = fillSharedOptions(tool, currentState.getIn(['tools', 'sharedOptions']));
-        return currentState.setIn(
-            ['grid', 'cells', action.row, action.col, 'style'],
+        const newGrid = presentGrid.setIn(
+            ['cells', action.row, action.col, 'style'],
             tool.get('style')
         );
+        return currentState.set('grid', insert(currentState.get('grid'), newGrid));
     }
 
     return currentState;
 };
 
 export default function (currentState = new Map(), action) {
-    let nextState;
-
     switch (action.type) {
         case 'APPLY_ACTIVE_STYLE_TOOL': {
-            nextState = handleApplyActiveStyleTool(currentState, action);
-            break;
+            return handleApplyActiveStyleTool(currentState, action);
         }
         default: {
-            nextState = currentState;
-            nextState = nextState.set('grid', gridReducer(nextState.get('grid'), action));
-            nextState = nextState.set('tools', toolsReducer(nextState.get('tools'), action));
+            return combineReducers({
+                grid: undoable(gridReducer),
+                tools: toolsReducer,
+            })(currentState, action);
         }
     }
-    return nextState;
 }

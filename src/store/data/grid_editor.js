@@ -10,7 +10,7 @@ export default fromJS({
     tools: {
         availableTools: initialTools,
         sharedOptions: {
-            primaryColor: '#00ffff',
+            primaryColor: '#ffff00',
             secondaryColor: '#ff00ff',
         },
     },
