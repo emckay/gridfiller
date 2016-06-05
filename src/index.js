@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
-import { App } from './components/app';
+import { GridEditorContainer } from './components/grid_editor';
 
 import configureStore from './store/configureStore';
 
@@ -26,7 +26,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 ReactDOM.render(
     <Provider store={store}>
-        <App />
+        <GridEditorContainer />
     </Provider>,
     document.getElementById('app')
 );
