@@ -77,7 +77,8 @@ describe('grid editor reducer', () => {
                         const action = actions.applyActiveStyleTool(...cells.clicked, o.border);
                         const nextState = reducer(initialState, action);
 
-                        expect(getBorderStyles(nextState, ...cells[o.cell])).to.have.key(o.style);
+                        expect(getBorderStyles(nextState, ...cells[o.cell])
+                            .get(o.style)).to.eq(2);
                     });
                 }
             };
@@ -122,7 +123,7 @@ describe('grid editor reducer', () => {
             });
 
             context('with bottom right corner cell', () => {
-                const cells = { clicked: [0, 9], below: [1, 9] };
+                const cells = { clicked: [9, 9] };
 
                 const expectations = [
                     { border: 0, style: 'borderTopWidth', cell: 'clicked' },
@@ -132,6 +133,17 @@ describe('grid editor reducer', () => {
                 ];
 
                 expectationsToTests(cells, expectations);
+            });
+
+            context('when applied twice', () => {
+                it('increases width twice', () => {
+                    const action = actions.applyActiveStyleTool(0, 0, 0);
+                    const firstState = reducer(initialState, action);
+                    const secondState = reducer(firstState, action);
+
+                    expect(getBorderStyles(secondState, 0, 0)
+                        .get('borderTopWidth')).to.eq(3);
+                });
             });
         });
     });

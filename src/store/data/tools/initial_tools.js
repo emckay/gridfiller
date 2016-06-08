@@ -28,7 +28,7 @@ export default fromJS([
             {
                 name: 'Increase Thickness',
                 style: {
-                    borderWidth: '5px',
+                    width: { '+=': 2 },
                 },
                 icon: 'plus-square-o',
             },

@@ -42,17 +42,82 @@ function insert(history, state, limit) {
     };
 }
 
-const handleApplyActiveStyleTool = (currentState, action) => {
-    let tool = currentState.getIn(['tools', 'activeStyleTool']);
+const handleApplyCellStyleTool = (currentState, action, tool) => {
+    const presentGrid = currentState.get('grid').present;
+    const filledTool = fillSharedOptions(tool, currentState.getIn(['tools', 'sharedOptions']));
+    const newGrid = presentGrid.setIn(
+        ['cells', action.row, action.col, 'style'],
+        filledTool.get('style')
+    );
+    return currentState.set('grid', insert(currentState.get('grid'), newGrid));
+};
 
-    if (tool !== undefined) {
-        const presentGrid = currentState.get('grid').present;
-        tool = fillSharedOptions(tool, currentState.getIn(['tools', 'sharedOptions']));
-        const newGrid = presentGrid.setIn(
-            ['cells', action.row, action.col, 'style'],
-            tool.get('style')
-        );
-        return currentState.set('grid', insert(currentState.get('grid'), newGrid));
+const handleApplyBorderStyleTool = (currentState, action, tool) => {
+    const cells = currentState.get('grid').present.get('cells');
+
+    // find correct cell/border to change
+    let targetCell;
+    let targetBorder;
+    if (action.target === 0 || action.target === 3) {
+        // if changing top or left border, use the original cell
+        targetCell = [action.row, action.col];
+        if (action.target === 0) {
+            targetBorder = 'borderTop';
+        } else {
+            targetBorder = 'borderLeft';
+        }
+    } else if (action.target === 1) {
+        // changing right border -- need to check if we are in right-most col
+        const numCols = cells.get(0).size;
+        if (action.col === numCols - 1) {
+            targetCell = [action.row, action.col];
+            targetBorder = 'borderRight';
+        } else {
+            targetCell = [action.row, action.col + 1];
+            targetBorder = 'borderLeft';
+        }
+    } else {
+        // changing bottom border -- need to check if we are in bottom-most row
+        const numRows = cells.size;
+        if (action.row === numRows - 1) {
+            targetCell = [action.row, action.col];
+            targetBorder = 'borderBottom';
+        } else {
+            targetCell = [action.row + 1, action.col];
+            targetBorder = 'borderTop';
+        }
+    }
+
+    const newStyle = { };
+    if (tool.getIn(['style', 'width'])) {
+        const targetStyle = `${targetBorder}Width`;
+        let origWidth = cells.getIn([...targetCell, 'style', targetStyle]) || 1;
+
+        if (typeof origStyle === 'string') origWidth = parseInt(origWidth.replace('px', ''), 10);
+
+        if (tool.getIn(['style', 'width', '+='])) {
+            newStyle[targetStyle] = origWidth + tool.getIn(['style', 'width', '+=']);
+        } else if (tool.style.getIn('width', '-=')) {
+            newStyle[targetStyle] = origWidth - tool.getIn(['style', 'width', '-=']);
+        }
+    }
+
+    const newGrid = currentState.get('grid').present
+        .mergeIn(['cells', ...targetCell, 'style'], newStyle);
+
+    return currentState.set('grid', insert(currentState.get('grid'), newGrid));
+};
+
+const handleApplyActiveStyleTool = (currentState, action) => {
+    const mode = currentState.getIn(['tools', 'mode']);
+    const tool = currentState.getIn(['tools', 'activeStyleTool']);
+
+    if (tool === undefined) {
+        return currentState;
+    } else if (mode === undefined || mode.toLowerCase() === 'cell') {
+        return handleApplyCellStyleTool(currentState, action, tool);
+    } else if (mode.toLowerCase() === 'border') {
+        return handleApplyBorderStyleTool(currentState, action, tool);
     }
 
     return currentState;

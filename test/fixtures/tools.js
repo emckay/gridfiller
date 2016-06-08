@@ -19,7 +19,7 @@ export const staticTool = fromJS({
 export const borderTool = fromJS({
     name: 'Increase Thickness',
     style: {
-        borderWidth: '5px',
+        width: { '+=': 1 },
     },
     icon: 'plus-square-o',
 });

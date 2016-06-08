@@ -8,12 +8,12 @@ export class Cell extends React.Component {
         return shallowCompare(this, nextProps, nextState);
     }
     render() {
-        const { row, col, style, content, clickHandler } = this.props;
+        const { row, col, style, content, clickHandler, mode } = this.props;
         return (
             <div
                 className="grid-cell"
                 style={style.toJS()}
-                onClick={() => { clickHandler(row, col); }}
+                onClick={() => { if (mode === "cell") clickHandler(row, col); }}
             >
                 {content.map((value, key) => (
                     <div
@@ -24,7 +24,11 @@ export class Cell extends React.Component {
                     </div>
                 )).toArray()}
                 {[0, 1, 2, 3].map((value) => (
-                    <div key={value} className={`border-edit border-edit-${value}`} />
+                    <div
+                        key={value}
+                        className={`border-edit border-edit-${value}`}
+                        onClick={() => { if (mode === 'border') clickHandler(row, col, value); }}
+                    />
                 ))}
             </div>
         );
@@ -37,4 +41,5 @@ Cell.propTypes = {
     style: React.PropTypes.instanceOf(Map).isRequired,
     content: React.PropTypes.instanceOf(Map).isRequired,
     clickHandler: React.PropTypes.func,
+    mode: React.PropTypes.string,
 };

@@ -22,6 +22,7 @@ export class Grid extends React.Component {
                                 key={`${row}-${j}`}
                                 row={i}
                                 col={j}
+                                mode={this.props.mode}
                                 clickHandler={this.props.applyActiveStyleTool}
                                 {...cell.toObject()}
                             />
@@ -44,8 +45,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    applyActiveStyleTool: (row, col) => {
-        dispatch(actions.applyActiveStyleTool(row, col));
+    applyActiveStyleTool: (row, col, target) => {
+        dispatch(actions.applyActiveStyleTool(row, col, target));
     },
 });
 
