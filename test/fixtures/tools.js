@@ -16,4 +16,12 @@ export const staticTool = fromJS({
     icon: 'square',
 });
 
+export const borderTool = fromJS({
+    name: 'Increase Thickness',
+    style: {
+        borderWidth: '5px',
+    },
+    icon: 'plus-square-o',
+});
+
 export const toolGroup = toolGroups.get(0);

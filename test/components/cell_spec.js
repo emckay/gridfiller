@@ -20,5 +20,9 @@ describe('<Cell />', () => {
         it('renders 10 content divs', () => {
             expect(wrapper).to.have.exactly(10).descendants('.cell-content');
         });
+
+        it('renders 4 border-edit divs', () => {
+            expect(wrapper).to.have.exactly(4).descendants('.border-edit');
+        });
     });
 });

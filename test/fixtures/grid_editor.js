@@ -3,8 +3,8 @@ import { fromJS } from 'immutable';
 import initialGridEditor from '../../src/store/data/grid_editor';
 import * as tools from './tools';
 
-const setActiveTool = (gridEditor, tool = tools.staticTool) => fromJS(
-    gridEditor.setIn(['tools', 'activeStyleTool'], tool)
+const setActiveTool = (gridEditor, tool = tools.staticTool, mode = 'Cell') => fromJS(
+    gridEditor.merge({ tools: { activeStyleTool: tool, mode } })
 );
 
 const setSharedOptions = (gridEditor, sharedOption) => fromJS(
@@ -29,4 +29,5 @@ export default {
         { option: 'primary-color', val: 'red' }
     ),
     withStaticTool: setActiveTool(ge, tools.staticTool),
+    withBorderTool: setActiveTool(ge, tools.borderTool, 'Border'),
 };

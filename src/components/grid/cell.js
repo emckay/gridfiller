@@ -15,16 +15,17 @@ export class Cell extends React.Component {
                 style={style.toJS()}
                 onClick={() => { clickHandler(row, col); }}
             >
-                {content.map((value, key) => {
-                    return (
-                        <div
-                            className={`cell-content cell-content-${key}`}
-                            key={key}
-                        >
-                            {''}
-                        </div>
-                    );
-                }).toArray()}
+                {content.map((value, key) => (
+                    <div
+                        className={`cell-content cell-content-${key}`}
+                        key={key}
+                    >
+                        {''}
+                    </div>
+                )).toArray()}
+                {[0, 1, 2, 3].map((value) => (
+                    <div key={value} className={`border-edit border-edit-${value}`} />
+                ))}
             </div>
         );
     }

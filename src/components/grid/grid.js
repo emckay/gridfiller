@@ -14,7 +14,7 @@ export class Grid extends React.Component {
     }
     render() {
         return (
-            <div className="grid">
+            <div className={`grid ${this.props.mode}-mode`}>
                 {this.props.rows.map((row, i) => (
                     <div key={i} className="grid-row">
                         {row.map((cell, j) => (
@@ -35,10 +35,12 @@ export class Grid extends React.Component {
 Grid.propTypes = {
     rows: React.PropTypes.instanceOf(List).isRequired,
     applyActiveStyleTool: React.PropTypes.func,
+    mode: React.PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state) => ({
     rows: selectors.getCells(state),
+    mode: (selectors.getMode(state) || '').toLowerCase(),
 });
 
 const mapDispatchToProps = (dispatch) => ({
