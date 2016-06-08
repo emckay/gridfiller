@@ -1,20 +1,21 @@
 import { Map } from 'immutable';
 
+const handleClearActiveStyleTool = (currentState) => {
+    const newState = { activeStyleTool: undefined, mode: undefined };
+    return currentState.merge(newState);
+};
+
 const handleToggleActiveStyleTool = (currentState, action) => {
     if (currentState.get('activeStyleTool') === action.tool) {
-        return currentState.set('activeStyleTool', undefined);
+        return handleClearActiveStyleTool(currentState);
     }
 
-    return currentState.set('activeStyleTool', action.tool);
+    const newState = { activeStyleTool: action.tool, mode: action.mode };
+    return currentState.merge(newState);
 };
 
-const handleClearActiveStyleTool = (currentState) => {
-    return currentState.set('activeStyleTool', undefined);
-};
-
-const handleSetSharedOption = (currentState, key, value) => {
-    return currentState.setIn(['sharedOptions', key], value);
-};
+const handleSetSharedOption = (currentState, key, value) =>
+    currentState.setIn(['sharedOptions', key], value);
 
 const handleSwapColors = (currentState) => {
     const primaryColor = currentState.getIn(['sharedOptions', 'primaryColor']);

@@ -8,13 +8,22 @@ import { ToolIcon } from './tool_icon';
 
 export const ToolSelector = ({ tools, activeStyleTool, toggleActiveStyleTool }) => (
     <div className="tool-selector">
-        {tools.map((tool) => (
-            <ToolIcon
-                key={tool.get('name')}
-                tool={tool}
-                clickHandler={toggleActiveStyleTool}
-                active={tool === activeStyleTool}
-            />
+        {tools.map((group) => (
+            <div className="tool-group" key={group.get('name')}>
+                <h5>
+                    <i className={`fa fa-${group.get('icon')}`} />
+                    {group.get('name')}
+                </h5>
+                {group.get('tools').map((tool) => (
+                    <ToolIcon
+                        key={tool.get('name')}
+                        tool={tool}
+                        clickHandler={toggleActiveStyleTool}
+                        active={tool === activeStyleTool}
+                        mode={group.get('name')}
+                    />
+                ))}
+            </div>
         ))}
     </div>
 );
@@ -31,8 +40,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    toggleActiveStyleTool: (tool) => {
-        dispatch(actions.toggleActiveStyleTool(tool));
+    toggleActiveStyleTool: (tool, mode) => {
+        dispatch(actions.toggleActiveStyleTool(tool, mode));
     },
 });
 
