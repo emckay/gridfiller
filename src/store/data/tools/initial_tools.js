@@ -4,10 +4,15 @@ export default fromJS([
     {
         name: 'Fill Cell',
         style: {
-            backgroundColor: (sharedOptions) => {
-                return sharedOptions.get('primaryColor');
-            },
+            backgroundColor: (sharedOptions) => sharedOptions.get('primaryColor'),
         },
         icon: 'square',
+    },
+    {
+        name: 'Remove Fill',
+        style: {
+            backgroundColor: undefined,
+        },
+        icon: 'square-o',
     },
 ]);
