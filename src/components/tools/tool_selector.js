@@ -10,10 +10,10 @@ export const ToolSelector = ({ tools, activeStyleTool, toggleActiveStyleTool }) 
     <div className="tool-selector">
         {tools.map((group) => (
             <div className="tool-group" key={group.get('name')}>
-                <h5>
+                <div className="tool-group-header">
                     <i className={`fa fa-${group.get('icon')}`} />
                     {group.get('name')}
-                </h5>
+                </div>
                 {group.get('tools').map((tool) => (
                     <ToolIcon
                         key={tool.get('name')}

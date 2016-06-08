@@ -6,6 +6,7 @@
 
 .tool-selector {
     display: flex;
+    flex-direction: column;
 
     .tool-icon {
         border: 1px solid $black;
@@ -15,6 +16,20 @@
 
         &.active {
             background-color: $active-tool;
+        }
+    }
+
+    .tool-group {
+        margin-top: 10px;
+
+        .tool-group-header {
+            border: 1px solid $black;
+            border-radius: 3px;
+            padding: 5px;
+
+            i {
+                margin-right: 5px;
+            }
         }
     }
 }

@@ -34,4 +34,14 @@ export default fromJS([
             },
         ],
     },
+    {
+        name: 'Text',
+        icon: 'font',
+        tools: [
+            {
+                name: 'Add Text',
+                icon: 'i-cursor',
+            },
+        ],
+    },
 ]);
