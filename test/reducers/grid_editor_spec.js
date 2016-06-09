@@ -65,32 +65,64 @@ describe('grid editor reducer', () => {
 
         context('with border style tool', () => {
             const initialState = gridEditor.withBorderTool;
+            const startingWidth = 50;
+            const startingBorder = 1;
+            const startingMarginTop = 0;
 
-            const getBorderStyles = (state, row, col) => (
+            const getStyles = (state, row, col) => (
                 state.get('grid').present.getIn(['cells', row, col, 'style'])
-                    .filter((v, k) => k.indexOf('border') > -1)
             );
 
             const expectationsToTests = (cells, expectations) => {
-                for (const o of expectations) {
-                    it(`changes ${o.style} of ${o.cell} cell`, () => {
-                        const action = actions.applyActiveStyleTool(...cells.clicked, o.border);
+                for (const e of expectations) {
+                    for (const style of Object.keys(e.styles)) {
+                        const value = e.styles[style];
+                        const action = actions.applyActiveStyleTool(...cells.clicked, e.border);
                         const nextState = reducer(initialState, action);
 
-                        expect(getBorderStyles(nextState, ...cells[o.cell])
-                            .get(o.style)).to.eq(2);
+                        it(`changes ${style} of ${e.cell} cell`, () => {
+                            expect(getStyles(nextState, ...cells[e.cell])
+                                .get(style)).to.eq(value);
+                        });
+                    }
+
+                    it('does not have any other styles', () => {
+                        const action = actions.applyActiveStyleTool(...cells.clicked, e.border);
+                        const nextState = reducer(initialState, action);
+                        console.log(getStyles(nextState, ...cells[e.cell]));
+                        expect(Object.keys(getStyles(nextState, ...cells[e.cell]).toJS())).to.eql(Object.keys(e.styles));
                     });
                 }
+            };
+
+            const yBorderStyles = {
+                borderTopWidth: startingBorder + 2,
+                marginTop: startingMarginTop - 1,
+                height: startingWidth - 1,
+            };
+            const xBorderStyles = {
+                borderLeftWidth: startingBorder + 2,
+                marginLeft: startingMarginTop - 1,
+                width: startingWidth - 1,
+            };
+            const xEndBorderStyles = {
+                borderRightWidth: startingBorder + 2,
+                width: startingWidth - 1,
+            };
+            const yNextBorderStyles = {
+                borderTopWidth: startingBorder + 2,
+                marginTop: startingMarginTop - 1,
+                height: startingWidth - 1,
             };
 
             context('with typical cell', () => {
                 const cells = { clicked: [0, 1], below: [1, 1], right: [0, 2] };
 
                 const expectations = [
-                    { border: 0, style: 'borderTopWidth', cell: 'clicked' },
-                    { border: 1, style: 'borderLeftWidth', cell: 'right' },
-                    { border: 2, style: 'borderTopWidth', cell: 'below' },
-                    { border: 3, style: 'borderLeftWidth', cell: 'clicked' },
+                    { border: 0, styles: yBorderStyles, cell: 'clicked' },
+                    { border: 1, styles: xBorderStyles, cell: 'right' },
+                    { border: 2, styles: yBorderStyles, cell: 'below' },
+                    { border: 3, styles: xBorderStyles, cell: 'clicked' },
                 ];
 
                 expectationsToTests(cells, expectations);
@@ -100,10 +132,10 @@ describe('grid editor reducer', () => {
                 const cells = { clicked: [0, 9], below: [1, 9] };
 
                 const expectations = [
-                    { border: 0, style: 'borderTopWidth', cell: 'clicked' },
-                    { border: 1, style: 'borderRightWidth', cell: 'clicked' },
-                    { border: 2, style: 'borderTopWidth', cell: 'below' },
-                    { border: 3, style: 'borderLeftWidth', cell: 'clicked' },
+                    { border: 0, styles: yBorderStyles, cell: 'clicked' },
+                    { border: 1, styles: xEndBorderStyles, cell: 'clicked' },
+                    { border: 2, styles: yBorderStyles, cell: 'below' },
+                    { border: 3, styles: xBorderStyles, cell: 'clicked' },
                 ];
 
                 expectationsToTests(cells, expectations);
@@ -113,10 +145,10 @@ describe('grid editor reducer', () => {
                 const cells = { clicked: [9, 0], right: [9, 1] };
 
                 const expectations = [
-                    { border: 0, style: 'borderTopWidth', cell: 'clicked' },
-                    { border: 1, style: 'borderLeftWidth', cell: 'right' },
-                    { border: 2, style: 'borderBottomWidth', cell: 'clicked' },
-                    { border: 3, style: 'borderLeftWidth', cell: 'clicked' },
+                    { border: 0, styles: yBorderStyles, cell: 'clicked' },
+                    { border: 1, styles: xBorderStyles, cell: 'right' },
+                    { border: 2, styles: yBorderStyles, cell: 'clicked' },
+                    { border: 3, styles: xBorderStyles, cell: 'clicked' },
                 ];
 
                 expectationsToTests(cells, expectations);
@@ -126,10 +158,10 @@ describe('grid editor reducer', () => {
                 const cells = { clicked: [9, 9] };
 
                 const expectations = [
-                    { border: 0, style: 'borderTopWidth', cell: 'clicked' },
-                    { border: 1, style: 'borderRightWidth', cell: 'clicked' },
-                    { border: 2, style: 'borderBottomWidth', cell: 'clicked' },
-                    { border: 3, style: 'borderLeftWidth', cell: 'clicked' },
+                    { border: 0, styles: yBorderStyles, cell: 'clicked' },
+                    { border: 1, styles: xBorderStyles, cell: 'clicked' },
+                    { border: 2, styles: yBorderStyles, cell: 'clicked' },
+                    { border: 3, styles: xBorderStyles, cell: 'clicked' },
                 ];
 
                 expectationsToTests(cells, expectations);
@@ -141,8 +173,12 @@ describe('grid editor reducer', () => {
                     const firstState = reducer(initialState, action);
                     const secondState = reducer(firstState, action);
 
-                    expect(getBorderStyles(secondState, 0, 0)
-                        .get('borderTopWidth')).to.eq(3);
+                    expect(getStyles(secondState, 0, 0)
+                        .get('borderTopWidth')).to.eq(startingBorder + 4);
+                    expect(getStyles(secondState, 0, 0)
+                        .get('marginTop')).to.eq(startingMarginTop - 2);
+                    expect(getStyles(secondState, 0, 0)
+                        .get('height')).to.eq(startingWidth - 2);
                 });
             });
         });

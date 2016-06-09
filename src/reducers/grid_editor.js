@@ -88,17 +88,36 @@ const handleApplyBorderStyleTool = (currentState, action, tool) => {
         }
     }
 
+    let targetMargin;
+    let targetDim;
+
+    if (targetBorder === 'borderTop' || targetBorder === 'borderBottom') {
+        targetMargin = 'marginTop';
+        targetDim = 'height';
+    } else {
+        targetMargin = 'marginLeft';
+        targetDim = 'width';
+    }
+
     const newStyle = { };
     if (tool.getIn(['style', 'width'])) {
         const targetStyle = `${targetBorder}Width`;
         let origWidth = cells.getIn([...targetCell, 'style', targetStyle]) || 1;
+        let origMargin = cells.getIn([...targetCell, 'style', targetMargin]) || 0;
+        let origDim = cells.getIn([...targetCell, 'style', targetDim]) || 50;
 
         if (typeof origStyle === 'string') origWidth = parseInt(origWidth.replace('px', ''), 10);
+        if (typeof origMargin === 'string') origMargin = parseInt(origWidth.replace('px', ''), 10);
+        if (typeof origDim === 'string') origDim = parseInt(origWidth.replace('px', ''), 10);
 
         if (tool.getIn(['style', 'width', '+='])) {
             newStyle[targetStyle] = origWidth + tool.getIn(['style', 'width', '+=']);
-        } else if (tool.style.getIn('width', '-=')) {
+            newStyle[targetMargin] = origMargin - tool.getIn(['style', 'margin', '-=']);
+            newStyle[targetDim] = origDim - tool.getIn(['style', 'dim', '-=']);
+        } else if (tool.getIn(['style', 'width', '-='])) {
             newStyle[targetStyle] = origWidth - tool.getIn(['style', 'width', '-=']);
+            newStyle[targetMargin] = origMargin - tool.getIn(['style', 'margin', '-=']);
+            newStyle[targetDim] = origDim - tool.getIn(['style', 'dim', '-=']);
         }
     }
 
