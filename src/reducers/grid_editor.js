@@ -101,7 +101,9 @@ const handleApplyBorderStyleTool = (currentState, action, tool) => {
         }
     }
 
-    const width = tool.getIn(['style', 'width']) / targetCells.length;
+    const width = tool.getIn(['style', 'width']);
+    const scaledWidth = width / targetCells.length;
+    const halfWidth = width / 2;
 
     const styleObjs = [];
 
@@ -112,50 +114,53 @@ const handleApplyBorderStyleTool = (currentState, action, tool) => {
         const targetBorder = arr[0];
         const origStyle = cells.getIn([...targetCells[i].pos, 'style']);
         const origBorder = origStyle.get(targetStyles[i][0]) || (neighbor ? 1 : 2);
-        const defaultBorder = (targetCells[i].pos[0] == 0 && targetBorder === 'borderBottomWidth' ? -1 : 0);
-        const origMargin = origStyle.get(targetStyles[i][1]) || defaultBorder;
+        let defaultMargin = 0;
+        if (targetCells[i].pos[0] === 0 && targetBorder === 'borderBottomWidth') {
+            defaultMargin = -1;
+        }
+        const origMargin = origStyle.get(targetStyles[i][1]) || defaultMargin;
         const origDim = origStyle.get(targetStyles[i][2]) || 50;
 
         let amounts;
         if (targetBorder === 'borderTopWidth') {
             if (neighbor) {
                 amounts = [
-                    origBorder + width,
+                    origBorder + scaledWidth,
                     origMargin,
-                    origDim - width,
+                    origDim - scaledWidth,
                 ];
             } else {
                 amounts = [
-                    origBorder + width,
-                    origMargin - width,
-                    origDim - width * targetCells.length / 2,
+                    origBorder + scaledWidth,
+                    origMargin - scaledWidth,
+                    origDim - halfWidth,
                 ];
             }
         } else if (targetBorder === 'borderLeftWidth') {
             if (neighbor) {
                 amounts = [
-                    origBorder + width,
+                    origBorder + scaledWidth,
                     origMargin,
-                    origDim - width,
+                    origDim - scaledWidth,
                 ];
             } else {
                 amounts = [
-                    origBorder + width,
-                    origMargin - width * targetCells.length / 2,
-                    origDim - width * targetCells.length / 2,
+                    origBorder + scaledWidth,
+                    origMargin - halfWidth,
+                    origDim - halfWidth,
                 ];
             }
         } else if (targetBorder === 'borderBottomWidth') {
             amounts = [
-                width + origBorder,
+                origBorder + scaledWidth,
                 origMargin,
-                origDim - width * targetCells.length / 2,
+                origDim - halfWidth,
             ];
         } else if (targetBorder === 'borderRightWidth') {
             amounts = [
-                width + origBorder,
+                origBorder + scaledWidth,
                 origMargin,
-                origDim - width * targetCells.length / 2,
+                origDim - halfWidth,
             ];
         }
 

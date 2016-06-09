@@ -40,14 +40,14 @@ describe('grid editor reducer', () => {
         context('with cell style tool', () => {
             const action = actions.applyActiveStyleTool(0, 0);
 
-            const doesNotOverwrite = (action) => {
+            const doesNotOverwrite = (a) => {
                 it('does not overwrite other styles', () => {
                     const initialState = gridEditor.withStaticTool;
                     const firstElementStylePos = ['cells', 0, 0, 'style'];
                     initialState.get('grid').present = initialState.get('grid').present
                         .setIn(firstElementStylePos, new Map({ borderTopWidth: 2 }));
 
-                    const nextState = reducer(initialState, action);
+                    const nextState = reducer(initialState, a);
 
                     expect(nextState.get('grid').present.getIn(firstElementStylePos)).to
                         .include.property('borderTopWidth', 2);

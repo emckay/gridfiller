@@ -43,7 +43,7 @@
     }
 }
 
-$border-edit-border: 1px solid #ff0000;
+$border-edit-border: 1px solid $grid-editor-border;
 
 .border-edit {
     display: none;
