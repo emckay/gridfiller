@@ -28,9 +28,7 @@ export default fromJS([
             {
                 name: 'Increase Thickness',
                 style: {
-                    width: { '+=': 2 },
-                    margin: { '-=': 1 },
-                    dim: { '-=': 1 },
+                    width: 2,
                 },
                 icon: 'plus-square-o',
             },

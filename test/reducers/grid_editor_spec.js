@@ -40,15 +40,30 @@ describe('grid editor reducer', () => {
         context('with cell style tool', () => {
             const action = actions.applyActiveStyleTool(0, 0);
 
-            context('with static active tool', () => {
-                const initialState = gridEditor.withStaticTool;
-                const nextState = reducer(initialState, action);
+            const doesNotOverwrite = (action) => {
+                it('does not overwrite other styles', () => {
+                    const initialState = gridEditor.withStaticTool;
+                    const firstElementStylePos = ['cells', 0, 0, 'style'];
+                    initialState.get('grid').present = initialState.get('grid').present
+                        .setIn(firstElementStylePos, new Map({ borderTopWidth: 2 }));
 
+                    const nextState = reducer(initialState, action);
+
+                    expect(nextState.get('grid').present.getIn(firstElementStylePos)).to
+                        .include.property('borderTopWidth', 2);
+                });
+            };
+
+            context('with static active tool', () => {
                 it('changes style of first element', () => {
+                    const initialState = gridEditor.withStaticTool;
+                    const nextState = reducer(initialState, action);
                     const firstElementStylePos = ['cells', 0, 0, 'style'];
                     expect(nextState.get('grid').present.getIn(firstElementStylePos)).to
                         .eql(initialState.getIn(['tools', 'activeStyleTool', 'style']));
                 });
+
+                doesNotOverwrite(action);
             });
 
             context('with dynamic active tool', () => {
@@ -60,125 +75,249 @@ describe('grid editor reducer', () => {
                     expect(nextState.get('grid').present.getIn(firstElementStylePos)).to
                         .eql(fromJS({ backgroundColor: 'red' }));
                 });
+
+                doesNotOverwrite(action);
             });
         });
 
         context('with border style tool', () => {
             const initialState = gridEditor.withBorderTool;
-            const startingWidth = 50;
             const startingBorder = 1;
-            const startingMarginTop = 0;
+            const edgeStartingBorder = 2;
+            const startingMargin = 0;
+            const startingDim = 50;
 
-            const getStyles = (state, row, col) => (
-                state.get('grid').present.getIn(['cells', row, col, 'style'])
+            const adjacentCells = (row, col) => ({
+                above: { pos: [row - 1, col] },
+                left: { pos: [row, col - 1] },
+                clicked: { pos: [row, col] },
+                below: { pos: [row + 1, col] },
+                right: { pos: [row, col + 1] },
+            });
+
+            const stateToStyle = (state, cell, style) => (
+                state.get('grid').present.getIn(['cells', ...cell, 'style', style])
             );
 
-            const expectationsToTests = (cells, expectations) => {
-                for (const e of expectations) {
-                    for (const style of Object.keys(e.styles)) {
-                        const value = e.styles[style];
-                        const action = actions.applyActiveStyleTool(...cells.clicked, e.border);
-                        const nextState = reducer(initialState, action);
-
-                        it(`changes ${style} of ${e.cell} cell`, () => {
-                            expect(getStyles(nextState, ...cells[e.cell])
-                                .get(style)).to.eq(value);
-                        });
-                    }
-
-                    it('does not have any other styles', () => {
-                        const action = actions.applyActiveStyleTool(...cells.clicked, e.border);
-                        const nextState = reducer(initialState, action);
-                        console.log(getStyles(nextState, ...cells[e.cell]));
-                        expect(Object.keys(getStyles(nextState, ...cells[e.cell]).toJS())).to.eql(Object.keys(e.styles));
-                    });
+            const checkStyles = (state, cell, msg) => {
+                for (const style of Object.keys(cell.styles)) {
+                    expect(stateToStyle(state, cell.pos, style)).to
+                        .eq(cell.styles[style], `${msg} ${style}`);
                 }
             };
 
-            const yBorderStyles = {
-                borderTopWidth: startingBorder + 2,
-                marginTop: startingMarginTop - 1,
-                height: startingWidth - 1,
-            };
-            const xBorderStyles = {
-                borderLeftWidth: startingBorder + 2,
-                marginLeft: startingMarginTop - 1,
-                width: startingWidth - 1,
-            };
-            const xEndBorderStyles = {
-                borderRightWidth: startingBorder + 2,
-                width: startingWidth - 1,
-            };
-            const yNextBorderStyles = {
-                borderTopWidth: startingBorder + 2,
-                marginTop: startingMarginTop - 1,
-                height: startingWidth - 1,
-            };
-
             context('with typical cell', () => {
-                const cells = { clicked: [0, 1], below: [1, 1], right: [0, 2] };
+                const cells = adjacentCells(2, 2);
 
-                const expectations = [
-                    { border: 0, styles: yBorderStyles, cell: 'clicked' },
-                    { border: 1, styles: xBorderStyles, cell: 'right' },
-                    { border: 2, styles: yBorderStyles, cell: 'below' },
-                    { border: 3, styles: xBorderStyles, cell: 'clicked' },
-                ];
+                it('handles top clicked', () => {
+                    const action = actions.applyActiveStyleTool(...cells.clicked.pos, 0);
+                    const nextState = reducer(initialState, action);
 
-                expectationsToTests(cells, expectations);
+                    cells.clicked.styles = {
+                        borderTopWidth: startingBorder + 1,
+                        marginTop: startingMargin,
+                        height: startingDim - 1,
+                    };
+
+                    checkStyles(nextState, cells.clicked, 'clicked');
+
+                    cells.above.styles = {
+                        borderBottomWidth: startingBorder + 1,
+                        marginTop: startingMargin,
+                        height: startingDim - 1,
+                    };
+
+                    checkStyles(nextState, cells.above, 'above');
+                });
+
+                it('handles right clicked', () => {
+                    const action = actions.applyActiveStyleTool(...cells.clicked.pos, 1);
+                    const nextState = reducer(initialState, action);
+
+                    cells.clicked.styles = {
+                        borderRightWidth: startingBorder + 1,
+                        marginLeft: startingMargin,
+                        width: startingDim - 1,
+                    };
+
+                    checkStyles(nextState, cells.clicked, 'clicked');
+
+                    cells.right.styles = {
+                        borderLeftWidth: startingBorder + 1,
+                        marginLeft: startingMargin,
+                        width: startingDim - 1,
+                    };
+
+                    checkStyles(nextState, cells.right, 'right');
+                });
+
+                it('handles bottom clicked', () => {
+                    const action = actions.applyActiveStyleTool(...cells.clicked.pos, 2);
+                    const nextState = reducer(initialState, action);
+
+                    cells.clicked.styles = {
+                        borderBottomWidth: startingBorder + 1,
+                        marginTop: startingMargin,
+                        height: startingDim - 1,
+                    };
+
+                    checkStyles(nextState, cells.clicked, 'clicked');
+
+                    cells.below.styles = {
+                        borderTopWidth: startingBorder + 1,
+                        marginTop: startingMargin,
+                        height: startingDim - 1,
+                    };
+
+                    checkStyles(nextState, cells.below, 'below');
+                });
+
+                it('handles left clicked', () => {
+                    const action = actions.applyActiveStyleTool(...cells.clicked.pos, 3);
+                    const nextState = reducer(initialState, action);
+
+                    cells.clicked.styles = {
+                        borderLeftWidth: startingBorder + 1,
+                        marginLeft: startingMargin,
+                        width: startingDim - 1,
+                    };
+
+                    checkStyles(nextState, cells.clicked, 'clicked');
+
+                    cells.left.styles = {
+                        borderRightWidth: startingBorder + 1,
+                        marginLeft: startingMargin,
+                        width: startingDim - 1,
+                    };
+
+                    checkStyles(nextState, cells.left, 'left');
+                });
+
+                it('handles left then right', () => {
+                    const left = actions.applyActiveStyleTool(...cells.clicked.pos, 3);
+                    const firstState = reducer(initialState, left);
+                    const right = actions.applyActiveStyleTool(...cells.clicked.pos, 1);
+                    const secondState = reducer(firstState, right);
+
+                    cells.clicked.styles = {
+                        borderLeftWidth: startingBorder + 1,
+                        borderRightWidth: startingBorder + 1,
+                        marginLeft: startingMargin,
+                        width: startingDim - 2,
+                    };
+
+                    checkStyles(secondState, cells.clicked, 'clicked');
+
+                    cells.left.styles = {
+                        borderRightWidth: startingBorder + 1,
+                        marginLeft: startingMargin,
+                        width: startingDim - 1,
+                    };
+
+                    checkStyles(secondState, cells.left, 'left');
+
+                    cells.right.style = {
+                        borderRightWidth: startingBorder + 1,
+                        marginLeft: startingMargin,
+                        width: startingDim - 1,
+                    };
+
+                    checkStyles(secondState, cells.right, 'right');
+                });
             });
 
-            context('with right col cell', () => {
-                const cells = { clicked: [0, 9], below: [1, 9] };
+            context('with cell in right col', () => {
+                const cells = adjacentCells(1, 9);
 
-                const expectations = [
-                    { border: 0, styles: yBorderStyles, cell: 'clicked' },
-                    { border: 1, styles: xEndBorderStyles, cell: 'clicked' },
-                    { border: 2, styles: yBorderStyles, cell: 'below' },
-                    { border: 3, styles: xBorderStyles, cell: 'clicked' },
-                ];
+                it('handles right clicked', () => {
+                    const action = actions.applyActiveStyleTool(...cells.clicked.pos, 1);
+                    const nextState = reducer(initialState, action);
 
-                expectationsToTests(cells, expectations);
-            });
+                    cells.clicked.styles = {
+                        borderRightWidth: edgeStartingBorder + 2,
+                        marginLeft: startingMargin,
+                        width: startingDim - 1,
+                    };
 
-            context('with bottom row cell', () => {
-                const cells = { clicked: [9, 0], right: [9, 1] };
+                    checkStyles(nextState, cells.clicked, 'clicked');
+                });
 
-                const expectations = [
-                    { border: 0, styles: yBorderStyles, cell: 'clicked' },
-                    { border: 1, styles: xBorderStyles, cell: 'right' },
-                    { border: 2, styles: yBorderStyles, cell: 'clicked' },
-                    { border: 3, styles: xBorderStyles, cell: 'clicked' },
-                ];
-
-                expectationsToTests(cells, expectations);
-            });
-
-            context('with bottom right corner cell', () => {
-                const cells = { clicked: [9, 9] };
-
-                const expectations = [
-                    { border: 0, styles: yBorderStyles, cell: 'clicked' },
-                    { border: 1, styles: xBorderStyles, cell: 'clicked' },
-                    { border: 2, styles: yBorderStyles, cell: 'clicked' },
-                    { border: 3, styles: xBorderStyles, cell: 'clicked' },
-                ];
-
-                expectationsToTests(cells, expectations);
-            });
-
-            context('when applied twice', () => {
-                it('increases width twice', () => {
-                    const action = actions.applyActiveStyleTool(0, 0, 0);
+                it('handles right clicked twice', () => {
+                    const action = actions.applyActiveStyleTool(...cells.clicked.pos, 1);
                     const firstState = reducer(initialState, action);
                     const secondState = reducer(firstState, action);
 
-                    expect(getStyles(secondState, 0, 0)
-                        .get('borderTopWidth')).to.eq(startingBorder + 4);
-                    expect(getStyles(secondState, 0, 0)
-                        .get('marginTop')).to.eq(startingMarginTop - 2);
-                    expect(getStyles(secondState, 0, 0)
-                        .get('height')).to.eq(startingWidth - 2);
+                    cells.clicked.styles = {
+                        borderRightWidth: edgeStartingBorder + 4,
+                        marginLeft: startingMargin,
+                        width: startingDim - 2,
+                    };
+
+                    checkStyles(secondState, cells.clicked, 'clicked');
+                });
+            });
+
+            context('with cell in bottom row', () => {
+                const cells = adjacentCells(9, 1);
+
+                it('handles bottom clicked', () => {
+                    const action = actions.applyActiveStyleTool(...cells.clicked.pos, 2);
+                    const nextState = reducer(initialState, action);
+
+                    cells.clicked.styles = {
+                        borderBottomWidth: edgeStartingBorder + 2,
+                        marginTop: startingMargin,
+                        height: startingDim - 1,
+                    };
+
+                    checkStyles(nextState, cells.clicked, 'clicked');
+                });
+            });
+
+            context('with cell in left col', () => {
+                const cells = adjacentCells(2, 0);
+
+                it('handles left clicked', () => {
+                    const action = actions.applyActiveStyleTool(...cells.clicked.pos, 3);
+                    const nextState = reducer(initialState, action);
+
+                    cells.clicked.styles = {
+                        borderLeftWidth: edgeStartingBorder + 2,
+                        marginLeft: startingMargin - 1,
+                        width: startingDim - 1,
+                    };
+
+                    checkStyles(nextState, cells.clicked, 'clicked');
+                });
+            });
+
+            context('with cell in top row', () => {
+                const cells = adjacentCells(0, 2);
+
+                it('handles top clicked', () => {
+                    const action = actions.applyActiveStyleTool(...cells.clicked.pos, 0);
+                    const nextState = reducer(initialState, action);
+
+                    cells.clicked.styles = {
+                        borderTopWidth: edgeStartingBorder + 2,
+                        marginTop: startingMargin - 2,
+                        height: startingDim - 1,
+                    };
+
+                    checkStyles(nextState, cells.clicked, 'clicked');
+                });
+
+                it('handles bottom clicked', () => {
+                    const action = actions.applyActiveStyleTool(...cells.clicked.pos, 2);
+                    const nextState = reducer(initialState, action);
+
+                    cells.clicked.styles = {
+                        borderBottomWidth: startingBorder + 1,
+                        marginTop: startingMargin - 1,
+                        height: startingDim - 1,
+                    };
+
+                    checkStyles(nextState, cells.clicked, 'clicked');
                 });
             });
         });

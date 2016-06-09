@@ -8,25 +8,37 @@
     white-space: nowrap;
 
     .grid-row {
-        height: 50px;
+        height: 52px;
     }
 
     .grid-cell {
-        border-left: 1px solid $black;
-        border-top: 1px solid $black;
+        border: 1px solid $black;
         display: inline-block;
         height: 50px;
         position: relative;
+        vertical-align: top;
         width: 50px;
 
+        &:first-child {
+            border-left: 2px solid $black;
+        }
+
         &:last-child {
-            border-right: 1px solid $black;
+            border-right: 2px solid $black;
+        }
+    }
+
+    .grid-row:first-child {
+        .grid-cell {
+            border-top: 2px solid $black;
+            margin-top: -1px;
+            vertical-align: bottom;
         }
     }
 
     .grid-row:last-child {
         .grid-cell {
-            border-bottom: 1px solid $black;
+            border-bottom: 2px solid $black;
         }
     }
 }
@@ -46,14 +58,14 @@ $border-edit-border: 1px solid #ff0000;
 
     .border-edit-0,
     .border-edit-2 {
-        height: 10%;
+        height: 5px;
         width: 100%;
     }
 
     .border-edit-1,
     .border-edit-3 {
         height: 100%;
-        width: 10%;
+        width: 5px;
     }
 
     .border-edit-0 {
