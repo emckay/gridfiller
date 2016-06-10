@@ -35,7 +35,11 @@ export class Grid extends React.Component {
                                 mode={this.props.mode}
                                 clickHandler={this.props.applyActiveStyleTool}
                                 contentToggleHandler={this.props.toggleActiveCellContent}
-                                activeContentId={i === activeContent[0] && j === activeContent[1] ? activeContentId : undefined}
+                                activeContentId={
+                                    i === activeContent[0] && j === activeContent[1] ?
+                                    activeContentId :
+                                    undefined
+                                }
                                 {...cell.toObject()}
                             />
                         ))}

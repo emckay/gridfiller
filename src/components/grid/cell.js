@@ -8,7 +8,22 @@ export class Cell extends React.Component {
         return shallowCompare(this, nextProps, nextState);
     }
     render() {
-        const { row, col, style, content, clickHandler, contentToggleHandler, mode, activeContentId } = this.props;
+        const {
+            row,
+            col,
+            style,
+            content,
+            clickHandler,
+            contentToggleHandler,
+            mode,
+            activeContentId,
+        } = this.props;
+
+        const contentClasses = (key, activeId) => {
+            const active = activeId === key ? 'active' : '';
+            return `cell-content cell-content-${key} ${active}`;
+        };
+
         return (
             <div
                 className="grid-cell"
@@ -17,7 +32,7 @@ export class Cell extends React.Component {
             >
                 {content.map((value, key) => (
                     <div
-                        className={`cell-content cell-content-${key} ${activeContentId === key ? 'active' : ''}`}
+                        className={contentClasses(key, activeContentId)}
                         key={key}
                         onClick={() => {
                             if (mode === 'text') contentToggleHandler(row, col, key, value);

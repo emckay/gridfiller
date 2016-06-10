@@ -6,12 +6,14 @@
 
 .grid {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     flex-wrap: wrap;
     margin: 10px;
     white-space: nowrap;
 
     .grid-row {
+        display: flex;
+        flex-direction: row;
         height: $cell-width + $border-width * 2;
     }
 
@@ -97,16 +99,6 @@ $border-edit-border: $border-width solid $active-edit;
     }
 }
 
-.grid {
-    display: flex;
-    flex-direction: column;
-    .grid-row {
-        display: flex;
-        flex-direction: row;
-    }
-}
-
-
 .cell-content {
     box-sizing: border-box;
     height: 30%;
@@ -124,7 +116,7 @@ $border-edit-border: $border-width solid $active-edit;
 }
 
 .cell-content-main {
-    display:none;
+    display: none;
 }
 
 .text-mode {
