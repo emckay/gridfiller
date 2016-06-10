@@ -32,6 +32,13 @@ export default fromJS([
                 },
                 icon: 'plus-square-o',
             },
+            {
+                name: 'Decrease Thickness',
+                style: {
+                    width: -2,
+                },
+                icon: 'minus-square-o',
+            },
         ],
     },
     {
@@ -39,8 +46,8 @@ export default fromJS([
         icon: 'font',
         tools: [
             {
-                name: 'Add Text',
-                icon: 'i-cursor',
+                name: 'Mini-text',
+                icon: 'th',
             },
         ],
     },
