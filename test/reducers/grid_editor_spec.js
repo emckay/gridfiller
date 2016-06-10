@@ -85,7 +85,7 @@ describe('grid editor reducer', () => {
             const startingBorder = 1;
             const edgeStartingBorder = 2;
             const startingMargin = 0;
-            const startingDim = 50;
+            const startingDim = 60;
 
             const adjacentCells = (row, col) => ({
                 above: { pos: [row - 1, col] },
@@ -300,7 +300,7 @@ describe('grid editor reducer', () => {
 
                     cells.clicked.styles = {
                         borderTopWidth: edgeStartingBorder + 2,
-                        marginTop: startingMargin - 2,
+                        marginTop: -2,
                         height: startingDim - 1,
                     };
 

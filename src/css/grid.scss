@@ -1,6 +1,7 @@
 .editor {
     align-items: flex-start;
     display: flex;
+    width: 600px;
 }
 
 .grid {
@@ -8,42 +9,42 @@
     white-space: nowrap;
 
     .grid-row {
-        height: 52px;
+        height: $cell-width + $border-width * 2;
     }
 
     .grid-cell {
-        border: 1px solid $black;
+        border: $border-width solid $black;
         display: inline-block;
-        height: 50px;
+        height: $cell-width;
         position: relative;
         vertical-align: top;
-        width: 50px;
+        width: $cell-width;
 
         &:first-child {
-            border-left: 2px solid $black;
+            border-left: $border-width * 2 solid $black;
         }
 
         &:last-child {
-            border-right: 2px solid $black;
+            border-right: $border-width * 2 solid $black;
         }
     }
 
     .grid-row:first-child {
         .grid-cell {
-            border-top: 2px solid $black;
-            margin-top: -1px;
+            border-top: $border-width * 2 solid $black;
+            margin-top: -$border-width;
             vertical-align: bottom;
         }
     }
 
     .grid-row:last-child {
         .grid-cell {
-            border-bottom: 2px solid $black;
+            border-bottom: $border-width * 2 solid $black;
         }
     }
 }
 
-$border-edit-border: 1px solid $grid-editor-border;
+$border-edit-border: $border-width solid $grid-editor-border;
 
 .border-edit {
     display: none;
@@ -58,14 +59,14 @@ $border-edit-border: 1px solid $grid-editor-border;
 
     .border-edit-0,
     .border-edit-2 {
-        height: 5px;
+        height: $cell-width / 10;
         width: 100%;
     }
 
     .border-edit-1,
     .border-edit-3 {
         height: 100%;
-        width: 5px;
+        width: $cell-width / 10;
     }
 
     .border-edit-0 {
@@ -90,5 +91,44 @@ $border-edit-border: 1px solid $grid-editor-border;
         border-right: $border-edit-border;
         left: 0;
         top: 0;
+    }
+}
+
+.grid {
+    display: flex;
+    flex-direction: column;
+    .grid-row {
+        display: flex;
+        flex-direction: row;
+    }
+}
+
+.grid .grid-cell {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.text-mode {
+    .cell-content {
+        height: 3px;
+        width: 3px;
+        width: 30%;
+        height: 30%;
+        margin: 1.5%;
+        border: 1px solid red;
+        box-sizing: border-box;
+        position: absolute;
+    }
+
+    @for $i from 0 through 8 {
+        .cell-content-#{$i} {
+            left: 33% * ($i % 3);
+            top: 33% * floor($i / 3);
+        }
+    }
+
+    .cell-content-main {
+        display:none;
     }
 }

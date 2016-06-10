@@ -1,3 +1,6 @@
 $black: #000;
 $active-tool: #ccc;
 $grid-editor-border: #f00;
+
+$cell-width: 60px;
+$border-width: floor($cell-width / 50);

@@ -107,19 +107,19 @@ const handleApplyBorderStyleTool = (currentState, action, tool) => {
 
     const styleObjs = [];
 
-    console.log('targetCells', targetCells);
-    console.log('targetStyles', targetStyles);
     for (let i = 0; i < targetStyles.length; i++) {
         const arr = targetStyles[i];
         const targetBorder = arr[0];
         const origStyle = cells.getIn([...targetCells[i].pos, 'style']);
         const origBorder = origStyle.get(targetStyles[i][0]) || (neighbor ? 1 : 2);
         let defaultMargin = 0;
-        if (targetCells[i].pos[0] === 0 && targetBorder === 'borderBottomWidth') {
+        if (targetCells[i].pos[0] === 0 &&
+            (targetBorder === 'borderTopWidth' || targetBorder === 'borderBottomWidth')
+        ) {
             defaultMargin = -1;
         }
         const origMargin = origStyle.get(targetStyles[i][1]) || defaultMargin;
-        const origDim = origStyle.get(targetStyles[i][2]) || 50;
+        const origDim = origStyle.get(targetStyles[i][2]) || 60;
 
         let amounts;
         if (targetBorder === 'borderTopWidth') {
@@ -132,7 +132,7 @@ const handleApplyBorderStyleTool = (currentState, action, tool) => {
             } else {
                 amounts = [
                     origBorder + scaledWidth,
-                    origMargin - scaledWidth,
+                    origMargin - halfWidth,
                     origDim - halfWidth,
                 ];
             }
