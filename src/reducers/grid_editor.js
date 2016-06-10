@@ -198,6 +198,8 @@ const handleApplyActiveStyleTool = (currentState, action) => {
 const handleUpdateCellContent = (currentState, { text }) => {
     const target = currentState.getIn(['tools', 'activeCellContent']);
 
+    if (target === undefined) return currentState;
+
     const currentGrid = currentState.get('grid').present;
 
     const newGrid = currentGrid.setIn([

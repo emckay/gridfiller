@@ -28,12 +28,23 @@ describe('grid editor reducer', () => {
     describe('UPDATE_CELL_CONTENT', () => {
         const action = actions.updateCellContent('test text');
 
-        const initialState = gridEditor.withActiveContentId();
-        const nextState = reducer(initialState, action);
+        context('with active content id', () => {
+            const initialState = gridEditor.withActiveContentId();
+            const nextState = reducer(initialState, action);
 
-        it('sets cell content', () => {
-            expect(nextState.get('grid').present.getIn(['cells', 1, 2, 'content', '3']))
-                .to.eq('test text');
+            it('sets cell content', () => {
+                expect(nextState.get('grid').present.getIn(['cells', 1, 2, 'content', '3']))
+                    .to.eq('test text');
+            });
+        });
+
+        context('without active content id', () => {
+            const initialState = gridEditor.withoutActiveTool;
+            const nextState = reducer(initialState, action);
+
+            it('does not change state', () => {
+                expect(initialState).to.deep.eq(nextState);
+            });
         });
     });
 
