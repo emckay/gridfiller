@@ -5,6 +5,9 @@
 }
 
 .grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
     margin: 10px;
     white-space: nowrap;
 
@@ -44,7 +47,7 @@
     }
 }
 
-$border-edit-border: $border-width solid $grid-editor-border;
+$border-edit-border: $border-width solid $active-edit;
 
 .border-edit {
     display: none;
@@ -103,32 +106,33 @@ $border-edit-border: $border-width solid $grid-editor-border;
     }
 }
 
-.grid .grid-cell {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+
+.cell-content {
+    box-sizing: border-box;
+    height: 30%;
+    margin: 1.5%;
+    position: absolute;
+    text-align: center;
+    width: 30%;
+}
+
+@for $i from 0 through 8 {
+    .cell-content-#{$i} {
+        left: 33% * ($i % 3);
+        top: 33% * floor($i / 3);
+    }
+}
+
+.cell-content-main {
+    display:none;
 }
 
 .text-mode {
     .cell-content {
-        height: 3px;
-        width: 3px;
-        width: 30%;
-        height: 30%;
-        margin: 1.5%;
-        border: 1px solid red;
-        box-sizing: border-box;
-        position: absolute;
-    }
+        border: 1px solid $inactive-edit;
 
-    @for $i from 0 through 8 {
-        .cell-content-#{$i} {
-            left: 33% * ($i % 3);
-            top: 33% * floor($i / 3);
+        &.active {
+            border-color: $active-edit;
         }
-    }
-
-    .cell-content-main {
-        display:none;
     }
 }

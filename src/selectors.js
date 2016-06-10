@@ -9,3 +9,4 @@ export const getSharedOptions = (state) => getTools(state).get('sharedOptions');
 export const getPrimaryColor = (state) => getSharedOptions(state).get('primaryColor');
 export const getSecondaryColor = (state) => getSharedOptions(state).get('secondaryColor');
 export const getMode = (state) => getTools(state).get('mode');
+export const getActiveCellContent = (state) => getTools(state).get('activeCellContent');

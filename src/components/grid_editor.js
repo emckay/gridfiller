@@ -7,6 +7,7 @@ import actions from '../actions/action_creators';
 
 import { GridContainer } from './grid/grid.js';
 import { Tools } from './tools/tools.js';
+import { CellContentFormContainer } from './cell_content_form';
 
 export class GridEditor extends React.Component {
     componentDidMount() {
@@ -38,6 +39,7 @@ export class GridEditor extends React.Component {
         return (
             <div className="app">
                 <h1>Grid Filler</h1>
+                <CellContentFormContainer />
                 <div className="editor">
                     <GridContainer />
                     <Tools />

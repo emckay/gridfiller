@@ -8,21 +8,25 @@ export class Cell extends React.Component {
         return shallowCompare(this, nextProps, nextState);
     }
     render() {
-        const { row, col, style, content, clickHandler, mode } = this.props;
+        const { row, col, style, content, clickHandler, contentToggleHandler, mode, activeContentId } = this.props;
         return (
             <div
                 className="grid-cell"
                 style={style.toJS()}
-                onClick={() => { if (mode === "cell") clickHandler(row, col); }}
+                onClick={() => { if (mode === 'cell') clickHandler(row, col); }}
             >
                 {content.map((value, key) => (
                     <div
-                        className={`cell-content cell-content-${key}`}
+                        className={`cell-content cell-content-${key} ${activeContentId === key ? 'active' : ''}`}
                         key={key}
+                        onClick={() => {
+                            if (mode === 'text') contentToggleHandler(row, col, key, value);
+                        }}
                     >
-                        {''}
+                        {value}
                     </div>
                 )).toArray()}
+
                 {[0, 1, 2, 3].map((value) => (
                     <div
                         key={value}
@@ -41,5 +45,7 @@ Cell.propTypes = {
     style: React.PropTypes.instanceOf(Map).isRequired,
     content: React.PropTypes.instanceOf(Map).isRequired,
     clickHandler: React.PropTypes.func,
+    contentToggleHandler: React.PropTypes.func,
     mode: React.PropTypes.string,
+    activeContentId: React.PropTypes.string,
 };

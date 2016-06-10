@@ -25,6 +25,18 @@ describe('grid editor reducer', () => {
         }
     });
 
+    describe('UPDATE_CELL_CONTENT', () => {
+        const action = actions.updateCellContent('test text');
+
+        const initialState = gridEditor.withActiveContentId();
+        const nextState = reducer(initialState, action);
+
+        it('sets cell content', () => {
+            expect(nextState.get('grid').present.getIn(['cells', 1, 2, 'content', '3']))
+                .to.eq('test text');
+        });
+    });
+
     describe('APPLY_ACTIVE_STYLE_TOOL', () => {
         context('without active tool', () => {
             const action = actions.applyActiveStyleTool(0, 0);

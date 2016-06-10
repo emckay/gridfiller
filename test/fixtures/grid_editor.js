@@ -1,4 +1,4 @@
-import { fromJS } from 'immutable';
+import { fromJS, Map } from 'immutable';
 
 import initialGridEditor from '../../src/store/data/grid_editor';
 import * as tools from './tools';
@@ -6,6 +6,9 @@ import * as tools from './tools';
 const setActiveTool = (gridEditor, tool = tools.staticTool, mode = 'Cell') => fromJS(
     gridEditor.merge({ tools: { activeStyleTool: tool, mode } })
 );
+
+const setActiveContent = (gridEditor, { row, col, contentId }) =>
+    gridEditor.setIn(['tools', 'activeCellContent'], new Map({ row, col, contentId }));
 
 const setSharedOptions = (gridEditor, sharedOption) => fromJS(
     gridEditor.setIn(
@@ -19,7 +22,9 @@ const addUndoHistoryToGrid = (gridEditor) => {
     return gridEditor.set('grid', { past: [], present: oldGrid, future: [] });
 };
 
-const ge = addUndoHistoryToGrid(initialGridEditor);
+const setMode = (gridEditor, mode = 'cell') => gridEditor.set('mode', mode);
+
+const ge = addUndoHistoryToGrid(setMode(initialGridEditor));
 
 export default {
     withoutActiveTool: ge,
@@ -30,4 +35,6 @@ export default {
     ),
     withStaticTool: setActiveTool(ge, tools.staticTool),
     withBorderTool: setActiveTool(ge, tools.borderTool, 'Border'),
+    withActiveContentId: (row = 1, col = 2, contentId = '3') =>
+        setMode(setActiveContent(ge, { row, col, contentId }), 'Text'),
 };

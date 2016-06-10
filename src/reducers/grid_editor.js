@@ -195,10 +195,29 @@ const handleApplyActiveStyleTool = (currentState, action) => {
     return currentState;
 };
 
+const handleUpdateCellContent = (currentState, { text }) => {
+    const target = currentState.getIn(['tools', 'activeCellContent']);
+
+    const currentGrid = currentState.get('grid').present;
+
+    const newGrid = currentGrid.setIn([
+        'cells',
+        target.get('row'),
+        target.get('col'),
+        'content',
+        target.get('contentId'),
+    ], text);
+
+    return currentState.set('grid', insert(currentState.get('grid'), newGrid));
+};
+
 export default function (currentState = new Map(), action) {
     switch (action.type) {
         case 'APPLY_ACTIVE_STYLE_TOOL': {
             return handleApplyActiveStyleTool(currentState, action);
+        }
+        case 'UPDATE_CELL_CONTENT': {
+            return handleUpdateCellContent(currentState, action);
         }
         default: {
             return combineReducers({

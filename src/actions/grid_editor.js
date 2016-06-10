@@ -4,3 +4,8 @@ export const applyActiveStyleTool = (row, col, target) => ({
     col,
     target,
 });
+
+export const updateCellContent = (text) => ({
+    type: 'UPDATE_CELL_CONTENT',
+    text,
+});

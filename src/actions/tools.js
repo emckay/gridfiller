@@ -13,3 +13,10 @@ export const setSharedOption = (key, value) => ({
 });
 
 export const swapColors = () => ({ type: 'SWAP_COLORS' });
+
+export const toggleActiveCellContent = (row, col, contentId) => ({
+    type: 'TOGGLE_ACTIVE_CELL_CONTENT',
+    row,
+    col,
+    contentId,
+});

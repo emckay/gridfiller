@@ -1,6 +1,7 @@
 $black: #000;
 $active-tool: #ccc;
-$grid-editor-border: #f00;
+$active-edit: #f00;
+$inactive-edit: #999;
 
 $cell-width: 60px;
 $border-width: floor($cell-width / 50);
