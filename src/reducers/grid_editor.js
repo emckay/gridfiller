@@ -111,7 +111,10 @@ const handleApplyBorderStyleTool = (currentState, action, tool) => {
         const arr = targetStyles[i];
         const targetBorder = arr[0];
         const origStyle = cells.getIn([...targetCells[i].pos, 'style']);
-        const origBorder = origStyle.get(targetStyles[i][0]) || (neighbor ? 1 : 2);
+
+        let origBorder = origStyle.get(targetStyles[i][0]);
+        if (origBorder === undefined) origBorder = (neighbor ? 1 : 2);
+
         let defaultMargin = 0;
         if (targetCells[i].pos[0] === 0 &&
             (targetBorder === 'borderTopWidth' || targetBorder === 'borderBottomWidth')
@@ -162,6 +165,10 @@ const handleApplyBorderStyleTool = (currentState, action, tool) => {
                 origMargin,
                 origDim - halfWidth,
             ];
+        }
+
+        if (width < 0 && amounts[0] < 0) {
+            amounts = [origBorder, origMargin, origDim];
         }
 
         styleObjs.push({});

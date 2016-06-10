@@ -16,10 +16,10 @@ export const staticTool = fromJS({
     icon: 'square',
 });
 
-export const borderTool = fromJS({
+export const borderTool = (width = 2) => fromJS({
     name: 'Increase Thickness',
     style: {
-        width: 2,
+        width,
     },
     icon: 'plus-square-o',
 });

@@ -34,7 +34,7 @@ export default {
         { option: 'primary-color', val: 'red' }
     ),
     withStaticTool: setActiveTool(ge, tools.staticTool),
-    withBorderTool: setActiveTool(ge, tools.borderTool, 'Border'),
+    withBorderWidthTool: (width = 2) => setActiveTool(ge, tools.borderTool(width), 'Border'),
     withActiveContentId: (row = 1, col = 2, contentId = '3') =>
         setMode(setActiveContent(ge, { row, col, contentId }), 'Text'),
 };

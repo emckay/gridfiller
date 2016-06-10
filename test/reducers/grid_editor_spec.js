@@ -103,8 +103,8 @@ describe('grid editor reducer', () => {
             });
         });
 
-        context('with border style tool', () => {
-            const initialState = gridEditor.withBorderTool;
+        context('with border width tools', () => {
+            const initialState = gridEditor.withBorderWidthTool(2);
             const startingBorder = 1;
             const edgeStartingBorder = 2;
             const startingMargin = 0;
@@ -246,6 +246,29 @@ describe('grid editor reducer', () => {
                     };
 
                     checkStyles(secondState, cells.right, 'right');
+                });
+
+                it('handles decreasing twice', () => {
+                    const decreasingState = gridEditor.withBorderWidthTool(-2);
+                    const action = actions.applyActiveStyleTool(...cells.clicked.pos, 0);
+                    const firstState = reducer(decreasingState, action);
+                    const secondState = reducer(firstState, action);
+
+                    cells.clicked.styles = {
+                        borderTopWidth: 0,
+                        marginTop: 0,
+                        height: startingDim + 1,
+                    };
+
+                    checkStyles(secondState, cells.clicked, 'clicked');
+
+                    cells.above.styles = {
+                        borderBottomWidth: 0,
+                        marginTop: 0,
+                        height: startingDim + 1,
+                    };
+
+                    checkStyles(secondState, cells.above, 'above');
                 });
             });
 
