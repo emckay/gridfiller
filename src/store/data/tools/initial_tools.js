@@ -33,7 +33,7 @@ export default fromJS([
                     width: 2,
                 },
                 materialIcon: 'add',
-                mode: 'border-width',
+                mode: 'single-border',
             },
             {
                 name: 'Decrease Thickness',
@@ -41,7 +41,7 @@ export default fromJS([
                     width: -2,
                 },
                 materialIcon: 'remove',
-                mode: 'border-width',
+                mode: 'single-border',
             },
             {
                 name: 'Toggle Solid/Dashed',
@@ -49,7 +49,7 @@ export default fromJS([
                     style: ['solid', 'dashed'],
                 },
                 materialIcon: 'line_style',
-                mode: 'border-style',
+                mode: 'single-border',
             },
         ],
     },
@@ -58,9 +58,9 @@ export default fromJS([
         materialIcon: 'text_format',
         tools: [
             {
-                name: 'Mini-text',
+                name: 'Mini-Content',
                 materialIcon: 'grid_on',
-                mode: 'border-width',
+                mode: 'mini-content',
             },
         ],
     },

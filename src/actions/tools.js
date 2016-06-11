@@ -1,7 +1,6 @@
-export const toggleActiveStyleTool = (tool, mode) => ({
+export const toggleActiveStyleTool = (tool) => ({
     type: 'TOGGLE_ACTIVE_STYLE_TOOL',
     tool,
-    mode,
 });
 
 export const clearActiveStyleTool = () => ({ type: 'CLEAR_ACTIVE_STYLE_TOOL' });

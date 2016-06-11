@@ -2,3 +2,5 @@ node_modules
 build/bundle.js
 build/bundle.js.map
 npm-debug.log
+.tags
+.tern-project

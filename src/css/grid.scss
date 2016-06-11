@@ -54,7 +54,7 @@ $border-edit-border: $border-width solid $active-edit;
     display: none;
 }
 
-.border-mode {
+.single-border-mode {
     .border-edit {
         border: 0;
         display: block;
@@ -118,7 +118,7 @@ $border-edit-border: $border-width solid $active-edit;
     display: none;
 }
 
-.text-mode {
+.mini-content-mode {
     .cell-content {
         border: 1px solid $inactive-edit;
 

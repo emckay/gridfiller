@@ -35,7 +35,7 @@ export class Cell extends React.Component {
                         className={contentClasses(key, activeContentId)}
                         key={key}
                         onClick={() => {
-                            if (mode === 'text') contentToggleHandler(row, col, key, value);
+                            if (mode === 'mini-content') contentToggleHandler(row, col, key, value);
                         }}
                     >
                         {value}
@@ -46,7 +46,9 @@ export class Cell extends React.Component {
                     <div
                         key={value}
                         className={`border-edit border-edit-${value}`}
-                        onClick={() => { if (mode === 'border') clickHandler(row, col, value); }}
+                        onClick={() => {
+                            if (mode === 'single-border') clickHandler(row, col, value);
+                        }}
                     />
                 ))}
             </div>
