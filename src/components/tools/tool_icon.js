@@ -1,12 +1,12 @@
 import React from 'react';
 import { Map } from 'immutable';
 
-export const ToolIcon = ({ tool, active, clickHandler, mode }) => (
+export const ToolIcon = ({ tool, active, clickHandler, mode, icon }) => (
     <div
         className={`tool-icon ${active ? 'active' : ''}`}
         onClick={() => { clickHandler(tool, mode); }}
     >
-        <i className={`fa fa-${tool.get('icon')}`} />
+        {icon}
     </div>
 );
 
@@ -15,4 +15,5 @@ ToolIcon.propTypes = {
     active: React.PropTypes.bool,
     clickHandler: React.PropTypes.func,
     mode: React.PropTypes.string,
+    icon: React.PropTypes.object,
 };

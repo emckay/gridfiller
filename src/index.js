@@ -8,9 +8,9 @@ import configureStore from './store/configureStore';
 
 import gridEditor from './store/data/grid_editor';
 
-// Add CSS files to bundle
-require('./css/application.scss');
+require('material-design-icons');
 require('font-awesome-webpack');
+require('./css/application.scss');
 
 const initialState = {
     gridEditor,

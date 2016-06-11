@@ -3,51 +3,64 @@ import { fromJS } from 'immutable';
 export default fromJS([
     {
         name: 'Cell',
-        icon: 'paint-brush',
+        materialIcon: 'select_all',
         tools: [
             {
                 name: 'Fill Cell',
                 style: {
                     backgroundColor: (sharedOptions) => sharedOptions.get('primaryColor'),
                 },
-                icon: 'square',
+                materialIcon: 'format_color_fill',
+                mode: 'cell',
             },
             {
                 name: 'Remove Fill',
                 style: {
                     backgroundColor: undefined,
                 },
-                icon: 'square-o',
+                materialIcon: 'format_color_reset',
+                mode: 'cell',
             },
         ],
     },
     {
         name: 'Border',
-        icon: 'square-o',
+        materialIcon: 'border_all',
         tools: [
             {
                 name: 'Increase Thickness',
                 style: {
                     width: 2,
                 },
-                icon: 'plus-square-o',
+                materialIcon: 'add',
+                mode: 'border-width',
             },
             {
                 name: 'Decrease Thickness',
                 style: {
                     width: -2,
                 },
-                icon: 'minus-square-o',
+                materialIcon: 'remove',
+                mode: 'border-width',
+            },
+            {
+                name: 'Toggle Solid/Dashed',
+                style: {
+                    style: ['solid', 'dashed'],
+                },
+                materialIcon: 'line_style',
+                mode: 'border-style',
             },
         ],
     },
     {
         name: 'Text',
-        icon: 'font',
+        materialIcon: 'text_format',
         tools: [
             {
                 name: 'Mini-text',
-                icon: 'th',
+                materialIcon: 'grid_on',
+                mode: 'border-width',
             },
         ],
     },
