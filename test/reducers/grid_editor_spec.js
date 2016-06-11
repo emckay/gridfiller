@@ -7,6 +7,25 @@ import reducer from '../../src/reducers/grid_editor';
 
 import gridEditor from '../fixtures/grid_editor';
 
+const adjacentCells = (row, col) => ({
+    above: { pos: [row - 1, col] },
+    left: { pos: [row, col - 1] },
+    clicked: { pos: [row, col] },
+    below: { pos: [row + 1, col] },
+    right: { pos: [row, col + 1] },
+});
+
+const stateToStyle = (state, cell, style) => (
+    state.get('grid').present.getIn(['cells', ...cell, 'style', style])
+);
+
+const checkStyles = (state, cell, msg) => {
+    for (const style of Object.keys(cell.styles)) {
+        expect(stateToStyle(state, cell.pos, style)).to
+            .eq(cell.styles[style], `${msg} ${style}`);
+    }
+};
+
 describe('grid editor reducer', () => {
     context('with undefined initial state and unknown action', () => {
         const initialState = undefined;
@@ -109,25 +128,6 @@ describe('grid editor reducer', () => {
             const edgeStartingBorder = 2;
             const startingMargin = 0;
             const startingDim = 60;
-
-            const adjacentCells = (row, col) => ({
-                above: { pos: [row - 1, col] },
-                left: { pos: [row, col - 1] },
-                clicked: { pos: [row, col] },
-                below: { pos: [row + 1, col] },
-                right: { pos: [row, col + 1] },
-            });
-
-            const stateToStyle = (state, cell, style) => (
-                state.get('grid').present.getIn(['cells', ...cell, 'style', style])
-            );
-
-            const checkStyles = (state, cell, msg) => {
-                for (const style of Object.keys(cell.styles)) {
-                    expect(stateToStyle(state, cell.pos, style)).to
-                        .eq(cell.styles[style], `${msg} ${style}`);
-                }
-            };
 
             context('with typical cell', () => {
                 const cells = adjacentCells(2, 2);
@@ -364,6 +364,66 @@ describe('grid editor reducer', () => {
                     };
 
                     checkStyles(nextState, cells.clicked, 'clicked');
+                });
+            });
+        });
+
+        context('with border style tool', () => {
+            const initialState = gridEditor.withBorderStyleTool;
+
+            context('with typical cell', () => {
+                const cells = adjacentCells(2, 2);
+
+                it('handles top click', () => {
+                    const action = actions.applyActiveStyleTool(...cells.clicked.pos, 0);
+                    const nextState = reducer(initialState, action);
+
+                    cells.clicked.styles = {
+                        borderTopStyle: 'dashed',
+                    };
+
+                    checkStyles(nextState, cells.clicked, 'clicked');
+
+                    cells.above.styles = {
+                        borderBottomStyle: 'dashed',
+                    };
+
+                    checkStyles(nextState, cells.above, 'above');
+                });
+
+                it('handles right click', () => {
+                    const action = actions.applyActiveStyleTool(...cells.clicked.pos, 1);
+                    const nextState = reducer(initialState, action);
+
+                    cells.clicked.styles = {
+                        borderRightStyle: 'dashed',
+                    };
+
+                    checkStyles(nextState, cells.clicked, 'clicked');
+
+                    cells.right.styles = {
+                        borderLeftStyle: 'dashed',
+                    };
+
+                    checkStyles(nextState, cells.right, 'right');
+                });
+
+                it('handles two clicks', () => {
+                    const action = actions.applyActiveStyleTool(...cells.clicked.pos, 1);
+                    const firstState = reducer(initialState, action);
+                    const secondState = reducer(firstState, action);
+
+                    cells.clicked.styles = {
+                        borderRightStyle: 'solid',
+                    };
+
+                    checkStyles(secondState, cells.clicked, 'clicked');
+
+                    cells.right.styles = {
+                        borderLeftStyle: 'solid',
+                    };
+
+                    checkStyles(secondState, cells.right, 'right');
                 });
             });
         });
