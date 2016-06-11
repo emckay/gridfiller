@@ -29,6 +29,9 @@ export class Cell extends React.Component {
                 className="grid-cell"
                 style={style.toJS()}
                 onClick={() => { if (mode === 'cell') clickHandler(row, col); }}
+                onMouseEnter={(e) => {
+                    if (mode === 'cell' && e.buttons === 1) clickHandler(row, col);
+                }}
             >
                 {content.map((value, key) => (
                     <div
@@ -48,6 +51,11 @@ export class Cell extends React.Component {
                         className={`border-edit border-edit-${value}`}
                         onClick={() => {
                             if (mode === 'single-border') clickHandler(row, col, value);
+                        }}
+                        onMouseEnter={(e) => {
+                            if (mode === 'single-border' && e.buttons === 1) {
+                                clickHandler(row, col, value);
+                            }
                         }}
                     />
                 ))}

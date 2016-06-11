@@ -1,4 +1,5 @@
 .editor {
+    @include no-select;
     align-items: flex-start;
     display: flex;
 }
