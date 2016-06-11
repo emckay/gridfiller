@@ -14,5 +14,13 @@
         "no-unused-vars": "warn",
         "eol-last": "warn",
         global-require: "off"
-    }
+    },
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true,
+            "experimentalObjectRestSpread": true
+        }
+    },
 }

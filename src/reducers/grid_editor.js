@@ -50,7 +50,6 @@ const handleApplyCellStyleTool = (currentState, action, tool) => {
     return currentState.set('grid', insert(currentState.get('grid'), newGrid));
 };
 
-
 const adjacentCells = (row, col) => ({
     above: { pos: [row - 1, col] },
     left: { pos: [row, col - 1] },
@@ -59,47 +58,60 @@ const adjacentCells = (row, col) => ({
     right: { pos: [row, col + 1] },
 });
 
-const handleApplyBorderStyleTool = (currentState, action, tool) => {
-    const cells = currentState.get('grid').present.get('cells');
-    const lastRow = cells.size - 1;
-    const lastCol = cells.get(0).size - 1;
-
-    // find target cells
-    const adj = adjacentCells(action.row, action.col);
+const targetCellsAndBorders = (row, col, lastRow, lastCol, targetBorder, hStyles=[], vStyles=[]) => {
+    const adj = adjacentCells(row, col);
     const targetCells = [adj.clicked];
     const targetStyles = [];
-    let neighbor = false;
-    if (action.target === 0) {
-        targetStyles.push(['borderTopWidth', 'marginTop', 'height']);
-        if (action.row > 0) {
+
+    if (targetBorder === 0) {
+        targetStyles.push(['borderTopWidth', ...vStyles]);
+        if (row > 0) {
             targetCells.push(adj.above);
-            targetStyles.push(['borderBottomWidth', 'marginTop', 'height']);
-            neighbor = true;
+            targetStyles.push(['borderBottomWidth', ...vStyles]);
         }
-    } else if (action.target === 1) {
-        targetStyles.push(['borderRightWidth', 'marginLeft', 'width']);
-        if (action.col < lastCol) {
+    } else if (targetBorder === 1) {
+        targetStyles.push(['borderRightWidth', ...hStyles]);
+        if (col < lastCol) {
             targetCells.push(adj.right);
-            targetStyles.push(['borderLeftWidth', 'marginLeft', 'width']);
-            neighbor = true;
+            targetStyles.push(['borderLeftWidth', ...hStyles]);
         }
-    } else if (action.target === 2) {
-        if (action.row < lastRow) {
-            targetStyles.push(['borderBottomWidth', 'marginTop', 'height']);
+    } else if (targetBorder === 2) {
+        if (row < lastRow) {
+            targetStyles.push(['borderBottomWidth', ...vStyles]);
             targetCells.push(adj.below);
-            targetStyles.push(['borderTopWidth', 'marginTop', 'height']);
-            neighbor = true;
+            targetStyles.push(['borderTopWidth', ...vStyles]);
         } else {
-            targetStyles.push(['borderBottomWidth', 'marginTop', 'height']);
+            targetStyles.push(['borderBottomWidth', ...vStyles]);
         }
-    } else if (action.target === 3) {
-        targetStyles.push(['borderLeftWidth', 'marginLeft', 'width']);
-        if (action.col > 0) {
+    } else if (targetBorder === 3) {
+        targetStyles.push(['borderLeftWidth', ...hStyles]);
+        if (col > 0) {
             targetCells.push(adj.left);
-            targetStyles.push(['borderRightWidth', 'marginLeft', 'width']);
-            neighbor = true;
+            targetStyles.push(['borderRightWidth', ...hStyles]);
         }
     }
+
+    return { targetCells, targetStyles };
+};
+
+const handleApplyBorderWidthTool = (currentState, action, tool) => {
+    const cells = currentState.get('grid').present.get('cells');
+
+    const vStyles = ['marginTop', 'height'];
+    const hStyles = ['marginLeft', 'width'];
+
+    const { targetCells, targetStyles } =
+        targetCellsAndBorders(
+            action.row,
+            action.col,
+            cells.size - 1,
+            cells.get(action.row).size - 1,
+            action.target,
+            hStyles,
+            vStyles
+        );
+
+    const neighbor = targetCells.length > 1;
 
     const width = tool.getIn(['style', 'width']);
     const scaledWidth = width / targetCells.length;
@@ -125,41 +137,13 @@ const handleApplyBorderStyleTool = (currentState, action, tool) => {
         const origDim = origStyle.get(targetStyles[i][2]) || 60;
 
         let amounts;
-        if (targetBorder === 'borderTopWidth') {
-            if (neighbor) {
-                amounts = [
-                    origBorder + scaledWidth,
-                    origMargin,
-                    origDim - scaledWidth,
-                ];
-            } else {
-                amounts = [
-                    origBorder + scaledWidth,
-                    origMargin - halfWidth,
-                    origDim - halfWidth,
-                ];
-            }
-        } else if (targetBorder === 'borderLeftWidth') {
-            if (neighbor) {
-                amounts = [
-                    origBorder + scaledWidth,
-                    origMargin,
-                    origDim - scaledWidth,
-                ];
-            } else {
-                amounts = [
-                    origBorder + scaledWidth,
-                    origMargin - halfWidth,
-                    origDim - halfWidth,
-                ];
-            }
-        } else if (targetBorder === 'borderBottomWidth') {
+        if (targetBorder === 'borderTopWidth' || targetBorder === 'borderLeftWidth') {
             amounts = [
                 origBorder + scaledWidth,
-                origMargin,
-                origDim - halfWidth,
+                origMargin - (neighbor ? 0 : halfWidth),
+                origDim - (neighbor ? scaledWidth : halfWidth),
             ];
-        } else if (targetBorder === 'borderRightWidth') {
+        } else {
             amounts = [
                 origBorder + scaledWidth,
                 origMargin,
@@ -187,15 +171,23 @@ const handleApplyBorderStyleTool = (currentState, action, tool) => {
     return currentState.set('grid', insert(currentState.get('grid'), newGrid));
 };
 
+const handleApplyBorderStyleTool = (currentState, action, tool) => {
+    return currentState;
+};
+
 const handleApplyActiveStyleTool = (currentState, action) => {
-    const mode = currentState.getIn(['tools', 'mode']);
     const tool = currentState.getIn(['tools', 'activeStyleTool']);
+    const mode = currentState.getIn(['tools', 'activeStyleTool', 'mode']);
 
     if (tool === undefined) {
         return currentState;
-    } else if (mode === undefined || mode.toLowerCase() === 'cell') {
+    } else if (mode === undefined || mode === 'cell') {
         return handleApplyCellStyleTool(currentState, action, tool);
-    } else if (mode.toLowerCase() === 'border') {
+    } else if (mode === 'single-border') {
+        if (tool.getIn(['style', 'width']) !== undefined) {
+            return handleApplyBorderWidthTool(currentState, action, tool);
+        }
+
         return handleApplyBorderStyleTool(currentState, action, tool);
     }
 

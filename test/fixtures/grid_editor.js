@@ -1,7 +1,7 @@
 import { fromJS, Map } from 'immutable';
 
 import initialGridEditor from '../../src/store/data/grid_editor';
-import * as tools from './tools';
+import tools from './tools';
 
 const setActiveTool = (gridEditor, tool = tools.staticTool, mode = 'Cell') => fromJS(
     gridEditor.merge({ tools: { activeStyleTool: tool, mode } })
@@ -34,7 +34,8 @@ export default {
         { option: 'primary-color', val: 'red' }
     ),
     withStaticTool: setActiveTool(ge, tools.staticTool),
-    withBorderWidthTool: (width = 2) => setActiveTool(ge, tools.borderTool(width), 'Border'),
+    withBorderWidthTool: (width = 2) =>
+        setActiveTool(ge, tools.increaseBorderWidthTool(width), 'Border'),
     withActiveContentId: (row = 1, col = 2, contentId = '3') =>
         setMode(setActiveContent(ge, { row, col, contentId }), 'Text'),
 };
