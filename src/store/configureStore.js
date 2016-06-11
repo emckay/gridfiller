@@ -6,8 +6,8 @@ export default function (initialState) {
         reducer,
         initialState,
         compose(
-            window.devToolsExtension ?
-                window.devToolsExtension() : f => { return f; }
+            process.env.NODE_ENV !== 'production' && window.devToolsExtension ?
+                window.devToolsExtension() : f => f
         )
     );
 
