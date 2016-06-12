@@ -16,6 +16,7 @@ const createSquareGrid = (n) => {
 };
 
 export const tenByTen = createSquareGrid(10);
+export const twelveByTwelve = createSquareGrid(12);
 export const threeByThree = createSquareGrid(3);
 
 export default [
