@@ -1,6 +1,7 @@
 import { fromJS, Map } from 'immutable';
 
 import initialGridEditor from '../../src/store/data/grid_editor';
+import { tenByTen } from '../../src/store/data/grids/initial_grids';
 import tools from './tools';
 
 const setActiveTool = (gridEditor, tool = tools.staticTool, mode = 'Cell') => fromJS(
@@ -24,7 +25,8 @@ const addUndoHistoryToGrid = (gridEditor) => {
 
 const setMode = (gridEditor, mode = 'cell') => gridEditor.set('mode', mode);
 
-const ge = addUndoHistoryToGrid(setMode(initialGridEditor));
+const tenByTenEditor = initialGridEditor.setIn(['grid', 'cells'], tenByTen);
+const ge = addUndoHistoryToGrid(setMode(tenByTenEditor));
 
 export default {
     withoutActiveTool: ge,
