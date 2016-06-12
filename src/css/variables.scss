@@ -4,7 +4,7 @@ $active-edit: #f00;
 $inactive-edit: #999;
 
 $cell-width: 60px;
-$border-width: floor($cell-width / 50);
+$border-width: max(floor($cell-width / 50), 1px);
 
 @mixin no-select() {
     -webkit-touch-callout: none;
