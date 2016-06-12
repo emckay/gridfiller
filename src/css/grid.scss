@@ -60,18 +60,19 @@ $border-edit-border: $border-width solid $active-edit;
         border: 0;
         display: block;
         position: absolute;
+        z-index: 20;
     }
 
     .border-edit-0,
     .border-edit-2 {
-        height: $cell-width / 10;
+        height: $cell-width / 6;
         width: 100%;
     }
 
     .border-edit-1,
     .border-edit-3 {
         height: 100%;
-        width: $cell-width / 10;
+        width: $cell-width / 6;
     }
 
     .border-edit-0 {
