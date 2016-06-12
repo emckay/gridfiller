@@ -18,21 +18,12 @@ export const removeFillTool = fromJS({
     mode: 'cell',
 });
 
-export const increaseBorderWidthTool = (width) => fromJS({
-    name: 'Increase Width',
+export const changeBorderWidthTool = (width) => fromJS({
+    name: `Change Width (${width})`,
     style: {
         width,
     },
     materialIcon: 'add',
-    mode: 'single-border',
-});
-
-export const decreaseBorderWidthTool = (width) => fromJS({
-    name: 'Decrease Width',
-    style: {
-        width,
-    },
-    materialIcon: 'remove',
     mode: 'single-border',
 });
 
@@ -67,8 +58,8 @@ export default fromJS([
         name: 'Border',
         materialIcon: 'border_all',
         tools: [
-            increaseBorderWidthTool(2),
-            decreaseBorderWidthTool(2),
+            changeBorderWidthTool(2),
+            changeBorderWidthTool(-2),
             toggleSolidDashedTool,
         ],
     },
