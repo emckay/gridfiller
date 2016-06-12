@@ -45,8 +45,14 @@ export const toggleSolidDashedTool = fromJS({
     mode: 'single-border',
 });
 
+export const mainContentTool = fromJS({
+    name: 'Main Content',
+    materialIcon: 'mode_edit',
+    mode: 'main-content',
+});
+
 export const miniContentTool = fromJS({
-    name: 'Mini-Content',
+    name: 'Mini Content',
     materialIcon: 'grid_on',
     mode: 'mini-content',
 });
@@ -69,6 +75,6 @@ export default fromJS([
     {
         name: 'Text',
         materialIcon: 'text_format',
-        tools: [miniContentTool],
+        tools: [mainContentTool, miniContentTool],
     },
 ]);

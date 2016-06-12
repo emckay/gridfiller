@@ -108,6 +108,16 @@ $border-edit-border: $border-width solid $active-edit;
     width: 30%;
 }
 
+.cell-content-main {
+    border: 0;
+    font-size: .65 * $cell-width;
+    height: 90%;
+    margin: 5%;
+    padding-top: 5px;
+    width: 90%;
+    z-index: 5;
+}
+
 @for $i from 0 through 8 {
     .cell-content-#{$i} {
         left: 33% * ($i % 3);
@@ -115,13 +125,23 @@ $border-edit-border: $border-width solid $active-edit;
     }
 }
 
-.cell-content-main {
-    display: none;
+.mini-content-mode {
+    @for $i from 0 through 8 {
+        .cell-content-#{$i} {
+            border: 1px solid $inactive-edit;
+            z-index: 10;
+
+            &.active {
+                border-color: $active-edit;
+            }
+        }
+    }
 }
 
-.mini-content-mode {
-    .cell-content {
+.main-content-mode {
+    .cell-content-main {
         border: 1px solid $inactive-edit;
+        z-index: 10;
 
         &.active {
             border-color: $active-edit;

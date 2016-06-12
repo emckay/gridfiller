@@ -38,7 +38,9 @@ export class Cell extends React.Component {
                         className={contentClasses(key, activeContentId)}
                         key={key}
                         onClick={() => {
-                            if (mode === 'mini-content') contentToggleHandler(row, col, key, value);
+                            if (mode === 'mini-content' || mode === 'main-content') {
+                                contentToggleHandler(row, col, key, value);
+                            }
                         }}
                     >
                         {value}
