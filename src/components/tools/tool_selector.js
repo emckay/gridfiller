@@ -30,6 +30,7 @@ export const ToolSelector = ({ tools, activeStyleTool, toggleActiveStyleTool }) 
                             clickHandler={toggleActiveStyleTool}
                             active={tool === activeStyleTool}
                             icon={icon(tool)}
+                            iconClass={tool.get('iconClass') || ''}
                             mode={group.get('name')}
                         />
                     ))}

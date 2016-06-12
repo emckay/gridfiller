@@ -38,7 +38,7 @@ export default {
     withStaticTool: setActiveTool(ge, tools.staticTool),
     withBorderStyleTool: setActiveTool(ge, tools.toggleSolidDashedTool),
     withBorderWidthTool: (width = 2) =>
-        setActiveTool(ge, tools.increaseBorderWidthTool(width), 'Border'),
+        setActiveTool(ge, tools.changeBorderWidthTool(width), 'Border'),
     withActiveContentId: (row = 1, col = 2, contentId = '3') =>
         setMode(setActiveContent(ge, { row, col, contentId }), 'Text'),
 };
