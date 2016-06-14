@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 
 import { ActionCreators as UndoActions } from 'redux-undo';
 
-import actions from '../actions/action_creators';
+import actions from '../actions';
 
 import { GridContainer } from './grid/grid.js';
 import { Tools } from './tools/tools.js';

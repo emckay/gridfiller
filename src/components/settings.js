@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import { List } from 'immutable';
 
-import * as selectors from '../selectors';
-import actions from '../actions/action_creators';
+import selectors from '../selectors';
+import actions from '../actions';
 
 import { SaveLoad } from './settings/save_load';
 

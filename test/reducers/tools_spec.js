@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import actions from '../../src/actions/action_creators';
+import actions from '../../src/actions';
 import reducer from '../../src/reducers/tools';
 
 import gridEditor from '../fixtures/grid_editor';

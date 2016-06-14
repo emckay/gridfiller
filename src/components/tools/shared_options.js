@@ -2,8 +2,8 @@ import React from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import { connect } from 'react-redux';
 
-import actions from '../../actions/action_creators';
-import * as selectors from '../../selectors';
+import actions from '../../actions';
+import selectors from '../../selectors';
 
 export class SharedOptions extends React.Component {
     shouldComponentUpdate(nextProps, nextState) {

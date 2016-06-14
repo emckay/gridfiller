@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { List } from 'immutable';
 
-import actions from '../../actions/action_creators';
-import * as selectors from '../../selectors';
+import actions from '../../actions';
+import selectors from '../../selectors';
 import { ToolIcon } from './tool_icon';
 
 export const ToolSelector = ({ tools, activeStyleTool, toggleActiveStyleTool }) => {

@@ -2,7 +2,7 @@ import { expect } from 'chai';
 
 import { Map, fromJS } from 'immutable';
 
-import actions from '../../src/actions/action_creators';
+import actions from '../../src/actions';
 import reducer from '../../src/reducers/grid_editor';
 
 import gridEditor from '../fixtures/grid_editor';

@@ -4,8 +4,8 @@ import { List, Map } from 'immutable';
 import { connect } from 'react-redux';
 import { autofill } from 'redux-form';
 
-import actions from '../../actions/action_creators';
-import * as selectors from '../../selectors';
+import actions from '../../actions';
+import selectors from '../../selectors';
 
 import { Cell } from './cell';
 

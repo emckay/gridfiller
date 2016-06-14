@@ -1,4 +1,3 @@
-
 export const getGridEditor = (state) => state.gridEditor;
 export const getGrid = (state) => getGridEditor(state).get('grid').present;
 export const getCells = (state) => getGrid(state).get('cells');
@@ -13,3 +12,17 @@ export const getMode = (state) => {
     return 'view';
 };
 export const getActiveCellContent = (state) => getTools(state).get('activeCellContent');
+
+export default {
+    getGridEditor,
+    getGrid,
+    getCells,
+    getTools,
+    getAvailableTools,
+    getActiveStyleTool,
+    getSharedOptions,
+    getPrimaryColor,
+    getSecondaryColor,
+    getMode,
+    getActiveCellContent,
+};
