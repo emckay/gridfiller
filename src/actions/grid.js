@@ -4,3 +4,8 @@ export const setStyle = (row, col, style) => ({
     col,
     style,
 });
+
+export const importGrid = (compressedGrid) => ({
+    type: 'IMPORT_GRID',
+    compressedGrid,
+});

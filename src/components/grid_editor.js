@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router';
 
 import { ActionCreators as UndoActions } from 'redux-undo';
 
@@ -38,6 +39,7 @@ export class GridEditor extends React.Component {
     render() {
         return (
             <div className="app">
+                <Link to="/settings">Settings</Link>
                 <h1>Grid Filler</h1>
                 <CellContentFormContainer />
                 <div className="editor">
