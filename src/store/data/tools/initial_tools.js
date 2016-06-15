@@ -48,24 +48,35 @@ export const miniContentTool = fromJS({
     mode: 'mini-content',
 });
 
-export const contentFillTool = fromJS({
-    name: 'Content Fill',
-    materialIcon: 'format_color_fill',
-    mode: 'main-content-style',
-    style: {
-        backgroundColor: (sharedOptions) => sharedOptions.get('primaryColor'),
-    },
-});
+export const contentFillTool = (mini) => {
+    const upperPrefix = mini ? 'Mini' : 'Main';
+    const lowerPrefix = upperPrefix.toLowerCase();
 
-export const miniContentFillTool = fromJS({
-    name: 'Mini Content Fill',
-    materialIcon: 'format_color_fill',
-    iconClass: 'mini-icon',
-    mode: 'mini-content-style',
-    style: {
-        backgroundColor: (sharedOptions) => sharedOptions.get('primaryColor'),
-    },
-});
+    return fromJS({
+        name: `${upperPrefix} Content Fill`,
+        materialIcon: 'format_color_fill',
+        mode: `${lowerPrefix}-content-style`,
+        iconClass: mini ? 'mini-icon' : '',
+        style: {
+            backgroundColor: (sharedOptions) => sharedOptions.get('primaryColor'),
+        },
+    });
+};
+
+export const contentColorTool = (mini) => {
+    const upperPrefix = mini ? 'Mini' : 'Main';
+    const lowerPrefix = upperPrefix.toLowerCase();
+
+    return fromJS({
+        name: `${upperPrefix} Content Color`,
+        materialIcon: 'format_color_text',
+        mode: `${lowerPrefix}-content-style`,
+        iconClass: mini ? 'mini-icon' : '',
+        style: {
+            color: (sharedOptions) => sharedOptions.get('primaryColor'),
+        },
+    });
+};
 
 export default fromJS([
     {
@@ -92,6 +103,11 @@ export default fromJS([
     {
         name: 'Text Formatting',
         materialIcon: 'text_format',
-        tools: [contentFillTool, miniContentFillTool],
+        tools: [
+            contentFillTool(false),
+            contentFillTool(true),
+            contentColorTool(false),
+            contentColorTool(true),
+        ],
     },
 ]);

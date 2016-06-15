@@ -42,11 +42,11 @@ export default {
     withActiveContentId: (row = 1, col = 2, contentId = '3') =>
         setMode(setActiveContent(ge, { row, col, contentId }), 'Text'),
     withContentStyleTool: setSharedOptions(
-        setActiveTool(ge, tools.contentFillTool),
+        setActiveTool(ge, tools.contentFillTool(false)),
         { option: 'primaryColor', val: 'red' }
     ),
     withMiniContentStyleTool: setSharedOptions(
-        setActiveTool(ge, tools.miniContentFillTool),
+        setActiveTool(ge, tools.contentFillTool(true)),
         { option: 'primaryColor', val: 'red' }
     ),
 };
