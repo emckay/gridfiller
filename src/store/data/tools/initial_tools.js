@@ -78,8 +78,18 @@ const plainContentColorTool = fromJS({
     },
 });
 
+const plainContentBoldTool = fromJS({
+    name: 'Content Bold',
+    materialIcon: 'format_bold',
+    mode: 'content-style',
+    style: {
+        fontWeight: ['bold', undefined],
+    },
+});
+
 export const contentFillTool = addMiniOption(plainContentFillTool);
 export const contentColorTool = addMiniOption(plainContentColorTool);
+export const contentBoldTool = addMiniOption(plainContentBoldTool);
 
 export default fromJS([
     {
@@ -111,6 +121,8 @@ export default fromJS([
             contentFillTool(true),
             contentColorTool(false),
             contentColorTool(true),
+            contentBoldTool(false),
+            contentBoldTool(true),
         ],
     },
 ]);

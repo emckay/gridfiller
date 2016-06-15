@@ -49,4 +49,5 @@ export default {
         setActiveTool(ge, tools.contentFillTool(true)),
         { option: 'primaryColor', val: 'red' }
     ),
+    withContentBoldTool: setActiveTool(ge, tools.contentBoldTool(false)),
 };

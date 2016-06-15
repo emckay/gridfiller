@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux-immutable';
 import undoable from 'redux-undo';
-import { Map } from 'immutable';
+import { List, Map } from 'immutable';
 
 import gridReducer from '../grid';
 import toolsReducer from '../tools';
@@ -53,12 +53,27 @@ const handleApplyCellStyleTool = (currentState, action, tool) => {
 };
 
 const handleApplyContentStyleTool = (currentState, action, tool) => {
+    const styleInd = ['cells', action.row, action.col, 'content', action.target, 'style'];
     const presentGrid = currentState.get('grid').present;
     const filledTool = fillSharedOptions(tool, currentState.getIn(['tools', 'sharedOptions']));
-    const newGrid = presentGrid.mergeIn(
-        ['cells', action.row, action.col, 'content', action.target, 'style'],
-        filledTool.get('style')
-    );
+
+    let newStyle = filledTool.get('style');
+
+    const currentStyle = currentState.get('grid').present.getIn(styleInd);
+
+    newStyle = newStyle.map((value, key) => {
+        console.log(value);
+        if (value instanceof List) {
+            if (currentStyle !== undefined && currentStyle.get(key) !== undefined) {
+                const newPos = (value.indexOf(currentStyle.get(key)) + 1) % value.size;
+                return value.get(newPos);
+            }
+            return value.get(0);
+        }
+        return value;
+    });
+
+    const newGrid = presentGrid.mergeIn(styleInd, newStyle);
 
     return currentState.set('grid', insert(currentState.get('grid'), newGrid));
 };

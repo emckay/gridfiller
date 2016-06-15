@@ -113,29 +113,52 @@ describe('grid editor reducer', () => {
 
         borderStyleTests(reducer);
 
-        context('with main content style tool', () => {
-            const initialState = gridEditor.withContentStyleTool;
+        context('content styles', () => {
             const cell = [0, 0];
-            const action = actions.applyActiveStyleTool(...cell, 'main');
 
-            it('changes style', () => {
-                const nextState = reducer(initialState, action);
-                expect(stateToCell(nextState, cell).getIn(
-                    ['content', 'main', 'style', 'backgroundColor']
-                )).to.eq('red');
+            context('with main content style tool', () => {
+                const initialState = gridEditor.withContentStyleTool;
+                const action = actions.applyActiveStyleTool(...cell, 'main');
+
+                it('changes style', () => {
+                    const nextState = reducer(initialState, action);
+                    expect(stateToCell(nextState, cell).getIn(
+                        ['content', 'main', 'style', 'backgroundColor']
+                    )).to.eq('red');
+                });
             });
-        });
 
-        context('with mini content style tool', () => {
-            const initialState = gridEditor.withContentStyleTool;
-            const cell = [0, 0];
-            const action = actions.applyActiveStyleTool(...cell, 3);
+            context('with mini content style tool', () => {
+                const initialState = gridEditor.withContentStyleTool;
+                const action = actions.applyActiveStyleTool(...cell, 3);
 
-            it('changes style', () => {
-                const nextState = reducer(initialState, action);
-                expect(stateToCell(nextState, cell).getIn(
-                    ['content', 3, 'style', 'backgroundColor']
-                )).to.eq('red');
+                it('changes style', () => {
+                    const nextState = reducer(initialState, action);
+                    expect(stateToCell(nextState, cell).getIn(
+                        ['content', 3, 'style', 'backgroundColor']
+                    )).to.eq('red');
+                });
+            });
+
+            context('with toggle content style tool', () => {
+                const initialState = gridEditor.withContentBoldTool;
+                const action = actions.applyActiveStyleTool(...cell, 3);
+
+                it('changes to bold first', () => {
+                    const nextState = reducer(initialState, action);
+                    expect(stateToCell(nextState, cell).getIn(
+                        ['content', 3, 'style', 'fontWeight']
+                    )).to.eq('bold');
+                });
+
+                it('unsets on second click', () => {
+                    const firstState = reducer(initialState, action);
+                    const secondState = reducer(firstState, action);
+
+                    expect(stateToCell(secondState, cell).getIn(
+                        ['content', 3, 'style', 'fontWeight']
+                    )).to.be.undefined;
+                });
             });
         });
     });
