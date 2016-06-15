@@ -1,6 +1,6 @@
 {
-  "name": "unit_01_es6_warmup",
-  "version": "1.0.0",
+  "name": "grid_filler",
+  "version": "0.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -12,7 +12,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "UNLICENSED",
   "devDependencies": {
     "babel-cli": "^6.9.0",
     "babel-core": "^6.8.0",
