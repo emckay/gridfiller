@@ -48,35 +48,38 @@ export const miniContentTool = fromJS({
     mode: 'mini-content',
 });
 
-export const contentFillTool = (mini) => {
+const addMiniOption = (tool) => (mini) => {
     const upperPrefix = mini ? 'Mini' : 'Main';
     const lowerPrefix = upperPrefix.toLowerCase();
 
-    return fromJS({
-        name: `${upperPrefix} Content Fill`,
-        materialIcon: 'format_color_fill',
-        mode: `${lowerPrefix}-content-style`,
-        iconClass: mini ? 'mini-icon' : '',
-        style: {
-            backgroundColor: (sharedOptions) => sharedOptions.get('primaryColor'),
-        },
-    });
+    const newTool = tool.toJS();
+    newTool.name = `${upperPrefix} ${newTool.name}`;
+    newTool.mode = `${lowerPrefix}-${newTool.mode}`;
+    if (mini) newTool.iconClass = 'mini-icon ${newTool.iconClass}';
+
+    return fromJS(newTool);
 };
 
-export const contentColorTool = (mini) => {
-    const upperPrefix = mini ? 'Mini' : 'Main';
-    const lowerPrefix = upperPrefix.toLowerCase();
+const plainContentFillTool = fromJS({
+    name: 'Content Fill',
+    materialIcon: 'format_color_fill',
+    mode: 'content-style',
+    style: {
+        backgroundColor: (sharedOptions) => sharedOptions.get('primaryColor'),
+    },
+});
 
-    return fromJS({
-        name: `${upperPrefix} Content Color`,
-        materialIcon: 'format_color_text',
-        mode: `${lowerPrefix}-content-style`,
-        iconClass: mini ? 'mini-icon' : '',
-        style: {
-            color: (sharedOptions) => sharedOptions.get('primaryColor'),
-        },
-    });
-};
+const plainContentColorTool = fromJS({
+    name: 'Content Color',
+    materialIcon: 'format_color_text',
+    mode: 'content-style',
+    style: {
+        color: (sharedOptions) => sharedOptions.get('primaryColor'),
+    },
+});
+
+export const contentFillTool = addMiniOption(plainContentFillTool);
+export const contentColorTool = addMiniOption(plainContentColorTool);
 
 export default fromJS([
     {
