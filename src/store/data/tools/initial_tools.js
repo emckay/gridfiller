@@ -118,7 +118,23 @@ export const contentUpTool = contentRelativeTool(
 );
 
 export const contentDownTool = contentRelativeTool(
-    'Content Up', 'arrow_downward', 'top', '+2'
+    'Content Down', 'arrow_downward', 'top', '+2'
+);
+
+export const contentLeftTool = contentRelativeTool(
+    'Content Left', 'arrow_back', 'left', '-2'
+);
+
+export const contentRightTool = contentRelativeTool(
+    'Content Right', 'arrow_forward', 'right', '+2'
+);
+
+export const increaseFontSize = contentRelativeTool(
+    'Increase Font', 'format_size', 'fontSize', '+2'
+);
+
+export const decreaseFontSize = contentRelativeTool(
+    'Decrease Font', 'text_fields', 'fontSize', '-2'
 );
 
 export default fromJS([
@@ -148,7 +164,12 @@ export default fromJS([
             contentBoldTool(false),
             contentItalicTool(false),
             contentUnderlineTool(false),
+            increaseFontSize(false),
+            decreaseFontSize(false),
             contentUpTool(false),
+            contentRightTool(false),
+            contentDownTool(false),
+            contentLeftTool(false),
         ],
     },
     {
@@ -161,7 +182,12 @@ export default fromJS([
             contentBoldTool(true),
             contentItalicTool(true),
             contentUnderlineTool(true),
+            increaseFontSize(true),
+            decreaseFontSize(true),
             contentUpTool(true),
+            contentRightTool(true),
+            contentDownTool(true),
+            contentLeftTool(true),
         ],
     },
 ]);

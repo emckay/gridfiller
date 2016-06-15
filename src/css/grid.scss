@@ -111,7 +111,7 @@ $border-edit-border: $border-width solid $active-edit;
 
 .cell-content-main {
     border: 0;
-    font-size: .65 * $cell-width;
+    font-size: $font-size-multiple * $cell-width;
     height: 90%;
     margin: 5%;
     padding-top: 5px;
@@ -121,6 +121,7 @@ $border-edit-border: $border-width solid $active-edit;
 
 @for $i from 0 through 8 {
     .cell-content-#{$i} {
+        font-size: $font-size-multiple * $cell-width / 3;
         left: $cell-width / 3 * ($i % 3);
         top: $cell-width / 3 * floor($i / 3);
         z-index: 5;

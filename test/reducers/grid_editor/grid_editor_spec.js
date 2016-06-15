@@ -2,6 +2,7 @@ import { expect } from 'chai';
 
 import { Map, fromJS } from 'immutable';
 
+import defaults from '../../../src/defaults';
 import actions from '../../../src/actions';
 import reducer from '../../../src/reducers/grid_editor';
 
@@ -188,6 +189,26 @@ describe('grid editor reducer', () => {
                     expect(stateToCell(secondState, cell).getIn(
                         ['content', 'main', 'style', 'top']
                     )).to.eq(-4);
+                });
+
+                it('increases font size', () => {
+                    const initialState = gridEditor.withFontIncreaseTool;
+                    const action = actions.applyActiveStyleTool(...cell, 'main');
+                    const nextState = reducer(initialState, action);
+
+                    expect(stateToCell(nextState, cell).getIn(
+                        ['content', 'main', 'style', 'fontSize']
+                    )).to.be.greaterThan(defaults.contentFontSize('main'));
+                });
+
+                it('decreases mini font size', () => {
+                    const initialState = gridEditor.withMiniFontDecreaseTool;
+                    const action = actions.applyActiveStyleTool(...cell, 4);
+                    const nextState = reducer(initialState, action);
+
+                    expect(stateToCell(nextState, cell).getIn(
+                        ['content', 4, 'style', 'fontSize']
+                    )).to.be.lessThan(defaults.contentFontSize(4));
                 });
             });
         });

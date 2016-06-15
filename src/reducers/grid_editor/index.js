@@ -2,7 +2,7 @@ import { combineReducers } from 'redux-immutable';
 import undoable from 'redux-undo';
 import { List, Map } from 'immutable';
 
-import constants from '../../constants.json';
+import defaults from '../../defaults';
 
 import gridReducer from '../grid';
 import toolsReducer from '../tools';
@@ -57,16 +57,13 @@ const handleApplyCellStyleTool = (currentState, action, tool) => {
 const defaultValue = (style, target) => {
     switch (style) {
         case 'top': {
-            if (target === undefined || target === 'main') {
-                return 0;
-            }
-            return constants['cell-width'] / 3 * Math.floor(target / 3);
+            return defaults.contentTop(target);
         }
         case 'left': {
-            if (target === undefined || target === 'main') {
-                return 0;
-            }
-            return constants['cell-width'] / 3 * Math.floor(target / 3);
+            return defaults.contentLeft(target);
+        }
+        case 'fontSize': {
+            return defaults.contentFontSize(target);
         }
         default: {
             return undefined;
@@ -90,7 +87,7 @@ const handleApplyContentStyleTool = (currentState, action, tool) => {
                 return value.get(newPos);
             }
             return value.get(0);
-        } else if (value.match(/[+\-]\d+/)) {
+        } else if (typeof value === 'string' && value.match(/[+\-]\d+/)) {
             const intValue = parseInt(value, 10);
             if (currentStyle !== undefined && currentStyle.get(key) !== undefined) {
                 return currentStyle.get(key) + intValue;

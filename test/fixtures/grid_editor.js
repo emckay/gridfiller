@@ -52,4 +52,6 @@ export default {
     withContentBoldTool: setActiveTool(ge, tools.contentBoldTool(false)),
     withMiniContentUpTool: setActiveTool(ge, tools.contentUpTool(true)),
     withMainContentUpTool: setActiveTool(ge, tools.contentUpTool(false)),
+    withFontIncreaseTool: setActiveTool(ge, tools.increaseFontSize(false)),
+    withMiniFontDecreaseTool: setActiveTool(ge, tools.decreaseFontSize(true)),
 };

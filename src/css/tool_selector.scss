@@ -9,6 +9,7 @@
     @include no-select;
     display: flex;
     flex-direction: column;
+    max-width: 200px;
 
     .tool-icon {
         border: 1px solid $black;

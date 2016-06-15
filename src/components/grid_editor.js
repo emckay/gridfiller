@@ -25,7 +25,6 @@ export class GridEditor extends React.Component {
     }
     swapColorsIfShift(e) {
         if (e.keyCode === 16 && !e.ctrlKey) {
-            console.log('here');
             this.props.swapColors();
         }
     }
