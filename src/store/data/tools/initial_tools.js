@@ -78,18 +78,28 @@ const plainContentColorTool = fromJS({
     },
 });
 
-const plainContentBoldTool = fromJS({
-    name: 'Content Bold',
-    materialIcon: 'format_bold',
-    mode: 'content-style',
-    style: {
-        fontWeight: ['bold', undefined],
-    },
-});
+const contentToggleFormatTool = (name, icon, styleName, options) => addMiniOption(
+    fromJS({
+        name,
+        materialIcon: icon,
+        mode: 'content-style',
+        style: {
+            [styleName]: options,
+        },
+    })
+);
 
 export const contentFillTool = addMiniOption(plainContentFillTool);
 export const contentColorTool = addMiniOption(plainContentColorTool);
-export const contentBoldTool = addMiniOption(plainContentBoldTool);
+export const contentBoldTool = contentToggleFormatTool(
+    'Content Bold', 'format_bold', 'fontWeight', ['bold', undefined]
+);
+export const contentItalicTool = contentToggleFormatTool(
+    'Content Italic', 'format_italic', 'fontStyle', ['italic', undefined]
+);
+export const contentUnderlineTool = contentToggleFormatTool(
+    'Content Underline', 'format_underline', 'textDecoration', ['underline', undefined]
+);
 
 export default fromJS([
     {
@@ -123,6 +133,10 @@ export default fromJS([
             contentColorTool(true),
             contentBoldTool(false),
             contentBoldTool(true),
+            contentItalicTool(false),
+            contentItalicTool(true),
+            contentUnderlineTool(false),
+            contentUnderlineTool(true),
         ],
     },
 ]);
