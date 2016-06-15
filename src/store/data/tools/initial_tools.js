@@ -44,7 +44,8 @@ export const mainContentTool = fromJS({
 
 export const miniContentTool = fromJS({
     name: 'Mini Content',
-    materialIcon: 'grid_on',
+    materialIcon: 'mode_edit',
+    iconClass: 'mini-icon',
     mode: 'mini-content',
 });
 
@@ -119,23 +120,26 @@ export default fromJS([
         ],
     },
     {
-        name: 'Text',
-        materialIcon: 'text_format',
-        tools: [mainContentTool, miniContentTool],
-    },
-    {
-        name: 'Text Formatting',
+        name: 'Main Text',
         materialIcon: 'text_format',
         tools: [
+            mainContentTool,
             contentFillTool(false),
-            contentFillTool(true),
             contentColorTool(false),
-            contentColorTool(true),
             contentBoldTool(false),
-            contentBoldTool(true),
             contentItalicTool(false),
-            contentItalicTool(true),
             contentUnderlineTool(false),
+        ],
+    },
+    {
+        name: 'Mini Text',
+        materialIcon: 'grid_on',
+        tools: [
+            miniContentTool,
+            contentFillTool(true),
+            contentColorTool(true),
+            contentBoldTool(true),
+            contentItalicTool(true),
             contentUnderlineTool(true),
         ],
     },
