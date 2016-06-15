@@ -32,7 +32,7 @@ export const toggleSolidDashedTool = fromJS({
     style: {
         style: ['solid', 'dashed'],
     },
-    materialIcon: 'line_style',
+    materialIcon: 'power_input',
     mode: 'single-border',
 });
 
