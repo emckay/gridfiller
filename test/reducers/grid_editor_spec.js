@@ -15,8 +15,12 @@ const adjacentCells = (row, col) => ({
     right: { pos: [row, col + 1] },
 });
 
+const stateToCell = (state, cell) => (
+    state.get('grid').present.getIn(['cells', ...cell])
+);
+
 const stateToStyle = (state, cell, style) => (
-    state.get('grid').present.getIn(['cells', ...cell, 'style', style])
+    stateToCell(state, cell).getIn(['style', style])
 );
 
 const checkStyles = (state, cell, msg) => {
@@ -52,8 +56,10 @@ describe('grid editor reducer', () => {
             const nextState = reducer(initialState, action);
 
             it('sets cell content', () => {
-                expect(nextState.get('grid').present.getIn(['cells', 1, 2, 'content', '3']))
-                    .to.eq('test text');
+                const newContent = nextState.get('grid').present
+                    .getIn(['cells', 1, 2, 'content', '3']);
+                expect(newContent).to.be.instanceOf(Map);
+                expect(newContent).to.have.property('text', 'test text');
             });
         });
 
@@ -425,6 +431,32 @@ describe('grid editor reducer', () => {
 
                     checkStyles(secondState, cells.right, 'right');
                 });
+            });
+        });
+
+        context('with main content style tool', () => {
+            const initialState = gridEditor.withContentStyleTool;
+            const cell = [0, 0];
+            const action = actions.applyActiveStyleTool(...cell, 'main');
+
+            it('changes style', () => {
+                const nextState = reducer(initialState, action);
+                expect(stateToCell(nextState, cell).getIn(
+                    ['content', 'main', 'style', 'backgroundColor']
+                )).to.eq('red');
+            });
+        });
+
+        context('with mini content style tool', () => {
+            const initialState = gridEditor.withContentStyleTool;
+            const cell = [0, 0];
+            const action = actions.applyActiveStyleTool(...cell, 3);
+
+            it('changes style', () => {
+                const nextState = reducer(initialState, action);
+                expect(stateToCell(nextState, cell).getIn(
+                    ['content', 3, 'style', 'backgroundColor']
+                )).to.eq('red');
             });
         });
     });

@@ -48,6 +48,25 @@ export const miniContentTool = fromJS({
     mode: 'mini-content',
 });
 
+export const contentFillTool = fromJS({
+    name: 'Content Fill',
+    materialIcon: 'format_color_fill',
+    mode: 'main-content-style',
+    style: {
+        backgroundColor: (sharedOptions) => sharedOptions.get('primaryColor'),
+    },
+});
+
+export const miniContentFillTool = fromJS({
+    name: 'Mini Content Fill',
+    materialIcon: 'format_color_fill',
+    iconClass: 'mini-icon',
+    mode: 'mini-content-style',
+    style: {
+        backgroundColor: (sharedOptions) => sharedOptions.get('primaryColor'),
+    },
+});
+
 export default fromJS([
     {
         name: 'Cell',
@@ -69,5 +88,10 @@ export default fromJS([
         name: 'Text',
         materialIcon: 'text_format',
         tools: [mainContentTool, miniContentTool],
+    },
+    {
+        name: 'Text Formatting',
+        materialIcon: 'text_format',
+        tools: [contentFillTool, miniContentFillTool],
     },
 ]);

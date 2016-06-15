@@ -1,6 +1,6 @@
 import { fromJS } from 'immutable';
 
-import { EmptyCell } from './empty_cell';
+import { emptyCell } from './empty_cell';
 
 
 const createSquareGrid = (n) => {
@@ -9,7 +9,7 @@ const createSquareGrid = (n) => {
     for (let i = 0; i < n; i++) {
         grid.push([]);
         for (let j = 0; j < n; j++) {
-            grid[grid.length - 1].push(new EmptyCell());
+            grid[grid.length - 1].push(emptyCell());
         }
     }
     return fromJS(grid);

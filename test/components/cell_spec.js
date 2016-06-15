@@ -5,12 +5,14 @@ import { shallow } from 'enzyme';
 import { fromJS } from 'immutable';
 
 import { Cell } from '../../src/components/grid/cell';
-import { EmptyCell } from '../../src/store/data/grids/empty_cell';
+import { emptyCell } from '../../src/store/data/grids/empty_cell';
 
 describe('<Cell />', () => {
     describe('render()', () => {
-        const props = new EmptyCell().toObject();
+        const props = emptyCell().toObject();
         props.style = fromJS({ backgroundColor: 'red' });
+        props.content = props.content.setIn(['main', 'style'], fromJS({ backgroundColor: 'yellow' }));
+
         const wrapper = shallow(<Cell {...props} />);
 
         it('gives style to root div', () => {
@@ -23,6 +25,11 @@ describe('<Cell />', () => {
 
         it('renders 4 border-edit divs', () => {
             expect(wrapper).to.have.exactly(4).descendants('.border-edit');
+        });
+
+        it('gives style to main content div', () => {
+            const mainContentDiv = wrapper.find('.cell-content-main');
+            expect(mainContentDiv.prop('style')).to.eql({ backgroundColor: 'yellow' });
         });
     });
 });

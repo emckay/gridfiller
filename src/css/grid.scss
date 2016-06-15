@@ -116,16 +116,18 @@ $border-edit-border: $border-width solid $active-edit;
     margin: 5%;
     padding-top: 5px;
     width: 90%;
-    z-index: 5;
+    z-index: 1;
 }
 
 @for $i from 0 through 8 {
     .cell-content-#{$i} {
         left: 33% * ($i % 3);
         top: 33% * floor($i / 3);
+        z-index: 5;
     }
 }
 
+.mini-content-style-mode,
 .mini-content-mode {
     @for $i from 0 through 8 {
         .cell-content-#{$i} {
@@ -139,6 +141,7 @@ $border-edit-border: $border-width solid $active-edit;
     }
 }
 
+.main-content-style-mode,
 .main-content-mode {
     .cell-content-main {
         border: 1px solid $inactive-edit;

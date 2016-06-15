@@ -203,6 +203,17 @@ const handleApplyBorderStyleTool = (currentState, action, tool) => {
     return currentState.set('grid', insert(currentState.get('grid'), newGrid));
 };
 
+const handleApplyContentStyleTool = (currentState, action, tool) => {
+    const presentGrid = currentState.get('grid').present;
+    const filledTool = fillSharedOptions(tool, currentState.getIn(['tools', 'sharedOptions']));
+    const newGrid = presentGrid.mergeIn(
+        ['cells', action.row, action.col, 'content', action.target, 'style'],
+        filledTool.get('style')
+    );
+
+    return currentState.set('grid', insert(currentState.get('grid'), newGrid));
+};
+
 const handleApplyActiveStyleTool = (currentState, action) => {
     const tool = currentState.getIn(['tools', 'activeStyleTool']);
     const mode = currentState.getIn(['tools', 'activeStyleTool', 'mode']);
@@ -217,6 +228,8 @@ const handleApplyActiveStyleTool = (currentState, action) => {
         }
 
         return handleApplyBorderStyleTool(currentState, action, tool);
+    } else if (mode === 'mini-content-style' || mode === 'main-content-style') {
+        return handleApplyContentStyleTool(currentState, action, tool);
     }
 
     return currentState;
@@ -229,13 +242,13 @@ const handleUpdateCellContent = (currentState, { text }) => {
 
     const currentGrid = currentState.get('grid').present;
 
-    const newGrid = currentGrid.setIn([
+    const newGrid = currentGrid.mergeIn([
         'cells',
         target.get('row'),
         target.get('col'),
         'content',
         target.get('contentId'),
-    ], text);
+    ], { text });
 
     return currentState.set('grid', insert(currentState.get('grid'), newGrid));
 };

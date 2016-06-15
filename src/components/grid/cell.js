@@ -33,17 +33,21 @@ export class Cell extends React.Component {
                     if (mode === 'cell' && e.buttons === 1) clickHandler(row, col);
                 }}
             >
-                {content.map((value, key) => (
+                {content.map((contentObj, key) => (
                     <div
                         className={contentClasses(key, activeContentId)}
                         key={key}
                         onClick={() => {
                             if (mode === 'mini-content' || mode === 'main-content') {
-                                contentToggleHandler(row, col, key, value);
+                                contentToggleHandler(row, col, key, contentObj.get('text'));
+                            } else if (mode === 'mini-content-style'
+                                || mode === 'main-content-style') {
+                                clickHandler(row, col, key);
                             }
                         }}
+                        style={contentObj.get('style').toJS()}
                     >
-                        {value}
+                        {contentObj.get('text')}
                     </div>
                 )).toArray()}
 

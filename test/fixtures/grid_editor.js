@@ -33,7 +33,7 @@ export default {
     withActiveTool: setActiveTool(ge),
     withDynamicTool: setSharedOptions(
         setActiveTool(ge, tools.dynamicTool),
-        { option: 'primary-color', val: 'red' }
+        { option: 'primaryColor', val: 'red' }
     ),
     withStaticTool: setActiveTool(ge, tools.staticTool),
     withBorderStyleTool: setActiveTool(ge, tools.toggleSolidDashedTool),
@@ -41,4 +41,12 @@ export default {
         setActiveTool(ge, tools.changeBorderWidthTool(width), 'Border'),
     withActiveContentId: (row = 1, col = 2, contentId = '3') =>
         setMode(setActiveContent(ge, { row, col, contentId }), 'Text'),
+    withContentStyleTool: setSharedOptions(
+        setActiveTool(ge, tools.contentFillTool),
+        { option: 'primaryColor', val: 'red' }
+    ),
+    withMiniContentStyleTool: setSharedOptions(
+        setActiveTool(ge, tools.miniContentFillTool),
+        { option: 'primaryColor', val: 'red' }
+    ),
 };
