@@ -12,17 +12,20 @@ import { CellContentFormContainer } from './cell_content_form';
 
 export class GridEditor extends React.Component {
     componentDidMount() {
-        window.addEventListener('keydown', this.swapColorsIfShift.bind(this));
-        window.addEventListener('keyup', this.swapColorsIfShift.bind(this));
-        window.addEventListener('keydown', this.undoRedo.bind(this));
+        this.swapColors = this.swapColorsIfShift.bind(this);
+        this.undoRedo = this.undoRedo.bind(this);
+        window.addEventListener('keydown', this.swapColors);
+        window.addEventListener('keyup', this.swapColors);
+        window.addEventListener('keydown', this.undoRedo);
     }
     componentWillUnmount() {
-        window.removeEventListener('keydown', this.swapColorsIfShift.bind(this));
-        window.removeEventListener('keyup', this.swapColorsIfShift.bind(this));
-        window.addEventListener('keydown', this.undoRedo.bind(this));
+        window.removeEventListener('keydown', this.swapColors);
+        window.removeEventListener('keyup', this.swapColors);
+        window.removeEventListener('keydown', this.undoRedo);
     }
     swapColorsIfShift(e) {
         if (e.keyCode === 16 && !e.ctrlKey) {
+            console.log('here');
             this.props.swapColors();
         }
     }
