@@ -121,8 +121,8 @@ $border-edit-border: $border-width solid $active-edit;
 
 @for $i from 0 through 8 {
     .cell-content-#{$i} {
-        left: 33% * ($i % 3);
-        top: 33% * floor($i / 3);
+        left: $cell-width / 3 * ($i % 3);
+        top: $cell-width / 3 * floor($i / 3);
         z-index: 5;
     }
 }

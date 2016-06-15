@@ -3,7 +3,9 @@ $active-tool: #ccc;
 $active-edit: #f00;
 $inactive-edit: #999;
 
-$cell-width: 60px;
+@import '../constants.json';
+
+$cell-width: $cell-width * 1px;
 $border-width: max(floor($cell-width / 50), 1px);
 
 @mixin no-select() {

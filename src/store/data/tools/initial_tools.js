@@ -102,6 +102,25 @@ export const contentUnderlineTool = contentToggleFormatTool(
     'Content Underline', 'format_underline', 'textDecoration', ['underline', undefined]
 );
 
+const contentRelativeTool = (name, icon, styleName, relativeValue) => addMiniOption(
+    fromJS({
+        name,
+        materialIcon: icon,
+        mode: 'content-style',
+        style: {
+            [styleName]: relativeValue,
+        },
+    })
+);
+
+export const contentUpTool = contentRelativeTool(
+    'Content Up', 'arrow_upward', 'top', '-2'
+);
+
+export const contentDownTool = contentRelativeTool(
+    'Content Up', 'arrow_downward', 'top', '+2'
+);
+
 export default fromJS([
     {
         name: 'Cell',
@@ -129,6 +148,7 @@ export default fromJS([
             contentBoldTool(false),
             contentItalicTool(false),
             contentUnderlineTool(false),
+            contentUpTool(false),
         ],
     },
     {
@@ -141,6 +161,7 @@ export default fromJS([
             contentBoldTool(true),
             contentItalicTool(true),
             contentUnderlineTool(true),
+            contentUpTool(true),
         ],
     },
 ]);

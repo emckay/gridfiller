@@ -50,4 +50,6 @@ export default {
         { option: 'primaryColor', val: 'red' }
     ),
     withContentBoldTool: setActiveTool(ge, tools.contentBoldTool(false)),
+    withMiniContentUpTool: setActiveTool(ge, tools.contentUpTool(true)),
+    withMainContentUpTool: setActiveTool(ge, tools.contentUpTool(false)),
 };

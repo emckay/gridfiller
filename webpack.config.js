@@ -1,6 +1,8 @@
 const webpack = require('webpack');
 const path = require('path');
 
+const jsonImporter = require('node-sass-json-importer');
+
 module.exports = {
     entry: [
         'webpack-dev-server/client?http://localhost:8080',
@@ -32,7 +34,14 @@ module.exports = {
                 test: /\.(jpe?g|png|gif|svg|eot|woff|ttf|svg|woff2)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
                 loader: 'file-loader?name=[name].[ext]',
             },
+            {
+                test: /\.json$/,
+                loader: 'json',
+            },
         ],
+    },
+    sassLoader: {
+        importer: jsonImporter,
     },
     devServer: {
         contentBase: './build',

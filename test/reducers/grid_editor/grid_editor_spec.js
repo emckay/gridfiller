@@ -157,7 +157,37 @@ describe('grid editor reducer', () => {
 
                     expect(stateToCell(secondState, cell).getIn(
                         ['content', 3, 'style', 'fontWeight']
-                    )).to.be.undefined;
+                    )).to.eq(undefined);
+                });
+            });
+
+            context('with relative content style tool', () => {
+                it('moves mini top by -2 each time', () => {
+                    const initialState = gridEditor.withMiniContentUpTool;
+                    const action = actions.applyActiveStyleTool(...cell, 2);
+                    const nextState = reducer(initialState, action);
+                    expect(stateToCell(nextState, cell).getIn(
+                        ['content', 2, 'style', 'top']
+                    )).to.eq(-2);
+
+                    const secondState = reducer(nextState, action);
+                    expect(stateToCell(secondState, cell).getIn(
+                        ['content', 2, 'style', 'top']
+                    )).to.eq(-4);
+                });
+
+                it('moves main top by -2 each time', () => {
+                    const initialState = gridEditor.withMainContentUpTool;
+                    const action = actions.applyActiveStyleTool(...cell, 'main');
+                    const nextState = reducer(initialState, action);
+                    expect(stateToCell(nextState, cell).getIn(
+                        ['content', 'main', 'style', 'top']
+                    )).to.eq(-2);
+
+                    const secondState = reducer(nextState, action);
+                    expect(stateToCell(secondState, cell).getIn(
+                        ['content', 'main', 'style', 'top']
+                    )).to.eq(-4);
                 });
             });
         });

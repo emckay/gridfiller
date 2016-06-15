@@ -2,6 +2,8 @@ import { combineReducers } from 'redux-immutable';
 import undoable from 'redux-undo';
 import { List, Map } from 'immutable';
 
+import constants from '../../constants.json';
+
 import gridReducer from '../grid';
 import toolsReducer from '../tools';
 
@@ -52,6 +54,26 @@ const handleApplyCellStyleTool = (currentState, action, tool) => {
     return currentState.set('grid', insert(currentState.get('grid'), newGrid));
 };
 
+const defaultValue = (style, target) => {
+    switch (style) {
+        case 'top': {
+            if (target === undefined || target === 'main') {
+                return 0;
+            }
+            return constants['cell-width'] / 3 * Math.floor(target / 3);
+        }
+        case 'left': {
+            if (target === undefined || target === 'main') {
+                return 0;
+            }
+            return constants['cell-width'] / 3 * Math.floor(target / 3);
+        }
+        default: {
+            return undefined;
+        }
+    }
+};
+
 const handleApplyContentStyleTool = (currentState, action, tool) => {
     const styleInd = ['cells', action.row, action.col, 'content', action.target, 'style'];
     const presentGrid = currentState.get('grid').present;
@@ -62,17 +84,21 @@ const handleApplyContentStyleTool = (currentState, action, tool) => {
     const currentStyle = currentState.get('grid').present.getIn(styleInd);
 
     newStyle = newStyle.map((value, key) => {
-        console.log(value);
         if (value instanceof List) {
             if (currentStyle !== undefined && currentStyle.get(key) !== undefined) {
                 const newPos = (value.indexOf(currentStyle.get(key)) + 1) % value.size;
                 return value.get(newPos);
             }
             return value.get(0);
+        } else if (value.match(/[+\-]\d+/)) {
+            const intValue = parseInt(value, 10);
+            if (currentStyle !== undefined && currentStyle.get(key) !== undefined) {
+                return currentStyle.get(key) + intValue;
+            }
+            return defaultValue(key, action.target) + intValue;
         }
         return value;
     });
-
     const newGrid = presentGrid.mergeIn(styleInd, newStyle);
 
     return currentState.set('grid', insert(currentState.get('grid'), newGrid));
