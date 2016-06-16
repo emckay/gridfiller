@@ -212,5 +212,25 @@ describe('grid editor reducer', () => {
                 });
             });
         });
+
+        context('clear tools', () => {
+            context('clear content tool', () => {
+                it('resets all content', () => {
+                    let initialState = gridEditor.withClearContentTool;
+                    initialState = initialState.set('grid', {
+                        past: [],
+                        future: [],
+                        present: initialState.get('grid').present.setIn(['cells', 2, 3, 'content', 0, 'text'], 'hello')
+                    });
+                    const cell = [2, 3];
+                    const action = actions.applyActiveStyleTool(...cell);
+                    const nextState = reducer(initialState, action);
+
+                    expect(stateToCell(nextState, cell).getIn(
+                        ['content', '0', 'text']
+                    )).to.eq('');
+                });
+            });
+        });
     });
 });

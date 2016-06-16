@@ -28,9 +28,11 @@ export class Cell extends React.Component {
             <div
                 className="grid-cell"
                 style={style.toJS()}
-                onClick={() => { if (mode === 'cell') clickHandler(row, col); }}
+                onClick={() => { if (mode === 'cell' || mode === 'clear') clickHandler(row, col); }}
                 onMouseEnter={(e) => {
-                    if (mode === 'cell' && e.buttons === 1) clickHandler(row, col);
+                    if ((mode === 'cell' || mode === 'clear') && e.buttons === 1) {
+                        clickHandler(row, col);
+                    }
                 }}
             >
                 {content.map((contentObj, key) => (

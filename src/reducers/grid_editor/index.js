@@ -3,6 +3,7 @@ import undoable from 'redux-undo';
 import { List, Map } from 'immutable';
 
 import defaults from '../../defaults';
+import { emptyContents } from '../../store/data/grids/empty_cell';
 
 import gridReducer from '../grid';
 import toolsReducer from '../tools';
@@ -101,6 +102,21 @@ const handleApplyContentStyleTool = (currentState, action, tool) => {
     return currentState.set('grid', insert(currentState.get('grid'), newGrid));
 };
 
+const handleApplyClearTool = (currentState, action, tool) => {
+    if (tool.get('clear') === undefined) {
+        return currentState;
+    }
+
+    if (tool.get('clear') === 'all_content') {
+        const contentInd = ['cells', action.row, action.col, 'content'];
+        const presentGrid = currentState.get('grid').present;
+        const newGrid = presentGrid.setIn(contentInd, emptyContents());
+        return currentState.set('grid', insert(currentState.get('grid'), newGrid));
+    }
+
+    return currentState;
+};
+
 const handleApplyActiveStyleTool = (currentState, action) => {
     const tool = currentState.getIn(['tools', 'activeStyleTool']);
     const mode = currentState.getIn(['tools', 'activeStyleTool', 'mode']);
@@ -117,6 +133,8 @@ const handleApplyActiveStyleTool = (currentState, action) => {
         return handleApplyBorderStyleTool(currentState, action, tool);
     } else if (mode === 'mini-content-style' || mode === 'main-content-style') {
         return handleApplyContentStyleTool(currentState, action, tool);
+    } else if (mode === 'clear') {
+        return handleApplyClearTool(currentState, action, tool);
     }
 
     return currentState;

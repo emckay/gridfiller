@@ -54,4 +54,7 @@ export default {
     withMainContentUpTool: setActiveTool(ge, tools.contentUpTool(false)),
     withFontIncreaseTool: setActiveTool(ge, tools.increaseFontSize(false)),
     withMiniFontDecreaseTool: setActiveTool(ge, tools.decreaseFontSize(true)),
+    withClearContentTool: setActiveTool(ge, tools.clearContentTool),
+    withClearBorderTool: setActiveTool(ge, tools.clearBorderTool),
+    withResetCellTool: setActiveTool(ge, tools.clearCellTool),
 };

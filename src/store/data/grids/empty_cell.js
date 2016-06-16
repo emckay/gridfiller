@@ -6,18 +6,22 @@ export const emptyContent = () => fromJS({
     style: {},
 });
 
+export const emptyContents = () => fromJS({
+    0: emptyContent(),
+    1: emptyContent(),
+    2: emptyContent(),
+    3: emptyContent(),
+    4: emptyContent(),
+    5: emptyContent(),
+    6: emptyContent(),
+    7: emptyContent(),
+    8: emptyContent(),
+    main: emptyContent(),
+});
+
 export const emptyCell = () => fromJS({
     content: {
-        0: emptyContent(),
-        1: emptyContent(),
-        2: emptyContent(),
-        3: emptyContent(),
-        4: emptyContent(),
-        5: emptyContent(),
-        6: emptyContent(),
-        7: emptyContent(),
-        8: emptyContent(),
-        main: emptyContent(),
+        ...emptyContents().toJS(),
     },
     style: {},
     borders: {},

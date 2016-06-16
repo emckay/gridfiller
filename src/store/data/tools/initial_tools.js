@@ -23,6 +23,7 @@ export const clearContentTool = fromJS({
     clear: 'all_content',
     materialIcon: 'text_format',
     iconClass: 'clear',
+    mode: 'clear',
 });
 
 export const clearBorderTool = fromJS({
@@ -30,12 +31,14 @@ export const clearBorderTool = fromJS({
     clear: 'all_borders',
     materialIcon: 'border_all',
     iconClass: 'clear',
+    mode: 'clear',
 });
 
 export const resetCellTool = fromJS({
     name: 'Reset Cell',
     clear: 'all',
     materialIcon: 'delete',
+    mode: 'clear',
 });
 
 export const changeBorderWidthTool = (width, icon) => fromJS({
