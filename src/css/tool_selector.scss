@@ -52,3 +52,18 @@
     font-size: 0.75em;
     padding-top: 5px;
 }
+
+.clear {
+    position: relative;
+
+    &::after {
+        @extend .material-icons;
+        content: 'remove';
+        font-size: 47px;
+        left: -8px;
+        position: absolute;
+        text-shadow: -2px -2px #fff;
+        top: -8px;
+        transform: rotate(45deg) scale(1, 0.5);
+    }
+}

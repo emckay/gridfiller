@@ -18,6 +18,26 @@ export const removeFillTool = fromJS({
     mode: 'cell',
 });
 
+export const clearContentTool = fromJS({
+    name: 'Remove All Content',
+    clear: 'all_content',
+    materialIcon: 'text_format',
+    iconClass: 'clear',
+});
+
+export const clearBorderTool = fromJS({
+    name: 'Reset All Borders',
+    clear: 'all_borders',
+    materialIcon: 'border_all',
+    iconClass: 'clear',
+});
+
+export const resetCellTool = fromJS({
+    name: 'Reset Cell',
+    clear: 'all',
+    materialIcon: 'delete',
+});
+
 export const changeBorderWidthTool = (width, icon) => fromJS({
     name: `Change Width (${width})`,
     style: {
@@ -141,7 +161,7 @@ export default fromJS([
     {
         name: 'Cell',
         materialIcon: 'select_all',
-        tools: [fillCellTool, removeFillTool],
+        tools: [fillCellTool, removeFillTool, clearContentTool, clearBorderTool, resetCellTool],
     },
     {
         name: 'Border',
