@@ -17,3 +17,4 @@ This project is a work in progress. The following features still need to be adde
 - Appropriate cursor behavior
 - Change number of rows/cols
 - Style settings page
+- Vertical center content divs
