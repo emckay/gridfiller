@@ -17,21 +17,29 @@
         height: $cell-width + $border-width * 2;
     }
 
+    .cell-wrapper {
+        max-width: $cell-width + $border-width * 3;
+        position: relative;
+
+        &:first-child {
+            .grid-cell {
+                border-left: $border-width * 2 solid $black;
+            }
+        }
+
+        &:last-child {
+            .grid-cell {
+                border-right: $border-width * 2 solid $black;
+            }
+        }
+    }
+
     .grid-cell {
         border: $border-width solid $black;
         display: inline-block;
         height: $cell-width;
-        position: relative;
         vertical-align: top;
         width: $cell-width;
-
-        &:first-child {
-            border-left: $border-width * 2 solid $black;
-        }
-
-        &:last-child {
-            border-right: $border-width * 2 solid $black;
-        }
     }
 
     .grid-row:first-child {
@@ -50,6 +58,9 @@
 }
 
 $border-edit-border: $border-width solid $active-edit;
+$border-edit-short: $cell-width / 6 * 2;
+$border-edit-long: $cell-width / 6 * 4 + 4;
+$border-edit-margin: $border-edit-short / 2 - 1;
 
 .border-edit {
     display: none;
@@ -57,7 +68,8 @@ $border-edit-border: $border-width solid $active-edit;
 
 .single-border-mode {
     .border-edit {
-        border: 0;
+        border: $border-edit-border;
+        box-sizing: border-box;
         display: block;
         position: absolute;
         z-index: 20;
@@ -65,38 +77,69 @@ $border-edit-border: $border-width solid $active-edit;
 
     .border-edit-0,
     .border-edit-2 {
-        height: $cell-width / 6;
-        width: 100%;
+        height: $border-edit-short;
+        margin: 0 $border-edit-margin;
+        width: $border-edit-long;
     }
 
     .border-edit-1,
     .border-edit-3 {
-        height: 100%;
-        width: $cell-width / 6;
+        height: $border-edit-long;
+        margin: $border-edit-margin 0;
+        width: $border-edit-short;
     }
 
     .border-edit-0 {
-        border-bottom: $border-edit-border;
         left: 0;
-        top: 0;
+        top: -$border-edit-short / 2;
     }
 
     .border-edit-1 {
-        border-left: $border-edit-border;
-        right: 0;
-        top: 0;
+        display: none;
     }
 
     .border-edit-2 {
-        border-top: $border-edit-border;
-        bottom: 0;
-        left: 0;
+        display: none;
     }
 
     .border-edit-3 {
-        border-right: $border-edit-border;
-        left: 0;
+        left: -$border-edit-short / 2;
         top: 0;
+    }
+
+    .grid-row:first-child .border-edit-0 {
+        border-top: 0;
+        height: $border-edit-short / 2;
+        top: 0;
+    }
+
+    .cell-wrapper:last-child .border-edit-1 {
+        border-right: 0;
+        display: block;
+        right: 1px;
+        top: 0;
+        width: $border-edit-short / 2;
+    }
+
+    .grid-row:last-child .border-edit-2 {
+        border-bottom: 0;
+        bottom: 0;
+        display: block;
+        height: $border-edit-short / 2;
+        left: 0;
+    }
+
+    .cell-wrapper:first-child {
+        .border-edit-3 {
+            border-left: 0;
+            left: 1px;
+            width: $border-edit-short / 2;
+        }
+
+        .border-edit-0,
+        .border-edit-2 {
+            margin-left: $border-edit-margin + 1;
+        }
     }
 }
 
