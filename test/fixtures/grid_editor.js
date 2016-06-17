@@ -1,17 +1,17 @@
-import { fromJS, Map } from 'immutable';
+import immutable from 'seamless-immutable';
 
 import initialGridEditor from '../../src/store/data/grid_editor';
 import { tenByTen } from '../../src/store/data/grids/initial_grids';
 import tools from './tools';
 
-const setActiveTool = (gridEditor, tool = tools.staticTool, mode = 'Cell') => fromJS(
+const setActiveTool = (gridEditor, tool = tools.staticTool, mode = 'Cell') => immutable(
     gridEditor.merge({ tools: { activeStyleTool: tool, mode } })
 );
 
 const setActiveContent = (gridEditor, { row, col, contentId }) =>
-    gridEditor.setIn(['tools', 'activeCellContent'], new Map({ row, col, contentId }));
+    gridEditor.setIn(['tools', 'activeCellContent'], immutable({ row, col, contentId }));
 
-const setSharedOptions = (gridEditor, sharedOption) => fromJS(
+const setSharedOptions = (gridEditor, sharedOption) => immutable(
     gridEditor.setIn(
         ['tools', 'sharedOptions', sharedOption.option],
         sharedOption.val
@@ -19,7 +19,7 @@ const setSharedOptions = (gridEditor, sharedOption) => fromJS(
 );
 
 const addUndoHistoryToGrid = (gridEditor) => {
-    const oldGrid = gridEditor.get('grid');
+    const oldGrid = gridEditor.grid;
     return gridEditor.set('grid', { past: [], present: oldGrid, future: [] });
 };
 
@@ -52,6 +52,7 @@ export default {
     withContentBoldTool: setActiveTool(ge, tools.contentBoldTool(false)),
     withMiniContentUpTool: setActiveTool(ge, tools.contentUpTool(true)),
     withMainContentUpTool: setActiveTool(ge, tools.contentUpTool(false)),
+    withMainContentRightTool: setActiveTool(ge, tools.contentRightTool(false)),
     withFontIncreaseTool: setActiveTool(ge, tools.increaseFontSize(false)),
     withMiniFontDecreaseTool: setActiveTool(ge, tools.decreaseFontSize(true)),
     withClearContentTool: setActiveTool(ge, tools.clearContentTool),

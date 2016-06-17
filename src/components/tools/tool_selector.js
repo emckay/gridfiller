@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { List } from 'immutable';
 
 import actions from '../../actions';
 import selectors from '../../selectors';
@@ -8,30 +7,29 @@ import { ToolIcon } from './tool_icon';
 
 export const ToolSelector = ({ tools, activeStyleTool, toggleActiveStyleTool }) => {
     const icon = (toolOrGroup) => {
-        if (toolOrGroup.get('fontAwesome') !== undefined) {
-            return <i className={`fa fa-${toolOrGroup.get('fontAwesome')}`} />;
+        if (toolOrGroup.fontAwesome !== undefined) {
+            return <i className={`fa fa-${toolOrGroup.fontAwesome}`} />;
         }
 
-        return <i className="material-icons">{toolOrGroup.get('materialIcon')}</i>;
+        return <i className="material-icons">{toolOrGroup.materialIcon}</i>;
     };
 
     return (
         <div className="tool-selector">
             {tools.map((group) => (
-                <div className="tool-group" key={group.get('name')}>
+                <div className="tool-group" key={group.name}>
                     <div className="tool-group-header">
                         {icon(group)}
-                        {group.get('name')}
+                        {group.name}
                     </div>
-                    {group.get('tools').map((tool) => (
+                    {group.tools.map((tool) => (
                         <ToolIcon
-                            key={tool.get('name')}
+                            key={tool.name}
                             tool={tool}
                             clickHandler={toggleActiveStyleTool}
                             active={tool === activeStyleTool}
                             icon={icon(tool)}
-                            iconClass={tool.get('iconClass') || ''}
-                            mode={group.get('name')}
+                            iconClass={tool.iconClass || ''}
                         />
                     ))}
                 </div>
@@ -41,7 +39,7 @@ export const ToolSelector = ({ tools, activeStyleTool, toggleActiveStyleTool }) 
 };
 
 ToolSelector.propTypes = {
-    tools: React.PropTypes.instanceOf(List).isRequired,
+    tools: React.PropTypes.array.isRequired,
     activeStyleTool: React.PropTypes.object,
     toggleActiveStyleTool: React.PropTypes.func,
 };

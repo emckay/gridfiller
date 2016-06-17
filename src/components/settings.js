@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
-import { List } from 'immutable';
 
 import selectors from '../selectors';
 import actions from '../actions';
@@ -17,7 +16,7 @@ export const Settings = ({ cells, onImportGrid }) => (
 );
 
 Settings.propTypes = {
-    cells: React.PropTypes.instanceOf(List),
+    cells: React.PropTypes.array,
     onImportGrid: React.PropTypes.func,
 };
 

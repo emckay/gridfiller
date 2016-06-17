@@ -2,8 +2,6 @@ import React from 'react';
 import { expect } from 'chai';
 import { shallow } from 'enzyme';
 
-import { Map } from 'immutable';
-
 import { Grid } from '../../src/components/grid/grid';
 import { tenByTen } from '../../src/store/data/grids/initial_grids';
 
@@ -19,10 +17,12 @@ describe('<Grid />', () => {
             expect(wrapper).to.have.exactly(100).descendants('Cell');
         });
 
-        it('passes style prop as Map to cells', () => {
+        it('passes style prop as immutable object to cells', () => {
             wrapper.find('Cell').forEach((cell) => {
                 expect(cell).to.have.prop('style');
-                expect(cell.prop('style')).to.be.instanceOf(Map);
+                const styleProp = cell.prop('style');
+                expect(styleProp).to.be.instanceOf(Object);
+                expect(() => { styleProp.a = 1; }).to.throw(TypeError);
             });
         });
     });

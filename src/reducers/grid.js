@@ -1,10 +1,10 @@
-import { Map, fromJS } from 'immutable';
+import immutable from 'seamless-immutable';
 
 import { loadCells } from '../utils/state_loader';
 
 const handleSetStyle = (currentState, action) => currentState.setIn(
     ['cells', action.row, action.col, 'style'],
-    fromJS(action.style)
+    immutable(action.style)
 );
 
 const handleImportGrid = (currentState, action) => currentState.set(
@@ -12,7 +12,7 @@ const handleImportGrid = (currentState, action) => currentState.set(
     loadCells(action.compressedGrid)
 );
 
-export default function (currentState = new Map(), action) {
+export default function (currentState = immutable({}), action) {
     switch (action.type) {
         case 'SET_STYLE':
             return handleSetStyle(currentState, action);

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Map } from 'immutable';
 
 export const ToolIcon = ({ tool, active, clickHandler, mode, icon, iconClass }) => (
     <div
@@ -11,7 +10,7 @@ export const ToolIcon = ({ tool, active, clickHandler, mode, icon, iconClass }) 
 );
 
 ToolIcon.propTypes = {
-    tool: React.PropTypes.instanceOf(Map).isRequired,
+    tool: React.PropTypes.object.isRequired,
     active: React.PropTypes.bool,
     clickHandler: React.PropTypes.func,
     mode: React.PropTypes.string,

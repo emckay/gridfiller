@@ -1,4 +1,5 @@
-import { Map, List } from 'immutable';
+import immutable from 'seamless-immutable';
+import get from 'lodash/get';
 
 const handleClearActiveStyleTool = (currentState) => {
     const newState = { activeStyleTool: undefined, mode: undefined };
@@ -6,7 +7,7 @@ const handleClearActiveStyleTool = (currentState) => {
 };
 
 const handleToggleActiveStyleTool = (currentState, action) => {
-    if (currentState.get('activeStyleTool') === action.tool) {
+    if (currentState.activeStyleTool === action.tool) {
         return handleClearActiveStyleTool(currentState);
     }
 
@@ -18,8 +19,8 @@ const handleSetSharedOption = (currentState, key, value) =>
     currentState.setIn(['sharedOptions', key], value);
 
 const handleSwapColors = (currentState) => {
-    const primaryColor = currentState.getIn(['sharedOptions', 'primaryColor']);
-    const secondaryColor = currentState.getIn(['sharedOptions', 'secondaryColor']);
+    const primaryColor = get(currentState, ['sharedOptions', 'primaryColor']);
+    const secondaryColor = get(currentState, ['sharedOptions', 'secondaryColor']);
     return currentState.setIn(
         ['sharedOptions', 'primaryColor'],
         secondaryColor
@@ -27,23 +28,23 @@ const handleSwapColors = (currentState) => {
 };
 
 const handleToggleActiveCellContent = (currentState, { row, col, contentId }) => {
-    const currentActive = currentState.get('activeCellContent');
+    const currentActive = currentState.activeCellContent;
     let different = false;
 
     if (currentActive !== undefined) {
-        if (row !== currentActive.get('row')) different = true;
-        if (col !== currentActive.get('col')) different = true;
-        if (contentId !== currentActive.get('contentId')) different = true;
+        if (row !== currentActive.row) different = true;
+        if (col !== currentActive.col) different = true;
+        if (contentId !== currentActive.contentId) different = true;
     }
 
     if (currentActive === undefined || different) {
-        return currentState.set('activeCellContent', new Map({ row, col, contentId }));
+        return currentState.set('activeCellContent', immutable({ row, col, contentId }));
     }
 
     return currentState.set('activeCellContent', undefined);
 };
 
-export default function (currentState = new Map(), action) {
+export default function (currentState = immutable({}), action) {
     switch (action.type) {
         case 'TOGGLE_ACTIVE_STYLE_TOOL':
             return handleToggleActiveStyleTool(currentState, action);

@@ -1,6 +1,8 @@
-import { combineReducers } from 'redux-immutable';
+import { combineReducers } from 'redux-seamless-immutable';
 import undoable from 'redux-undo';
-import { List, Map } from 'immutable';
+import immutable from 'seamless-immutable';
+import get from 'lodash/get';
+import mapValues from 'lodash/mapValues';
 
 import defaults from '../../defaults';
 import { emptyContents } from '../../store/data/grids/empty_cell';
@@ -13,9 +15,11 @@ import { handleApplyBorderWidthTool, handleApplyBorderStyleTool } from './border
 const fillSharedOptions = (dynamicTool, sharedOptions) => {
     let tool = dynamicTool;
     if (tool !== undefined) {
-        tool.forEach((v, k) => {
-            if (v instanceof Map) {
-                for (const [style, value] of v) {
+        for (const k of Object.keys(tool)) {
+            const v = tool[k];
+            if (v instanceof Object) {
+                for (const style of Object.keys(v)) {
+                    const value = v[style];
                     if (typeof value === 'function') {
                         tool = tool.setIn(
                             [k, style],
@@ -24,7 +28,7 @@ const fillSharedOptions = (dynamicTool, sharedOptions) => {
                     }
                 }
             }
-        });
+        }
     }
     return tool;
 };
@@ -46,13 +50,15 @@ export const insert = (history, state, limit) => {
 };
 
 const handleApplyCellStyleTool = (currentState, action, tool) => {
-    const presentGrid = currentState.get('grid').present;
-    const filledTool = fillSharedOptions(tool, currentState.getIn(['tools', 'sharedOptions']));
-    const newGrid = presentGrid.mergeIn(
-        ['cells', action.row, action.col, 'style'],
-        filledTool.get('style')
-    );
-    return currentState.set('grid', insert(currentState.get('grid'), newGrid));
+    const presentGrid = currentState.grid.present;
+    const filledTool = fillSharedOptions(tool, get(currentState, ['tools', 'sharedOptions']));
+
+    let newGrid = presentGrid;
+    for (const k of Object.keys(filledTool.style)) {
+        newGrid = newGrid.setIn(['cells', action.row, action.col, 'style', k], filledTool.style[k]);
+    }
+
+    return currentState.set('grid', insert(currentState.grid, newGrid));
 };
 
 const defaultValue = (style, target) => {
@@ -73,60 +79,64 @@ const defaultValue = (style, target) => {
 };
 
 const handleApplyContentStyleTool = (currentState, action, tool) => {
-    const styleInd = ['cells', action.row, action.col, 'content', action.target, 'style'];
-    const presentGrid = currentState.get('grid').present;
-    const filledTool = fillSharedOptions(tool, currentState.getIn(['tools', 'sharedOptions']));
+    const styleInd =
+        ['cells', action.row, action.col, 'content', action.target, 'style'];
+    const presentGrid = currentState.grid.present;
+    const filledTool = fillSharedOptions(tool, get(currentState, ['tools', 'sharedOptions']));
 
-    let newStyle = filledTool.get('style');
+    let newStyle = filledTool.style;
+    const currentStyle = get(presentGrid, styleInd);
 
-    const currentStyle = currentState.get('grid').present.getIn(styleInd);
-
-    newStyle = newStyle.map((value, key) => {
-        if (value instanceof List) {
-            if (currentStyle !== undefined && currentStyle.get(key) !== undefined) {
-                const newPos = (value.indexOf(currentStyle.get(key)) + 1) % value.size;
-                return value.get(newPos);
+    newStyle = mapValues(newStyle, (value, key) => {
+        if (value instanceof Array) {
+            if (currentStyle !== undefined && currentStyle[key] !== undefined) {
+                const newPos = (value.indexOf(currentStyle[key]) + 1) % value.length;
+                return value[newPos];
             }
-            return value.get(0);
+            return value[0];
         } else if (typeof value === 'string' && value.match(/[+\-]\d+/)) {
             const intValue = parseInt(value, 10);
-            if (currentStyle !== undefined && currentStyle.get(key) !== undefined) {
-                return currentStyle.get(key) + intValue;
+            if (currentStyle !== undefined && currentStyle[key] !== undefined) {
+                return currentStyle[key] + intValue;
             }
             return defaultValue(key, action.target) + intValue;
         }
         return value;
     });
-    const newGrid = presentGrid.mergeIn(styleInd, newStyle);
 
-    return currentState.set('grid', insert(currentState.get('grid'), newGrid));
+    let newGrid = presentGrid;
+    for (const style of Object.keys(newStyle)) {
+        newGrid = newGrid.setIn([...styleInd, style], newStyle[style]);
+    }
+
+    return currentState.set('grid', insert(currentState.grid, newGrid));
 };
 
 const handleApplyClearTool = (currentState, action, tool) => {
-    if (tool.get('clear') === undefined) {
+    if (tool.clear === undefined) {
         return currentState;
     }
 
-    if (tool.get('clear') === 'all_content') {
+    if (tool.clear === 'all_content') {
         const contentInd = ['cells', action.row, action.col, 'content'];
-        const presentGrid = currentState.get('grid').present;
+        const presentGrid = currentState.grid.present;
         const newGrid = presentGrid.setIn(contentInd, emptyContents());
-        return currentState.set('grid', insert(currentState.get('grid'), newGrid));
+        return currentState.set('grid', insert(currentState.grid, newGrid));
     }
 
     return currentState;
 };
 
 const handleApplyActiveStyleTool = (currentState, action) => {
-    const tool = currentState.getIn(['tools', 'activeStyleTool']);
-    const mode = currentState.getIn(['tools', 'activeStyleTool', 'mode']);
+    const tool = get(currentState, ['tools', 'activeStyleTool']);
+    const mode = get(currentState, ['tools', 'activeStyleTool', 'mode']);
 
     if (tool === undefined) {
         return currentState;
     } else if (mode === undefined || mode === 'cell') {
         return handleApplyCellStyleTool(currentState, action, tool);
     } else if (mode === 'single-border') {
-        if (tool.getIn(['style', 'width']) !== undefined) {
+        if (get(tool, ['style', 'width']) !== undefined) {
             return handleApplyBorderWidthTool(currentState, action, tool);
         }
 
@@ -141,24 +151,25 @@ const handleApplyActiveStyleTool = (currentState, action) => {
 };
 
 const handleUpdateCellContent = (currentState, { text }) => {
-    const target = currentState.getIn(['tools', 'activeCellContent']);
+    const target = get(currentState, ['tools', 'activeCellContent']);
 
     if (target === undefined) return currentState;
 
-    const currentGrid = currentState.get('grid').present;
+    const currentGrid = currentState.grid.present;
 
-    const newGrid = currentGrid.mergeIn([
+    const newGrid = currentGrid.setIn([
         'cells',
-        target.get('row'),
-        target.get('col'),
+        target.row,
+        target.col,
         'content',
-        target.get('contentId'),
-    ], { text });
+        target.contentId,
+        'text',
+    ], text);
 
-    return currentState.set('grid', insert(currentState.get('grid'), newGrid));
+    return currentState.set('grid', insert(currentState.grid, newGrid));
 };
 
-export default function (currentState = new Map(), action) {
+export default function (currentState = immutable({}), action) {
     switch (action.type) {
         case 'APPLY_ACTIVE_STYLE_TOOL': {
             return handleApplyActiveStyleTool(currentState, action);

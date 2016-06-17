@@ -1,15 +1,15 @@
-import { fromJS } from 'immutable';
+import immutable from 'seamless-immutable';
 
-export const fillCellTool = fromJS({
+export const fillCellTool = immutable({
     name: 'Fill Cell',
     style: {
-        backgroundColor: (sharedOptions) => sharedOptions.get('primaryColor'),
+        backgroundColor: (sharedOptions) => sharedOptions.primaryColor,
     },
     materialIcon: 'format_color_fill',
     mode: 'cell',
 });
 
-export const removeFillTool = fromJS({
+export const removeFillTool = immutable({
     name: 'Remove Fill',
     style: {
         backgroundColor: undefined,
@@ -18,7 +18,7 @@ export const removeFillTool = fromJS({
     mode: 'cell',
 });
 
-export const clearContentTool = fromJS({
+export const clearContentTool = immutable({
     name: 'Remove All Content',
     clear: 'all_content',
     materialIcon: 'text_format',
@@ -26,7 +26,7 @@ export const clearContentTool = fromJS({
     mode: 'clear',
 });
 
-export const clearBorderTool = fromJS({
+export const clearBorderTool = immutable({
     name: 'Reset All Borders',
     clear: 'all_borders',
     materialIcon: 'border_all',
@@ -34,14 +34,14 @@ export const clearBorderTool = fromJS({
     mode: 'clear',
 });
 
-export const resetCellTool = fromJS({
+export const resetCellTool = immutable({
     name: 'Reset Cell',
     clear: 'all',
     materialIcon: 'delete',
     mode: 'clear',
 });
 
-export const changeBorderWidthTool = (width, icon) => fromJS({
+export const changeBorderWidthTool = (width, icon) => immutable({
     name: `Change Width (${width})`,
     style: {
         width,
@@ -50,7 +50,7 @@ export const changeBorderWidthTool = (width, icon) => fromJS({
     mode: 'single-border',
 });
 
-export const toggleSolidDashedTool = fromJS({
+export const toggleSolidDashedTool = immutable({
     name: 'Toggle Solid/Dashed',
     style: {
         style: ['solid', 'dashed'],
@@ -59,13 +59,13 @@ export const toggleSolidDashedTool = fromJS({
     mode: 'single-border',
 });
 
-export const mainContentTool = fromJS({
+export const mainContentTool = immutable({
     name: 'Main Content',
     materialIcon: 'mode_edit',
     mode: 'main-content',
 });
 
-export const miniContentTool = fromJS({
+export const miniContentTool = immutable({
     name: 'Mini Content',
     materialIcon: 'mode_edit',
     iconClass: 'mini-icon',
@@ -76,34 +76,33 @@ const addMiniOption = (tool) => (mini) => {
     const upperPrefix = mini ? 'Mini' : 'Main';
     const lowerPrefix = upperPrefix.toLowerCase();
 
-    const newTool = tool.toJS();
-    newTool.name = `${upperPrefix} ${newTool.name}`;
-    newTool.mode = `${lowerPrefix}-${newTool.mode}`;
-    if (mini) newTool.iconClass = 'mini-icon ${newTool.iconClass}';
+    let newTool = tool.set('name', `${upperPrefix} ${tool.name}`);
+    newTool = newTool.set('mode', `${lowerPrefix}-${newTool.mode}`);
+    if (mini) newTool = newTool.set('iconClass', 'mini-icon ${newTool.iconClass}');
 
-    return fromJS(newTool);
+    return immutable(newTool);
 };
 
-const plainContentFillTool = fromJS({
+const plainContentFillTool = immutable({
     name: 'Content Fill',
     materialIcon: 'format_color_fill',
     mode: 'content-style',
     style: {
-        backgroundColor: (sharedOptions) => sharedOptions.get('primaryColor'),
+        backgroundColor: (sharedOptions) => sharedOptions.primaryColor,
     },
 });
 
-const plainContentColorTool = fromJS({
+const plainContentColorTool = immutable({
     name: 'Content Color',
     materialIcon: 'format_color_text',
     mode: 'content-style',
     style: {
-        color: (sharedOptions) => sharedOptions.get('primaryColor'),
+        color: (sharedOptions) => sharedOptions.primaryColor,
     },
 });
 
 const contentToggleFormatTool = (name, icon, styleName, options) => addMiniOption(
-    fromJS({
+    immutable({
         name,
         materialIcon: icon,
         mode: 'content-style',
@@ -126,7 +125,7 @@ export const contentUnderlineTool = contentToggleFormatTool(
 );
 
 const contentRelativeTool = (name, icon, styleName, relativeValue) => addMiniOption(
-    fromJS({
+    immutable({
         name,
         materialIcon: icon,
         mode: 'content-style',
@@ -149,7 +148,7 @@ export const contentLeftTool = contentRelativeTool(
 );
 
 export const contentRightTool = contentRelativeTool(
-    'Content Right', 'arrow_forward', 'right', '+2'
+    'Content Right', 'arrow_forward', 'left', '+2'
 );
 
 export const increaseFontSize = contentRelativeTool(
@@ -160,7 +159,7 @@ export const decreaseFontSize = contentRelativeTool(
     'Decrease Font', 'text_fields', 'fontSize', '-2'
 );
 
-export default fromJS([
+export default immutable([
     {
         name: 'Cell',
         materialIcon: 'select_all',

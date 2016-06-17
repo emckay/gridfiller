@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import get from 'lodash/get';
 
 import actions from '../../../src/actions';
 
@@ -6,7 +7,7 @@ import gridEditor from '../../fixtures/grid_editor';
 
 
 const stateToStyle = (state, cell, style) => (
-    state.get('grid').present.getIn(['cells', ...cell]).getIn(['style', style])
+    get(state, ['grid', 'present', 'cells', ...cell, 'style', style])
 );
 
 const adjacentCells = (row, col) => ({

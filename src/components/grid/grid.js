@@ -1,6 +1,5 @@
 import React from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import { List, Map } from 'immutable';
 import { connect } from 'react-redux';
 import { autofill } from 'redux-form';
 
@@ -18,9 +17,9 @@ export class Grid extends React.Component {
         let activeContentId;
 
         if (this.props.activeCellContent !== undefined) {
-            activeContent = [this.props.activeCellContent.get('row'),
-                this.props.activeCellContent.get('col')];
-            activeContentId = this.props.activeCellContent.get('contentId');
+            activeContent = [this.props.activeCellContent.row,
+                this.props.activeCellContent.col];
+            activeContentId = this.props.activeCellContent.contentId;
         }
 
         return (
@@ -40,7 +39,7 @@ export class Grid extends React.Component {
                                     activeContentId :
                                     undefined
                                 }
-                                {...cell.toObject()}
+                                {...cell}
                             />
                         ))}
                     </div>
@@ -50,11 +49,11 @@ export class Grid extends React.Component {
     }
 }
 Grid.propTypes = {
-    rows: React.PropTypes.instanceOf(List).isRequired,
+    rows: React.PropTypes.array.isRequired,
     applyActiveStyleTool: React.PropTypes.func,
     toggleActiveCellContent: React.PropTypes.func,
     mode: React.PropTypes.string.isRequired,
-    activeCellContent: React.PropTypes.instanceOf(Map),
+    activeCellContent: React.PropTypes.object,
 };
 
 const mapStateToProps = (state) => ({

@@ -1,4 +1,6 @@
 import { insert } from './index';
+import immutable from 'seamless-immutable';
+import get from 'lodash/get';
 
 const adjacentCells = (row, col) => ({
     above: { pos: [row - 1, col] },
@@ -45,7 +47,7 @@ export const targetCellsAndBorders = (row, col, lastRow, lastCol, targetBorder, 
 };
 
 export const handleApplyBorderWidthTool = (currentState, action, tool) => {
-    const cells = currentState.get('grid').present.get('cells');
+    const cells = currentState.grid.present.cells;
 
     const vStyles = ['marginTop', 'height'];
     const hStyles = ['marginLeft', 'width'];
@@ -54,8 +56,8 @@ export const handleApplyBorderWidthTool = (currentState, action, tool) => {
         targetCellsAndBorders(
             action.row,
             action.col,
-            cells.size - 1,
-            cells.get(action.row).size - 1,
+            cells.length - 1,
+            cells[action.row].length - 1,
             action.target,
             'Width',
             hStyles,
@@ -64,7 +66,7 @@ export const handleApplyBorderWidthTool = (currentState, action, tool) => {
 
     const neighbor = targetCells.length > 1;
 
-    const width = tool.getIn(['style', 'width']);
+    const width = get(tool, ['style', 'width']);
     const scaledWidth = width / targetCells.length;
     const halfWidth = width / 2;
 
@@ -73,9 +75,9 @@ export const handleApplyBorderWidthTool = (currentState, action, tool) => {
     for (let i = 0; i < targetStyles.length; i++) {
         const arr = targetStyles[i];
         const targetBorder = arr[0];
-        const origStyle = cells.getIn([...targetCells[i].pos, 'style']);
+        const origStyle = get(cells, [...targetCells[i].pos, 'style']);
 
-        let origBorder = origStyle.get(targetStyles[i][0]);
+        let origBorder = origStyle[targetStyles[i][0]];
         if (origBorder === undefined) origBorder = (neighbor ? 1 : 2);
 
         let defaultMargin = 0;
@@ -84,8 +86,8 @@ export const handleApplyBorderWidthTool = (currentState, action, tool) => {
         ) {
             defaultMargin = -1;
         }
-        const origMargin = origStyle.get(targetStyles[i][1]) || defaultMargin;
-        const origDim = origStyle.get(targetStyles[i][2]) || 60;
+        const origMargin = origStyle[targetStyles[i][1]] || defaultMargin;
+        const origDim = origStyle[targetStyles[i][2]] || 60;
 
         let amounts;
         if (targetBorder === 'borderTopWidth' || targetBorder === 'borderLeftWidth') {
@@ -114,41 +116,45 @@ export const handleApplyBorderWidthTool = (currentState, action, tool) => {
         }
     }
 
-    let newGrid = currentState.get('grid').present;
+    let newGrid = currentState.grid.present;
     targetCells.forEach((c, i) => {
-        newGrid = newGrid.mergeIn(['cells', ...c.pos, 'style'], styleObjs[i]);
+        for (const style of Object.keys(styleObjs[i])) {
+            newGrid = newGrid.setIn(['cells', ...c.pos, 'style', style], styleObjs[i][style]);
+        }
     });
 
-    return currentState.set('grid', insert(currentState.get('grid'), newGrid));
+    return currentState.set('grid', insert(currentState.grid, newGrid));
 };
 
 export const handleApplyBorderStyleTool = (currentState, action, tool) => {
-    const cells = currentState.get('grid').present.get('cells');
+    const cells = currentState.grid.present.cells;
 
     const { targetCells, targetStyles } =
         targetCellsAndBorders(
             action.row,
             action.col,
-            cells.size - 1,
-            cells.get(action.row).size - 1,
+            cells.length - 1,
+            cells[action.row].length - 1,
             action.target,
             'Style'
         );
 
-    let newGrid = currentState.get('grid').present;
+    let newGrid = currentState.grid.present;
 
     for (let i = 0; i < targetCells.length; i++) {
-        const currentBorderStyle = cells.getIn(
-            [...targetCells[i].pos, 'style', targetStyles[i][0]]
-        ) || 'solid';
-        const styles = tool.getIn(['style', 'style']).map((el) => el);
+        const currentBorderStyle = get(
+            cells,
+            [...targetCells[i].pos, 'style', targetStyles[i][0]],
+            'solid'
+        );
+        const styles = get(tool, ['style', 'style']).map((el) => el);
         const styleInd = ['cells', ...targetCells[i].pos, 'style', targetStyles[i][0]];
-        if (currentBorderStyle === styles.get(0)) {
-            newGrid = newGrid.setIn(styleInd, styles.get(1));
+        if (currentBorderStyle === styles[0]) {
+            newGrid = newGrid.setIn(styleInd, styles[1]);
         } else {
-            newGrid = newGrid.setIn(styleInd, styles.get(0));
+            newGrid = newGrid.setIn(styleInd, styles[0]);
         }
     }
 
-    return currentState.set('grid', insert(currentState.get('grid'), newGrid));
+    return currentState.set('grid', insert(currentState.grid, newGrid));
 };

@@ -1,5 +1,4 @@
 import React from 'react';
-import { List } from 'immutable';
 
 import { saveCells } from '../../utils/state_loader';
 
@@ -27,6 +26,6 @@ export class SaveLoad extends React.Component {
 }
 
 SaveLoad.propTypes = {
-    cells: React.PropTypes.instanceOf(List),
+    cells: React.PropTypes.array,
     onImportGrid: React.PropTypes.func,
 };

@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-
-import { Map, fromJS } from 'immutable';
+import get from 'lodash/get';
+import immutable from 'seamless-immutable';
 
 import defaults from '../../../src/defaults';
 import actions from '../../../src/actions';
@@ -11,7 +11,13 @@ import gridEditor from '../../fixtures/grid_editor';
 import { borderStyleTests } from './border_styles.js';
 
 const stateToCell = (state, cell) => (
-    state.get('grid').present.getIn(['cells', ...cell])
+    get(state, ['grid', 'present', 'cells', ...cell])
+);
+
+const stateToContentStyle = (state, cell, contentId, style) => (
+    get(stateToCell(state, cell),
+        ['content', contentId, 'style', style]
+    )
 );
 
 describe('grid editor reducer', () => {
@@ -20,14 +26,15 @@ describe('grid editor reducer', () => {
         const action = 'UNKNOWN';
         const nextState = reducer(initialState, action);
 
-        it('returns immutable Map', () => {
-            expect(nextState).to.be.instanceOf(Map);
+        it('returns immutable state', () => {
+            expect(nextState).to.be.instanceOf(Object);
+            expect(() => { nextState.a = 1; }).to.throw(TypeError);
         });
 
-        for (const [substate, type] of [['grid', Object], ['tools', Map]]) {
+        for (const [substate, type] of [['grid', Object], ['tools', Object]]) {
             it(`returns empty ${substate} sub-state`, () => {
                 expect(nextState).to.include.key(substate);
-                expect(nextState.get(substate)).to.be.instanceOf(type);
+                expect(nextState[substate]).to.be.instanceOf(type);
             });
         }
     });
@@ -40,9 +47,10 @@ describe('grid editor reducer', () => {
             const nextState = reducer(initialState, action);
 
             it('sets cell content', () => {
-                const newContent = nextState.get('grid').present
-                    .getIn(['cells', 1, 2, 'content', '3']);
-                expect(newContent).to.be.instanceOf(Map);
+                const newContent = get(nextState,
+                    ['grid', 'present', 'cells', 1, 2, 'content', '3']
+                );
+                expect(newContent).to.be.instanceOf(Object);
                 expect(newContent).to.have.property('text', 'test text');
             });
         });
@@ -71,17 +79,16 @@ describe('grid editor reducer', () => {
 
         context('with cell style tool', () => {
             const action = actions.applyActiveStyleTool(0, 0);
+            const firstElementStylePos = ['grid', 'present', 'cells', 0, 0, 'style'];
 
             const doesNotOverwrite = (a) => {
                 it('does not overwrite other styles', () => {
-                    const initialState = gridEditor.withStaticTool;
-                    const firstElementStylePos = ['cells', 0, 0, 'style'];
-                    initialState.get('grid').present = initialState.get('grid').present
-                        .setIn(firstElementStylePos, new Map({ borderTopWidth: 2 }));
+                    let initialState = gridEditor.withStaticTool;
+                    initialState = initialState.setIn(firstElementStylePos, { borderTopWidth: 2 });
 
                     const nextState = reducer(initialState, a);
 
-                    expect(nextState.get('grid').present.getIn(firstElementStylePos)).to
+                    expect(get(nextState, firstElementStylePos)).to
                         .include.property('borderTopWidth', 2);
                 });
             };
@@ -90,9 +97,8 @@ describe('grid editor reducer', () => {
                 it('changes style of first element', () => {
                     const initialState = gridEditor.withStaticTool;
                     const nextState = reducer(initialState, action);
-                    const firstElementStylePos = ['cells', 0, 0, 'style'];
-                    expect(nextState.get('grid').present.getIn(firstElementStylePos)).to
-                        .eql(initialState.getIn(['tools', 'activeStyleTool', 'style']));
+                    expect(get(nextState, firstElementStylePos)).to
+                        .eql(get(initialState, ['tools', 'activeStyleTool', 'style']));
                 });
 
                 doesNotOverwrite(action);
@@ -103,9 +109,8 @@ describe('grid editor reducer', () => {
                 const nextState = reducer(initialState, action);
 
                 it('changes style of first element', () => {
-                    const firstElementStylePos = ['cells', 0, 0, 'style'];
-                    expect(nextState.get('grid').present.getIn(firstElementStylePos)).to
-                        .eql(fromJS({ backgroundColor: 'red' }));
+                    expect(get(nextState, firstElementStylePos)).to
+                        .eql(immutable({ backgroundColor: 'red' }));
                 });
 
                 doesNotOverwrite(action);
@@ -123,9 +128,8 @@ describe('grid editor reducer', () => {
 
                 it('changes style', () => {
                     const nextState = reducer(initialState, action);
-                    expect(stateToCell(nextState, cell).getIn(
-                        ['content', 'main', 'style', 'backgroundColor']
-                    )).to.eq('red');
+                    expect(stateToContentStyle(nextState, cell, 'main', 'backgroundColor'))
+                        .to.eq('red');
                 });
             });
 
@@ -135,9 +139,8 @@ describe('grid editor reducer', () => {
 
                 it('changes style', () => {
                     const nextState = reducer(initialState, action);
-                    expect(stateToCell(nextState, cell).getIn(
-                        ['content', 3, 'style', 'backgroundColor']
-                    )).to.eq('red');
+                    expect(stateToContentStyle(nextState, cell, 3, 'backgroundColor'))
+                        .to.eq('red');
                 });
             });
 
@@ -147,18 +150,16 @@ describe('grid editor reducer', () => {
 
                 it('changes to bold first', () => {
                     const nextState = reducer(initialState, action);
-                    expect(stateToCell(nextState, cell).getIn(
-                        ['content', 3, 'style', 'fontWeight']
-                    )).to.eq('bold');
+                    expect(stateToContentStyle(nextState, cell, 3, 'fontWeight'))
+                        .to.eq('bold');
                 });
 
                 it('unsets on second click', () => {
                     const firstState = reducer(initialState, action);
                     const secondState = reducer(firstState, action);
 
-                    expect(stateToCell(secondState, cell).getIn(
-                        ['content', 3, 'style', 'fontWeight']
-                    )).to.eq(undefined);
+                    expect(stateToContentStyle(secondState, cell, 3, 'fontWeight'))
+                        .to.eq(undefined);
                 });
             });
 
@@ -167,28 +168,30 @@ describe('grid editor reducer', () => {
                     const initialState = gridEditor.withMiniContentUpTool;
                     const action = actions.applyActiveStyleTool(...cell, 2);
                     const nextState = reducer(initialState, action);
-                    expect(stateToCell(nextState, cell).getIn(
-                        ['content', 2, 'style', 'top']
-                    )).to.eq(-2);
+                    expect(stateToContentStyle(nextState, cell, 2, 'top')).to.eq(-2);
 
                     const secondState = reducer(nextState, action);
-                    expect(stateToCell(secondState, cell).getIn(
-                        ['content', 2, 'style', 'top']
-                    )).to.eq(-4);
+                    expect(stateToContentStyle(secondState, cell, 2, 'top')).to.eq(-4);
                 });
 
                 it('moves main top by -2 each time', () => {
                     const initialState = gridEditor.withMainContentUpTool;
                     const action = actions.applyActiveStyleTool(...cell, 'main');
                     const nextState = reducer(initialState, action);
-                    expect(stateToCell(nextState, cell).getIn(
-                        ['content', 'main', 'style', 'top']
-                    )).to.eq(-2);
+                    expect(stateToContentStyle(nextState, cell, 'main', 'top')).to.eq(-2);
 
                     const secondState = reducer(nextState, action);
-                    expect(stateToCell(secondState, cell).getIn(
-                        ['content', 'main', 'style', 'top']
-                    )).to.eq(-4);
+                    expect(stateToContentStyle(secondState, cell, 'main', 'top')).to.eq(-4);
+                });
+
+                it('moves main left by +2 each time', () => {
+                    const initialState = gridEditor.withMainContentRightTool;
+                    const action = actions.applyActiveStyleTool(...cell, 'main');
+                    const nextState = reducer(initialState, action);
+                    expect(stateToContentStyle(nextState, cell, 'main', 'left')).to.eq(2);
+
+                    const secondState = reducer(nextState, action);
+                    expect(stateToContentStyle(secondState, cell, 'main', 'left')).to.eq(4);
                 });
 
                 it('increases font size', () => {
@@ -196,9 +199,8 @@ describe('grid editor reducer', () => {
                     const action = actions.applyActiveStyleTool(...cell, 'main');
                     const nextState = reducer(initialState, action);
 
-                    expect(stateToCell(nextState, cell).getIn(
-                        ['content', 'main', 'style', 'fontSize']
-                    )).to.be.greaterThan(defaults.contentFontSize('main'));
+                    expect(stateToContentStyle(nextState, cell, 'main', 'fontSize'))
+                        .to.be.greaterThan(defaults.contentFontSize('main'));
                 });
 
                 it('decreases mini font size', () => {
@@ -206,9 +208,8 @@ describe('grid editor reducer', () => {
                     const action = actions.applyActiveStyleTool(...cell, 4);
                     const nextState = reducer(initialState, action);
 
-                    expect(stateToCell(nextState, cell).getIn(
-                        ['content', 4, 'style', 'fontSize']
-                    )).to.be.lessThan(defaults.contentFontSize(4));
+                    expect(stateToContentStyle(nextState, cell, 4, 'fontSize'))
+                        .to.be.lessThan(defaults.contentFontSize(4));
                 });
             });
         });
@@ -220,13 +221,17 @@ describe('grid editor reducer', () => {
                     initialState = initialState.set('grid', {
                         past: [],
                         future: [],
-                        present: initialState.get('grid').present.setIn(['cells', 2, 3, 'content', 0, 'text'], 'hello')
+                        present: initialState.grid.present.setIn(
+                            ['cells', 2, 3, 'content', 0, 'text'],
+                            'hello'
+                        ),
                     });
                     const cell = [2, 3];
                     const action = actions.applyActiveStyleTool(...cell);
                     const nextState = reducer(initialState, action);
 
-                    expect(stateToCell(nextState, cell).getIn(
+                    expect(get(
+                        stateToCell(nextState, cell),
                         ['content', '0', 'text']
                     )).to.eq('');
                 });

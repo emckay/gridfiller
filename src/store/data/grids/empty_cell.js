@@ -1,12 +1,12 @@
-import { fromJS } from 'immutable';
+import immutable from 'seamless-immutable';
 
 
-export const emptyContent = () => fromJS({
+export const emptyContent = () => immutable({
     text: '',
     style: {},
 });
 
-export const emptyContents = () => fromJS({
+export const emptyContents = () => immutable({
     0: emptyContent(),
     1: emptyContent(),
     2: emptyContent(),
@@ -19,9 +19,9 @@ export const emptyContents = () => fromJS({
     main: emptyContent(),
 });
 
-export const emptyCell = () => fromJS({
+export const emptyCell = () => immutable({
     content: {
-        ...emptyContents().toJS(),
+        ...emptyContents(),
     },
     style: {},
     borders: {},

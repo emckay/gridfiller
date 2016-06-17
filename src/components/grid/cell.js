@@ -1,7 +1,7 @@
 import React from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 
-import { Map } from 'immutable';
+import map from 'lodash/map';
 
 export class Cell extends React.Component {
     shouldComponentUpdate(nextProps, nextState) {
@@ -27,7 +27,7 @@ export class Cell extends React.Component {
         return (
             <div
                 className="grid-cell"
-                style={style.toJS()}
+                style={style}
                 onClick={() => { if (mode === 'cell' || mode === 'clear') clickHandler(row, col); }}
                 onMouseEnter={(e) => {
                     if ((mode === 'cell' || mode === 'clear') && e.buttons === 1) {
@@ -35,23 +35,23 @@ export class Cell extends React.Component {
                     }
                 }}
             >
-                {content.map((contentObj, key) => (
+                {map(content, ((contentObj, key) => (
                     <div
                         className={contentClasses(key, activeContentId)}
                         key={key}
                         onClick={() => {
                             if (mode === 'mini-content' || mode === 'main-content') {
-                                contentToggleHandler(row, col, key, contentObj.get('text'));
+                                contentToggleHandler(row, col, key, contentObj.text);
                             } else if (mode === 'mini-content-style'
                                 || mode === 'main-content-style') {
                                 clickHandler(row, col, key);
                             }
                         }}
-                        style={contentObj.get('style').toJS()}
+                        style={contentObj.style}
                     >
-                        {contentObj.get('text')}
+                        {contentObj.text}
                     </div>
-                )).toArray()}
+                )))}
 
                 {[0, 1, 2, 3].map((value) => (
                     <div
@@ -75,8 +75,8 @@ export class Cell extends React.Component {
 Cell.propTypes = {
     row: React.PropTypes.number,
     col: React.PropTypes.number,
-    style: React.PropTypes.instanceOf(Map).isRequired,
-    content: React.PropTypes.instanceOf(Map).isRequired,
+    style: React.PropTypes.object.isRequired,
+    content: React.PropTypes.object.isRequired,
     clickHandler: React.PropTypes.func,
     contentToggleHandler: React.PropTypes.func,
     mode: React.PropTypes.string,

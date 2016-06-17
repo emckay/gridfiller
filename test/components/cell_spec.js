@@ -2,16 +2,16 @@ import React from 'react';
 import { expect } from 'chai';
 import { shallow } from 'enzyme';
 
-import { fromJS } from 'immutable';
+import immutable from 'seamless-immutable';
 
 import { Cell } from '../../src/components/grid/cell';
 import { emptyCell } from '../../src/store/data/grids/empty_cell';
 
 describe('<Cell />', () => {
     describe('render()', () => {
-        const props = emptyCell().toObject();
-        props.style = fromJS({ backgroundColor: 'red' });
-        props.content = props.content.setIn(['main', 'style'], fromJS({ backgroundColor: 'yellow' }));
+        let props = emptyCell();
+        props = props.set('style', immutable({ backgroundColor: 'red' }));
+        props = props.setIn(['content', 'main', 'style'], immutable({ backgroundColor: 'yellow' }));
 
         const wrapper = shallow(<Cell {...props} />);
 
