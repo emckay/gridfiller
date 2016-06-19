@@ -8,7 +8,7 @@ import reducer from '../../../src/reducers/grid_editor';
 
 import gridEditor from '../../fixtures/grid_editor';
 
-import { borderStyleTests } from './border_styles.js';
+import { borderStyleTests, clearBorderTests } from './border_styles.js';
 
 const stateToCell = (state, cell) => (
     get(state, ['grid', 'present', 'cells', ...cell])
@@ -118,6 +118,8 @@ describe('grid editor reducer', () => {
         });
 
         borderStyleTests(reducer);
+
+        clearBorderTests(reducer);
 
         context('content styles', () => {
             const cell = [0, 0];

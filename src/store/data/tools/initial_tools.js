@@ -50,6 +50,14 @@ export const changeBorderWidthTool = (width, icon) => immutable({
     mode: 'single-border',
 });
 
+export const resetSingleBorderTool = immutable({
+    name: 'Reset Border',
+    clear: 'single-border',
+    materialIcon: 'power_input',
+    iconClass: 'clear',
+    mode: 'single-border',
+});
+
 export const toggleSolidDashedTool = immutable({
     name: 'Toggle Solid/Dashed',
     style: {
@@ -174,6 +182,7 @@ export default immutable([
             changeBorderWidthTool(-4, { materialIcon: 'remove', iconClass: 'material-icon-bold' }),
             changeBorderWidthTool(-2, { materialIcon: 'remove' }),
             toggleSolidDashedTool,
+            resetSingleBorderTool,
         ],
     },
     {

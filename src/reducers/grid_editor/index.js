@@ -10,7 +10,11 @@ import { emptyContents } from '../../store/data/grids/empty_cell';
 import gridReducer from '../grid';
 import toolsReducer from '../tools';
 
-import { handleApplyBorderWidthTool, handleApplyBorderStyleTool } from './border_styles';
+import {
+    handleApplyBorderWidthTool,
+    handleApplyBorderStyleTool,
+    handleResetSingleBorderTool,
+} from './border_styles';
 
 const fillSharedOptions = (dynamicTool, sharedOptions) => {
     let tool = dynamicTool;
@@ -138,6 +142,8 @@ const handleApplyActiveStyleTool = (currentState, action) => {
     } else if (mode === 'single-border') {
         if (get(tool, ['style', 'width']) !== undefined) {
             return handleApplyBorderWidthTool(currentState, action, tool);
+        } else if (tool.clear !== undefined) {
+            return handleResetSingleBorderTool(currentState, action, tool);
         }
 
         return handleApplyBorderStyleTool(currentState, action, tool);

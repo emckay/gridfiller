@@ -25,6 +25,39 @@ const checkStyles = (state, cell, msg) => {
     }
 };
 
+export const clearBorderTests = (reducer) => {
+    context('with border clear tools', () => {
+        const cellStyleInd = (row, col) =>
+            ['grid', 'present', 'cells', row, col, 'style'];
+
+        let initialState = gridEditor.withResetSingleBorderTool;
+
+        const cell = [4, 2];
+        const adjCell = [cell[0], cell[1] + 1];
+
+        initialState = initialState.setIn(
+            [...cellStyleInd(...cell), 'borderRightWidth'],
+            3
+        );
+        initialState = initialState.setIn(
+            [...cellStyleInd(...adjCell), 'borderLeftWidth'],
+            3
+        );
+        const action = actions.applyActiveStyleTool(...cell, 1);
+        const nextState = reducer(initialState, action);
+
+        it('resets border in this cell', () => {
+            expect(get(nextState, [...cellStyleInd(...cell), 'borderRightWidth']))
+                .to.eq(1);
+        });
+
+        it('resets border in adjacent cell', () => {
+            expect(get(nextState, [...cellStyleInd(...adjCell), 'borderLeftWidth']))
+                .to.eq(1);
+        });
+    });
+};
+
 export const borderStyleTests = (reducer) => {
     context('with border width tools', () => {
         const initialState = gridEditor.withBorderWidthTool(2);
