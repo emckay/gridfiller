@@ -36,24 +36,25 @@ export class Cell extends React.Component {
                         }
                     }}
                 >
-                    {map(content, ((contentObj, key) => (
-                        <div
-                            className={contentClasses(key, activeContentId)}
-                            key={key}
-                            onClick={() => {
-                                if (mode === 'mini-content' || mode === 'main-content') {
-                                    contentToggleHandler(row, col, key, contentObj.text);
-                                } else if (mode === 'mini-content-style'
-                                    || mode === 'main-content-style') {
-                                    clickHandler(row, col, key);
-                                }
-                            }}
-                            style={contentObj.style}
-                        >
-                            {contentObj.text}
-                        </div>
-                    )))}
-
+                    <div className="content-wrapper">
+                        {map(content, ((contentObj, key) => (
+                            <div
+                                className={contentClasses(key, activeContentId)}
+                                key={key}
+                                onClick={() => {
+                                    if (mode === 'mini-content' || mode === 'main-content') {
+                                        contentToggleHandler(row, col, key, contentObj.text);
+                                    } else if (mode === 'mini-content-style'
+                                        || mode === 'main-content-style') {
+                                        clickHandler(row, col, key);
+                                    }
+                                }}
+                                style={contentObj.style}
+                            >
+                                {contentObj.text}
+                            </div>
+                        )))}
+                    </div>
                     {[0, 1, 2, 3].map((value) => (
                         <div
                             key={value}

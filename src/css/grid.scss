@@ -32,6 +32,14 @@
                 border-right: $border-width * 2 solid $black;
             }
         }
+
+        .content-wrapper {
+            box-sizing: border-box;
+            height: 100%;
+            padding: $border-width * 2;
+            position: relative;
+            width: 100%;
+        }
     }
 
     .grid-cell {
@@ -156,7 +164,6 @@ $border-edit-margin: $border-edit-short / 2 - 1;
     border: 0;
     font-size: $font-size-multiple * $cell-width;
     height: 90%;
-    margin: 5%;
     padding-top: 5px;
     width: 90%;
     z-index: 1;

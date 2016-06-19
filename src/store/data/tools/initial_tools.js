@@ -53,7 +53,7 @@ export const changeBorderWidthTool = (width, icon) => immutable({
 export const resetSingleBorderTool = immutable({
     name: 'Reset Border',
     clear: 'single-border',
-    materialIcon: 'power_input',
+    materialIcon: 'add',
     iconClass: 'clear',
     mode: 'single-border',
 });
