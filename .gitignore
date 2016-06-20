@@ -4,3 +4,4 @@ build/bundle.js.map
 npm-debug.log
 .tags
 .tern-project
+.vscode
