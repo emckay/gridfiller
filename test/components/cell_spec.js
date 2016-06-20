@@ -16,7 +16,6 @@ describe('<Cell />', () => {
         const wrapper = shallow(<Cell {...props} />);
 
         it('gives style to root div', () => {
-            console.log(wrapper.debug());
             expect(wrapper.find('.grid-cell').prop('style')).to.eql({ backgroundColor: 'red' });
         });
 

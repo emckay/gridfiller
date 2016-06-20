@@ -170,7 +170,7 @@ export const handleApplyBorderStyleTool = (currentState, action, tool) => {
     return currentState.set('grid', insert(currentState.grid, newGrid));
 };
 
-export const handleResetSingleBorderTool = (currentState, action) => {
+export const handleResetBorderWidth = (currentState, action) => {
     let newGrid = currentState.grid.present;
     const cells = newGrid.cells;
 

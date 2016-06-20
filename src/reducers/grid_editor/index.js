@@ -13,7 +13,7 @@ import toolsReducer from '../tools';
 import {
     handleApplyBorderWidthTool,
     handleApplyBorderStyleTool,
-    handleResetSingleBorderTool,
+    handleResetBorderWidth,
 } from './border_styles';
 
 const fillSharedOptions = (dynamicTool, sharedOptions) => {
@@ -143,7 +143,7 @@ const handleApplyActiveStyleTool = (currentState, action) => {
         if (get(tool, ['style', 'width']) !== undefined) {
             return handleApplyBorderWidthTool(currentState, action, tool);
         } else if (tool.clear !== undefined) {
-            return handleResetSingleBorderTool(currentState, action, tool);
+            return handleResetBorderWidth(currentState, action, tool);
         }
 
         return handleApplyBorderStyleTool(currentState, action, tool);
