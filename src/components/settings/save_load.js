@@ -7,6 +7,15 @@ export class SaveLoad extends React.Component {
         const { cells, onImportGrid } = this.props;
         return (
             <div className="save-load">
+                <label htmlFor="current_state">
+                    Current State (save or share this to re-load your progress).
+                </label>
+                <textarea
+                    id="current_state"
+                    name="new_state"
+                    defaultValue={saveCells(cells)}
+                    readOnly
+                />
                 <form
                     id="loadState"
                     onSubmit={(e) => {
@@ -14,11 +23,17 @@ export class SaveLoad extends React.Component {
                         onImportGrid(this.input.value);
                     }}
                 >
+                    <label htmlFor="new_state">Load State</label>
                     <textarea
-                        defaultValue={saveCells(cells)}
+                        id="new_state"
+                        name="new_state"
                         ref={(node) => { this.input = node; }}
+                        placeholder='Paste a saved state here and press "Load"'
                     />
-                    <input type="submit" />
+                    <input 
+                        type="submit" 
+                        onClick={() => confirm('Loading this state will clear your current state')} 
+                    />
                 </form>
             </div>
         );

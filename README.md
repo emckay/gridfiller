@@ -16,5 +16,5 @@ This project is a work in progress. The following features still need to be adde
 - Save state in localstorage
 - Appropriate cursor behavior
 - Change number of rows/cols
-- Style settings page
+- ~~Style settings page~~
 - Vertical center content divs
