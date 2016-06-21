@@ -60,37 +60,4 @@ describe('tools reducer', () => {
                 .eq('new color');
         });
     });
-
-    describe('TOGGLE_ACTIVE_CELL_CONTENT', () => {
-        const action = actions.toggleActiveCellContent(1, 2, '3');
-
-        context('without existing active cell content', () => {
-            const initialState = gridEditor.withoutActiveTool.tools;
-            const nextState = reducer(initialState, action);
-
-            it('should set active cell content', () => {
-                expect(nextState.activeCellContent).to.have.property('row', 1);
-                expect(nextState.activeCellContent).to.have.property('col', 2);
-                expect(nextState.activeCellContent).to.have.property('contentId', '3');
-            });
-        });
-
-        context('with existing active cell content', () => {
-            it('changes to different active cell content', () => {
-                const initialState = gridEditor.withActiveContentId(1, 2, '4').tools;
-                const nextState = reducer(initialState, action);
-
-                expect(nextState.activeCellContent).to.have.property('row', 1);
-                expect(nextState.activeCellContent).to.have.property('col', 2);
-                expect(nextState.activeCellContent).to.have.property('contentId', '3');
-            });
-
-            it('clears if same active cell content', () => {
-                const initialState = gridEditor.withActiveContentId().tools;
-                const nextState = reducer(initialState, action);
-
-                expect(typeof(nextState.activeCellContent)).to.eq('undefined');
-            });
-        });
-    });
 });

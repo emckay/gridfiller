@@ -9,6 +9,10 @@ import { emptyContents } from '../../store/data/grids/empty_cell';
 
 import gridReducer from '../grid';
 import toolsReducer from '../tools';
+import {
+    handleToggleActiveCellContent,
+    handleMoveActiveCellContent,
+} from './active_cell_content';
 
 import {
     handleApplyBorderWidthTool,
@@ -157,7 +161,7 @@ const handleApplyActiveStyleTool = (currentState, action) => {
 };
 
 const handleUpdateCellContent = (currentState, { text }) => {
-    const target = get(currentState, ['tools', 'activeCellContent']);
+    const target = currentState.activeCellContent;
 
     if (target === undefined) return currentState;
 
@@ -183,11 +187,18 @@ export default function (currentState = immutable({}), action) {
         case 'UPDATE_CELL_CONTENT': {
             return handleUpdateCellContent(currentState, action);
         }
+        case 'TOGGLE_ACTIVE_CELL_CONTENT': {
+            return handleToggleActiveCellContent(currentState, action);
+        }
+        case 'MOVE_ACTIVE_CELL_CONTENT': {
+            return handleMoveActiveCellContent(currentState, action);
+        }
         default: {
-            return combineReducers({
+            const nextState = combineReducers({
                 grid: undoable(gridReducer),
                 tools: toolsReducer,
             })(currentState, action);
+            return currentState.merge(nextState);
         }
     }
 }

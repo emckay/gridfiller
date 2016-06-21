@@ -13,14 +13,7 @@ export class Grid extends React.Component {
         return shallowCompare(this, nextProps, nextState);
     }
     render() {
-        let activeContent = [-1, -1];
-        let activeContentId;
-
-        if (this.props.activeCellContent !== undefined) {
-            activeContent = [this.props.activeCellContent.row,
-                this.props.activeCellContent.col];
-            activeContentId = this.props.activeCellContent.contentId;
-        }
+        const { activeCellContent = {} } = this.props;
 
         return (
             <div className={`grid ${this.props.mode}-mode`}>
@@ -35,8 +28,8 @@ export class Grid extends React.Component {
                                 clickHandler={this.props.applyActiveStyleTool}
                                 contentToggleHandler={this.props.toggleActiveCellContent}
                                 activeContentId={
-                                    i === activeContent[0] && j === activeContent[1] ?
-                                    activeContentId :
+                                    i === activeCellContent.row && j === activeCellContent.col ?
+                                    activeCellContent.contentId :
                                     undefined
                                 }
                                 {...cell}

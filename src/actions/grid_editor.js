@@ -9,3 +9,8 @@ export const updateCellContent = (text) => ({
     type: 'UPDATE_CELL_CONTENT',
     text,
 });
+
+export const moveActiveCellContent = (direction) => ({
+    type: 'MOVE_ACTIVE_CELL_CONTENT',
+    direction,
+});

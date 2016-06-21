@@ -9,7 +9,7 @@ const setActiveTool = (gridEditor, tool = tools.staticTool, mode = 'Cell') => im
 );
 
 const setActiveContent = (gridEditor, { row, col, contentId }) =>
-    gridEditor.setIn(['tools', 'activeCellContent'], immutable({ row, col, contentId }));
+    gridEditor.set('activeCellContent', immutable({ row, col, contentId }));
 
 const setSharedOptions = (gridEditor, sharedOption) => immutable(
     gridEditor.setIn(

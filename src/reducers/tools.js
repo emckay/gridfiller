@@ -27,23 +27,6 @@ const handleSwapColors = (currentState) => {
     ).setIn(['sharedOptions', 'secondaryColor'], primaryColor);
 };
 
-const handleToggleActiveCellContent = (currentState, { row, col, contentId }) => {
-    const currentActive = currentState.activeCellContent;
-    let different = false;
-
-    if (currentActive !== undefined) {
-        if (row !== currentActive.row) different = true;
-        if (col !== currentActive.col) different = true;
-        if (contentId !== currentActive.contentId) different = true;
-    }
-
-    if (currentActive === undefined || different) {
-        return currentState.set('activeCellContent', immutable({ row, col, contentId }));
-    }
-
-    return currentState.set('activeCellContent', undefined);
-};
-
 export default function (currentState = immutable({}), action) {
     switch (action.type) {
         case 'TOGGLE_ACTIVE_STYLE_TOOL':
@@ -54,8 +37,6 @@ export default function (currentState = immutable({}), action) {
             return handleSetSharedOption(currentState, action.key, action.value);
         case 'SWAP_COLORS':
             return handleSwapColors(currentState);
-        case 'TOGGLE_ACTIVE_CELL_CONTENT':
-            return handleToggleActiveCellContent(currentState, action);
         default:
             return currentState;
     }

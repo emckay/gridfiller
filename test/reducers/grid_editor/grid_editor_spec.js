@@ -39,11 +39,23 @@ describe('grid editor reducer', () => {
         }
     });
 
+    context('with existing initial state and some other action', () => {
+        it('does not erase activeCellContent', () => {
+            const initialState = gridEditor.withActiveContentId(2, 3, 'main');
+            const activeCellContent = { row: 2, col: 3, contentId: 'main' };
+
+            expect(initialState.activeCellContent).to.eql(activeCellContent);
+
+            const nextState = reducer(initialState, { type: 'dummy' });
+            expect(nextState.activeCellContent).to.eql(activeCellContent);
+        });
+    });
+
     describe('UPDATE_CELL_CONTENT', () => {
         const action = actions.updateCellContent('test text');
 
         context('with active content id', () => {
-            const initialState = gridEditor.withActiveContentId();
+            const initialState = gridEditor.withActiveContentId(1, 2, '3');
             const nextState = reducer(initialState, action);
 
             it('sets cell content', () => {

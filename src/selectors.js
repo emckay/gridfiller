@@ -11,7 +11,7 @@ export const getMode = (state) => {
     if (getActiveStyleTool(state)) return getActiveStyleTool(state).mode;
     return 'view';
 };
-export const getActiveCellContent = (state) => getTools(state).activeCellContent;
+export const getActiveCellContent = (state) => getGridEditor(state).activeCellContent;
 
 export default {
     getGridEditor,
