@@ -59,9 +59,9 @@ const mapDispatchToProps = (dispatch) => ({
     applyActiveStyleTool: (row, col, target) => {
         dispatch(actions.applyActiveStyleTool(row, col, target));
     },
-    toggleActiveCellContent: (row, col, target, currentContent) => {
+    toggleActiveCellContent: (row, col, target) => {
         dispatch(actions.toggleActiveCellContent(row, col, target));
-        dispatch(autofill('content', 'content', currentContent));
+        dispatch(autofill('content', 'content', ''));
         document.getElementById('content_field').focus();
     },
 });

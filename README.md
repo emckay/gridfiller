@@ -10,11 +10,15 @@ This project is a work in progress. The following features still need to be adde
 - Version numbers for migrations in grid serialization
 - Cell copy and pasting/several cells to remember
 - Puzzle type templates
-- Arrow key cell navigation
+- ~~Arrow key cell navigation~~
 - Better styling for content input
 - Throttle and limit events in undo history
 - Save state in localstorage
 - Appropriate cursor behavior
 - Change number of rows/cols
 - ~~Style settings page~~
-- Vertical center content divs
+- ~~Vertical center content divs~~
+
+Known issues:
+
+- Cells still active in different modes
