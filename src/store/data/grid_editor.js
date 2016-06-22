@@ -1,11 +1,11 @@
 import immutable from 'seamless-immutable';
 
-import { tenByTen } from './grids/initial_grids';
+import { twelveByTwelve } from './grids/initial_grids';
 import initialTools from './tools/initial_tools';
 
 export default immutable({
     grid: {
-        cells: tenByTen,
+        cells: twelveByTwelve,
     },
     tools: {
         availableTools: initialTools,
