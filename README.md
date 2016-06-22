@@ -2,6 +2,8 @@
 
 Grid Filler is a 2D-grid puzzle editor.
 
+See it in action: [gridfiller.com](https://www.gridfiller.com)
+
 ![superhero puzzle](/superhero.png)
 
 Puzzle by Serkan Yurekli. [Original source](http://www.gmpuzzles.com/blog/2016/06/star-battle-small-regions-by-serkan-yurekli-3/)
@@ -36,4 +38,4 @@ Known issues:
 - Application freezes when importing invalid state
 
 
-Source and images Copyright 2016 Eric McKay
+Source Code Copyright 2016 Eric McKay
