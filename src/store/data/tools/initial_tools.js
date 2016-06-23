@@ -1,4 +1,8 @@
 import immutable from 'seamless-immutable';
+import { ActionCreators as UndoActions } from 'redux-undo';
+import actions from '../../../actions';
+
+console.log('actions', actions);
 
 export const fillCellTool = immutable({
     name: 'Fill Cell',
@@ -167,7 +171,36 @@ export const decreaseFontSize = contentRelativeTool(
     'Decrease Font', 'text_fields', 'fontSize', '-2'
 );
 
-export default immutable([
+
+const actionTool = (name, icon, action) => immutable({
+    name,
+    action,
+    ...icon,
+});
+
+export const undoTool = actionTool('Undo', { materialIcon: 'undo' }, UndoActions.undo());
+export const redoTool = actionTool('Redo', { materialIcon: 'redo' }, UndoActions.redo());
+
+export const createResetCheckpointTool = actionTool(
+    'Create Checkpoint',
+    { materialIcon: 'assignment_turned_in' },
+    actions.createResetCheckpoint()
+);
+
+export const resetToCheckpointTool = actionTool(
+    'Reset to Checkpoint',
+    { materialIcon: 'settings_backup_restore' },
+    actions.resetToCheckpoint()
+);
+
+export const topTools = immutable([
+    undoTool,
+    redoTool,
+    createResetCheckpointTool,
+    resetToCheckpointTool,
+]);
+
+export const sideTools = immutable([
     {
         name: 'Cell',
         materialIcon: 'select_all',

@@ -1,7 +1,7 @@
 import immutable from 'seamless-immutable';
 
 import { twelveByTwelve } from './grids/initial_grids';
-import initialTools from './tools/initial_tools';
+import { sideTools, topTools } from './tools/initial_tools';
 
 export default immutable({
     grid: {
@@ -9,7 +9,8 @@ export default immutable({
         checkpoint: twelveByTwelve,
     },
     tools: {
-        availableTools: initialTools,
+        sideTools,
+        topTools,
         sharedOptions: {
             primaryColor: '#ffff00',
             secondaryColor: '#ff00ff',

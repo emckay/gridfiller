@@ -3,17 +3,12 @@ import { connect } from 'react-redux';
 
 import actions from '../../actions';
 import selectors from '../../selectors';
+
+import { icon } from '../../utils/icons';
+
 import { ToolIcon } from './tool_icon';
 
 export const ToolSelector = ({ tools, activeStyleTool, toggleActiveStyleTool }) => {
-    const icon = (toolOrGroup) => {
-        if (toolOrGroup.fontAwesome !== undefined) {
-            return <i className={`fa fa-${toolOrGroup.fontAwesome}`} />;
-        }
-
-        return <i className="material-icons">{toolOrGroup.materialIcon}</i>;
-    };
-
     return (
         <div className="tool-selector">
             {tools.map((group) => (
@@ -28,8 +23,6 @@ export const ToolSelector = ({ tools, activeStyleTool, toggleActiveStyleTool }) 
                             tool={tool}
                             clickHandler={toggleActiveStyleTool}
                             active={tool === activeStyleTool}
-                            icon={icon(tool)}
-                            iconClass={tool.iconClass || ''}
                         />
                     ))}
                 </div>
@@ -45,7 +38,7 @@ ToolSelector.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-    tools: selectors.getAvailableTools(state),
+    tools: selectors.getSideTools(state),
     activeStyleTool: selectors.getActiveStyleTool(state),
 });
 

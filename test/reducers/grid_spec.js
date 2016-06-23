@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import get from 'lodash/get';
 import immutable from 'seamless-immutable';
 
-import * as actions from '../../src/actions/grid';
+import actions from '../../src/actions';
 import reducer from '../../src/reducers/grid';
 
 import initialGrids from '../../src/store/data/grids/initial_grids';

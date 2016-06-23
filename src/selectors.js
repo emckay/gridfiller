@@ -2,7 +2,8 @@ export const getGridEditor = (state) => state.gridEditor;
 export const getGrid = (state) => getGridEditor(state).grid.present;
 export const getCells = (state) => getGrid(state).cells;
 export const getTools = (state) => getGridEditor(state).tools;
-export const getAvailableTools = (state) => getTools(state).availableTools;
+export const getSideTools = (state) => getTools(state).sideTools;
+export const getTopTools = (state) => getTools(state).topTools;
 export const getActiveStyleTool = (state) => getTools(state).activeStyleTool;
 export const getSharedOptions = (state) => getTools(state).sharedOptions;
 export const getPrimaryColor = (state) => getSharedOptions(state).primaryColor;
@@ -18,7 +19,8 @@ export default {
     getGrid,
     getCells,
     getTools,
-    getAvailableTools,
+    getSideTools,
+    getTopTools,
     getActiveStyleTool,
     getSharedOptions,
     getPrimaryColor,

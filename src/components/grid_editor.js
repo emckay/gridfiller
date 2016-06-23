@@ -9,7 +9,7 @@ import actions from '../actions';
 
 import { GridContainer } from './grid/grid.js';
 import { Tools } from './tools/tools.js';
-import { CellContentFormContainer } from './cell_content_form';
+import { TopToolbarContainer } from './tools/top_toolbar';
 
 export class GridEditor extends React.Component {
     componentDidMount() {
@@ -54,7 +54,7 @@ export class GridEditor extends React.Component {
             <div className="app">
                 <Link to="/settings">Settings</Link>
                 <h1>Grid Filler</h1>
-                <CellContentFormContainer />
+                <TopToolbarContainer />
                 <div className="editor">
                     <GridContainer />
                     <Tools />

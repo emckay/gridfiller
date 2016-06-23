@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
 
-import actions from '../actions';
+import actions from '../../actions';
 
 class CellContentForm extends React.Component {
     render() {

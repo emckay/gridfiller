@@ -5,26 +5,42 @@
     margin: 10px;
 }
 
+.tool-icon {
+    border: 1px solid $black;
+    display: inline-block;
+    font-size: 20px;
+    height: 27px;
+    padding-top: 3px;
+    text-align: center;
+    width: 30px;
+    vertical-align: top;
+
+    &.active {
+        background-color: $active-tool;
+    }
+}
+
+.top-toolbar {
+    display: flex;
+    flex-direction: row;
+    margin-left: 10px;
+
+    > * {
+        margin-right: 20px;
+    }
+
+    form {
+        input {
+            height: 26px;
+        }
+    }
+}
+
 .tool-selector {
     @include no-select;
     display: flex;
     flex-direction: column;
     max-width: 200px;
-
-    .tool-icon {
-        border: 1px solid $black;
-        display: inline-block;
-        font-size: 20px;
-        height: 27px;
-        padding-top: 3px;
-        text-align: center;
-        width: 30px;
-        vertical-align: top;
-
-        &.active {
-            background-color: $active-tool;
-        }
-    }
 
     .tool-group {
         margin-top: 10px;
