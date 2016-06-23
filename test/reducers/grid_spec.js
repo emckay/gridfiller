@@ -44,4 +44,32 @@ describe('grid reducer', () => {
             expect(get(nextState, ['cells', 0, 0, 'style', 'backgroundColor'])).to.eq('#ffff00');
         });
     });
+
+    describe('reset checkpoints', () => {
+        let initialState = immutable({ cells: tenByTen });
+        initialState = initialState.setIn(['cells', 1, 2, 'style'], { backgroundColor: 'red' });
+        const checkpointAction = actions.createResetCheckpoint();
+        const resetAction = actions.resetToCheckpoint();
+        let firstState = reducer(initialState, checkpointAction);
+
+        it('creates reset checkpoint', () => {
+            expect(firstState.checkpoint).to.be.instanceOf(Object);
+            expect(get(firstState, ['checkpoint', 1, 2, 'style']))
+                .to.eql({ backgroundColor: 'red' });
+        });
+
+        it('resets changed changed cells', () => {
+            firstState = firstState.setIn(['cells', 1, 2, 'style'], { backgroundColor: 'blue' });
+            const resetState = reducer(firstState, resetAction);
+            expect(get(resetState, ['cells', 1, 2, 'style', 'backgroundColor']))
+                .to.eq('red');
+        });
+
+        it('resets newly changed cells', () => {
+            firstState = firstState.setIn(['cells', 2, 3, 'style'], { backgroundColor: 'blue' });
+            const resetState = reducer(firstState, resetAction);
+            expect(get(resetState, ['cells', 2, 3, 'style', 'backgroundColor']))
+                .to.eq(undefined);
+        });
+    });
 });

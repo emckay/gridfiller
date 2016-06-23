@@ -6,6 +6,7 @@ import initialTools from './tools/initial_tools';
 export default immutable({
     grid: {
         cells: twelveByTwelve,
+        checkpoint: twelveByTwelve,
     },
     tools: {
         availableTools: initialTools,
