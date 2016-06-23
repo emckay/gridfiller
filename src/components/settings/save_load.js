@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { saveCells } from '../../utils/state_loader';
+import { saveGrid } from '../../utils/state_loader';
 
 export class SaveLoad extends React.Component {
     render() {
-        const { cells, onImportGrid } = this.props;
+        const { grid, onImportGrid } = this.props;
         return (
             <div className="save-load">
                 <label htmlFor="current_state">
@@ -13,7 +13,7 @@ export class SaveLoad extends React.Component {
                 <textarea
                     id="current_state"
                     name="new_state"
-                    defaultValue={saveCells(cells)}
+                    defaultValue={saveGrid(grid)}
                     readOnly
                 />
                 <form
@@ -30,9 +30,9 @@ export class SaveLoad extends React.Component {
                         ref={(node) => { this.input = node; }}
                         placeholder='Paste a saved state here and press "Load"'
                     />
-                    <input 
-                        type="submit" 
-                        onClick={() => confirm('Loading this state will clear your current state')} 
+                    <input
+                        type="submit"
+                        onClick={() => confirm('Loading this state will clear your current state')}
                     />
                 </form>
             </div>
@@ -41,6 +41,6 @@ export class SaveLoad extends React.Component {
 }
 
 SaveLoad.propTypes = {
-    cells: React.PropTypes.array,
+    grid: React.PropTypes.object.isRequired,
     onImportGrid: React.PropTypes.func,
 };

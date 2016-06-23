@@ -22,7 +22,7 @@ This project is a work in progress. The following features still need to be adde
 - ~~Style settings page~~
 - ~~Vertical center content divs~~
 - ~~Arrow key cell navigation~~
-- Puzzle type templates and reset checkpoints
+- ~~Reset checkpoints~~
 - Clear all content formatting tool
 - Version numbers for migrations in grid serialization
 - Cell copy and pasting/cell template gallery
@@ -30,6 +30,7 @@ This project is a work in progress. The following features still need to be adde
 - Save state in localstorage
 - Appropriate cursor behavior
 - Flexible number of rows/cols
+- Puzzle type templates
 
 Known issues:
 

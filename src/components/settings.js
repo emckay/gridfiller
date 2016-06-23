@@ -7,21 +7,21 @@ import actions from '../actions';
 
 import { SaveLoad } from './settings/save_load';
 
-export const Settings = ({ cells, onImportGrid }) => (
+export const Settings = ({ grid, onImportGrid }) => (
     <div className="settings">
         <Link to="/">Back</Link>
         <h1>Settings</h1>
-        <SaveLoad cells={cells} onImportGrid={onImportGrid} />
+        <SaveLoad grid={grid} onImportGrid={onImportGrid} />
     </div>
 );
 
 Settings.propTypes = {
-    cells: React.PropTypes.array,
+    grid: React.PropTypes.object.isRequired,
     onImportGrid: React.PropTypes.func,
 };
 
 const mapStateToProps = (state) => ({
-    cells: selectors.getCells(state),
+    grid: selectors.getGrid(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

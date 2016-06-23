@@ -1,12 +1,12 @@
 import immutable from 'seamless-immutable';
 
-import { loadCells } from '../utils/state_loader';
+import { loadGrid } from '../utils/state_loader';
 
 const handleSetStyle = (currentState, action) =>
     currentState.setIn(['cells', action.row, action.col, 'style'], immutable(action.style));
 
 const handleImportGrid = (currentState, action) =>
-    currentState.set('cells', loadCells(action.compressedGrid));
+    currentState.merge(loadGrid(action.compressedGrid));
 
 const handleCreateResetCheckpoint = (currentState) =>
     currentState.set('checkpoint', currentState.cells);

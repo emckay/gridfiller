@@ -2,8 +2,6 @@ import immutable from 'seamless-immutable';
 import { ActionCreators as UndoActions } from 'redux-undo';
 import actions from '../../../actions';
 
-console.log('actions', actions);
-
 export const fillCellTool = immutable({
     name: 'Fill Cell',
     style: {
