@@ -6,7 +6,13 @@ import defaults from '../../../src/defaults';
 import actions from '../../../src/actions';
 import reducer from '../../../src/reducers/grid_editor';
 
-import { stateToCell, stateToContentStyle } from './helpers';
+import {
+    stateToContentStyle,
+    changeContentText,
+    expectContentText,
+    changeStyle,
+    expectStyle,
+} from './helpers';
 
 import gridEditor from '../../fixtures/grid_editor';
 
@@ -224,22 +230,49 @@ describe('grid editor reducer', () => {
             context('clear content tool', () => {
                 it('resets all content', () => {
                     let initialState = gridEditor.withClearContentTool;
-                    initialState = initialState.set('grid', {
-                        past: [],
-                        future: [],
-                        present: initialState.grid.present.setIn(
-                            ['cells', 2, 3, 'content', 0, 'text'],
-                            'hello'
-                        ),
-                    });
                     const cell = [2, 3];
+                    initialState = changeContentText(initialState, cell, 0, 'hello');
+                    initialState = changeContentText(initialState, cell, 1, 'hello2');
+                    initialState = changeContentText(initialState, cell, 'main', 'hello3');
                     const action = actions.applyActiveStyleTool(...cell);
                     const nextState = reducer(initialState, action);
 
-                    expect(get(
-                        stateToCell(nextState, cell),
-                        ['content', '0', 'text']
-                    )).to.eq('');
+                    expectContentText(nextState, cell, 0, '');
+                    expectContentText(nextState, cell, 1, '');
+                    expectContentText(nextState, cell, 'main', '');
+                });
+            });
+
+            context('clear all tool', () => {
+                let initialState = gridEditor.withClearAllTool;
+                const cell = [4, 6];
+                const aboveCell = [cell[0] - 1, cell[1]];
+
+                initialState = changeContentText(initialState, cell, 0, 'hello');
+                initialState = changeContentText(initialState, cell, 1, 'hello2');
+                initialState = changeContentText(initialState, cell, 'main', 'hello3');
+
+                initialState = changeStyle(initialState, cell, 'borderTopWidth', 4);
+                initialState = changeStyle(initialState, aboveCell, 'borderBottomWidth', 4);
+
+                initialState = changeStyle(initialState, cell, 'backgroundColor', 'red');
+
+                const action = actions.applyActiveStyleTool(...cell);
+                const nextState = reducer(initialState, action);
+
+                it('resets all content', () => {
+                    expectContentText(nextState, cell, 0, '');
+                    expectContentText(nextState, cell, 1, '');
+                    expectContentText(nextState, cell, 'main', '');
+                });
+
+                it('resets all borders', () => {
+                    expectStyle(nextState, cell, 'borderTopWidth', undefined);
+                    expectStyle(nextState, aboveCell, 'borderBottomWidth', 1);
+                });
+
+                it('resets other styles', () => {
+                    expectStyle(nextState, cell, 'backgroundColor', undefined);
                 });
             });
         });

@@ -7,6 +7,8 @@ import mapValues from 'lodash/mapValues';
 import defaults from '../../defaults';
 import { emptyContents } from '../../store/data/grids/empty_cell';
 
+import { insert, runAndInsert, fillSharedOptions } from './helpers';
+
 import gridReducer from '../grid';
 import toolsReducer from '../tools';
 import {
@@ -17,46 +19,9 @@ import {
 import {
     handleApplyBorderWidthTool,
     handleApplyBorderStyleTool,
-    handleClearBorderWidth,
-    handleClearAllBorders,
+    clearBorderWidth,
+    clearAllBorders,
 } from './border_styles';
-
-const fillSharedOptions = (dynamicTool, sharedOptions) => {
-    let tool = dynamicTool;
-    if (tool !== undefined) {
-        for (const k of Object.keys(tool)) {
-            const v = tool[k];
-            if (v instanceof Object) {
-                for (const style of Object.keys(v)) {
-                    const value = v[style];
-                    if (typeof value === 'function') {
-                        tool = tool.setIn(
-                            [k, style],
-                            value(sharedOptions)
-                        );
-                    }
-                }
-            }
-        }
-    }
-    return tool;
-};
-
-export const insert = (history, state, limit) => {
-    const { past, present } = history;
-    const historyOverflow = limit && length(history) >= limit;
-
-    const newPast = history.wasFiltered ? past : [
-        ...past.slice(historyOverflow ? 1 : 0),
-        present,
-    ];
-
-    return {
-        past: newPast,
-        present: state,
-        future: [],
-    };
-};
 
 const handleApplyCellStyleTool = (currentState, action, tool) => {
     const presentGrid = currentState.grid.present;
@@ -121,22 +86,39 @@ const handleApplyContentStyleTool = (currentState, action, tool) => {
     return currentState.set('grid', insert(currentState.grid, newGrid));
 };
 
+
+const clearAllContent = (cells, { row, col }) =>
+    cells.setIn([row, col, 'content'], emptyContents());
+
+const clearAll = (origCells, { row, col }) => {
+    let cells = origCells;
+    cells = clearAllContent(cells, { row, col });
+    cells = clearAllBorders(cells, { row, col });
+    cells = cells.setIn([row, col, 'style'], {});
+    return cells;
+};
+
+const insertClearAllContent = runAndInsert(clearAllContent);
+const insertClearAllBorders = runAndInsert(clearAllBorders);
+const insertClearAll = runAndInsert(clearAll);
+
 const handleApplyClearTool = (currentState, action, tool) => {
     if (tool.clear === undefined) {
         return currentState;
     }
 
     if (tool.clear === 'all_content') {
-        const contentInd = ['cells', action.row, action.col, 'content'];
-        const presentGrid = currentState.grid.present;
-        const newGrid = presentGrid.setIn(contentInd, emptyContents());
-        return currentState.set('grid', insert(currentState.grid, newGrid));
+        return insertClearAllContent(currentState, action);
     } else if (tool.clear === 'all_borders') {
-        return handleClearAllBorders(currentState, action);
+        return insertClearAllBorders(currentState, action);
+    } else if (tool.clear === 'all') {
+        return insertClearAll(currentState, action);
     }
 
     return currentState;
 };
+
+const insertClearBorderWidth = runAndInsert(clearBorderWidth);
 
 const handleApplyActiveStyleTool = (currentState, action) => {
     const tool = get(currentState, ['tools', 'activeStyleTool']);
@@ -150,7 +132,7 @@ const handleApplyActiveStyleTool = (currentState, action) => {
         if (get(tool, ['style', 'width']) !== undefined) {
             return handleApplyBorderWidthTool(currentState, action, tool);
         } else if (tool.clear !== undefined) {
-            return handleClearBorderWidth(currentState, action, tool);
+            return insertClearBorderWidth(currentState, action, tool);
         }
 
         return handleApplyBorderStyleTool(currentState, action, tool);

@@ -1,10 +1,11 @@
-import { insert } from './index';
 import immutable from 'seamless-immutable';
 import get from 'lodash/get';
 import mapKeys from 'lodash/mapKeys';
 import mapValues from 'lodash/mapValues';
 
 import defaults from '../../defaults';
+
+import { insert } from './helpers';
 
 const adjacentCells = (row, col) => ({
     above: [row - 1, col],
@@ -211,17 +212,6 @@ export const clearBorderWidth = (origCells, { row, col, target }) => {
     return changeBorderWidth(cells, { row, col, target, widthDelta });
 };
 
-
-export const handleClearBorderWidth = (currentState, action) => {
-    let newGrid = currentState.grid.present;
-
-    const cells = clearBorderWidth(newGrid.cells, action);
-
-    newGrid = newGrid.set('cells', cells);
-
-    return currentState.set('grid', insert(currentState.grid, newGrid));
-};
-
 export const clearBorderStyle = (startingCells, { row, col, target }) => {
     let cells = startingCells;
 
@@ -242,7 +232,7 @@ export const clearBorderStyle = (startingCells, { row, col, target }) => {
 
         const targetName = `${idToBorderName(thisTarget)}Style`;
 
-        if (origStyles[targetName] === undefined) {
+        if (origStyles === undefined || origStyles[targetName] === undefined) {
             continue;
         }
 
@@ -252,27 +242,23 @@ export const clearBorderStyle = (startingCells, { row, col, target }) => {
     return cells;
 };
 
-export const handleApplyToAll = (currentState, action, func) => {
-    let newGrid = currentState.grid.present;
-    let cells = newGrid.cells;
-
+export const applyToAll = (origCells, action, func) => {
+    let cells = origCells;
     for (let target = 0; target < 4; target++) {
         cells = func(cells, { ...action, target });
     }
-
-    newGrid = newGrid.set('cells', cells);
-
-    return currentState.set('grid', insert(currentState.grid, newGrid));
+    return cells;
 };
 
-export const handleClearAllBorderWidths = (currentState, action) =>
-    handleApplyToAll(currentState, action, clearBorderWidth);
+export const clearAllBorderWidths = (currentState, action) =>
+    applyToAll(currentState, action, clearBorderWidth);
 
-export const handleClearAllBorderStyles = (currentState, action) =>
-    handleApplyToAll(currentState, action, clearBorderStyle);
+export const clearAllBorderStyles = (currentState, action) =>
+    applyToAll(currentState, action, clearBorderStyle);
 
-export const handleClearAllBorders = (currentState, action) => {
-    let nextState = handleClearAllBorderWidths(currentState, action);
-    nextState = handleClearAllBorderStyles(nextState, action);
-    return nextState;
+export const clearAllBorders = (origCells, action) => {
+    let cells = origCells;
+    cells = clearAllBorderWidths(cells, action);
+    cells = clearAllBorderStyles(cells, action);
+    return cells;
 };
