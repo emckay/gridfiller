@@ -18,6 +18,7 @@ import {
     handleApplyBorderWidthTool,
     handleApplyBorderStyleTool,
     handleResetBorderWidth,
+    handleClearAllBorders,
 } from './border_styles';
 
 const fillSharedOptions = (dynamicTool, sharedOptions) => {
@@ -130,6 +131,9 @@ const handleApplyClearTool = (currentState, action, tool) => {
         const presentGrid = currentState.grid.present;
         const newGrid = presentGrid.setIn(contentInd, emptyContents());
         return currentState.set('grid', insert(currentState.grid, newGrid));
+    }
+    else if (tool.clear === 'all_borders') {
+        return handleClearAllBorders(currentState, action);
     }
 
     return currentState;

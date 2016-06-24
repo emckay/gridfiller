@@ -59,4 +59,5 @@ export default {
     withClearBorderTool: setActiveTool(ge, tools.clearBorderTool),
     withResetCellTool: setActiveTool(ge, tools.clearCellTool),
     withResetSingleBorderTool: setActiveTool(ge, tools.resetSingleBorderTool),
+    withResetAllBordersTool: setActiveTool(ge, tools.resetAllBordersTool),
 };

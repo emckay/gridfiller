@@ -26,7 +26,7 @@ const checkStyles = (state, cell, msg) => {
 };
 
 export const clearBorderTests = (reducer) => {
-    context('with border clear tools', () => {
+    context('with clear border clear tools', () => {
         const cellStyleInd = (row, col) =>
             ['grid', 'present', 'cells', row, col, 'style'];
 
@@ -53,6 +53,53 @@ export const clearBorderTests = (reducer) => {
 
         it('resets border in adjacent cell', () => {
             expect(get(nextState, [...cellStyleInd(...adjCell), 'borderLeftWidth']))
+                .to.eq(1);
+        });
+    });
+
+    context('with clear all border', () => {
+        const cellStyleInd = (row, col) =>
+            ['grid', 'present', 'cells', row, col, 'style'];
+
+
+        let initialState = gridEditor.withResetAllBordersTool;
+
+        const cell = [4, 2];
+        const rightCell = [cell[0], cell[1] + 1];
+        const leftCell = [cell[0], cell[1] - 1];
+
+        initialState = initialState.setIn(
+            [...cellStyleInd(...cell), 'borderRightWidth'],
+            3
+        );
+        initialState = initialState.setIn(
+            [...cellStyleInd(...cell), 'borderLeftWidth'],
+            10
+        );
+        initialState = initialState.setIn(
+            [...cellStyleInd(...rightCell), 'borderLeftWidth'],
+            3
+        );
+
+        initialState = initialState.setIn(
+            [...cellStyleInd(...leftCell), 'borderRightWidth'],
+            10
+        );
+        const action = actions.applyActiveStyleTool(...cell, 1);
+        const nextState = reducer(initialState, action);
+
+        it('resets borders in this cell', () => {
+            expect(get(nextState, [...cellStyleInd(...cell), 'borderRightWidth']))
+                .to.eq(1);
+
+            expect(get(nextState, [...cellStyleInd(...cell), 'borderLeftWidth']))
+                .to.eq(1);
+        });
+
+        it('resets borders in adjacent cells', () => {
+            expect(get(nextState, [...cellStyleInd(...rightCell), 'borderLeftWidth']))
+                .to.eq(1);
+            expect(get(nextState, [...cellStyleInd(...leftCell), 'borderRightWidth']))
                 .to.eq(1);
         });
     });

@@ -14,6 +14,12 @@ const adjacentCells = (row, col) => ({
     right: [row, col + 1],
 });
 
+const hasNeighbor = (cells, { row, col, target }) =>
+    (target === 0 && row > 0) ||
+    (target === 1 && row < cells.length - 1) ||
+    (target === 2 && col < cells[row].length - 1) ||
+    (target === 3 && col > 0);
+
 export const targetCells = (row, col, lastRow, lastCol, targetBorderId) => {
     const adj = adjacentCells(row, col);
     const targets = [adj.clicked];
@@ -84,31 +90,28 @@ const styleDeltas = (targetBorderId, widthDelta, neighbor) => {
     return mapKeys(deltas, (v, k) => sharedToFull(targetBorderId, k));
 };
 
-export const handleApplyBorderWidthTool = (currentState, action, tool) => {
-    const cells = currentState.grid.present.cells;
+export const changeBorderWidth = (startingCells, { row, col, target, widthDelta }) => {
+    let cells = startingCells;
 
     const cellsToChange = targetCells(
-        action.row,
-        action.col,
+        row,
+        col,
         cells.length - 1,
-        cells[action.row].length - 1,
-        action.target
+        cells[row].length - 1,
+        target
     );
 
-    let newGrid = currentState.grid.present;
-
     const neighbor = cellsToChange.length > 1;
-    const widthDelta = get(tool, ['style', 'width']);
 
     for (let i = 0; i < cellsToChange.length; i++) {
         const c = cellsToChange[i];
-        const origStyles = get(cells, [...c, 'style']);
+        const origStyles = get(startingCells, [...c, 'style']);
 
         // flip target border for neighboring cell (if top clicked, change bottom of above cell)
-        const target = (action.target + i * 2) % 4;
+        const thisTarget = (target + i * 2) % 4;
 
         // calculate new styles as delta + current (or default) value
-        const deltas = styleDeltas(target, widthDelta, neighbor);
+        const deltas = styleDeltas(thisTarget, widthDelta, neighbor);
         const newStyles = mapValues(deltas, (v, k) => {
             let origOrDefault = origStyles[k];
             if (origOrDefault === undefined) {
@@ -119,15 +122,30 @@ export const handleApplyBorderWidthTool = (currentState, action, tool) => {
         });
 
         // don't change anything if new width will be negative
-        if (newStyles[`${idToBorderName(action.target)}Width`] < 0) {
-            return currentState;
+        if (newStyles[`${idToBorderName(target)}Width`] < 0) {
+            return startingCells;
         }
 
         // merge each new style into the grid
         for (const style of Object.keys(newStyles)) {
-            newGrid = newGrid.setIn(['cells', ...c, 'style', style], newStyles[style]);
+            cells = cells.setIn([...c, 'style', style], newStyles[style]);
         }
     }
+
+    return cells;
+};
+
+export const handleApplyBorderWidthTool = (currentState, action, tool) => {
+    const cells = currentState.grid.present.cells;
+    const widthDelta = get(tool, ['style', 'width']);
+
+    const newGrid = currentState.grid.present.set(
+        'cells',
+        changeBorderWidth(
+            cells,
+            { widthDelta, ...action },
+        )
+    );
 
     return currentState.set('grid', insert(currentState.grid, newGrid));
 };
@@ -170,57 +188,49 @@ export const handleApplyBorderStyleTool = (currentState, action, tool) => {
     return currentState.set('grid', insert(currentState.grid, newGrid));
 };
 
+export const resetSingleBorderWidth = (origCells, { row, col, target }) => {
+    const cells = origCells;
+
+    // check if the border has a neighbor (matters for default and delta)
+    const neighbor = hasNeighbor(cells, { row, col, target });
+
+    const targetName = `${idToBorderName(target)}Width`;
+
+    const currentWidth = get(cells, [row, col, 'style', targetName]);
+    const defaultWidth = defaults[targetName](neighbor);
+
+    // if there is no current width or the current width is the default, then we're done
+    if (currentWidth === undefined || currentWidth === defaultWidth) {
+        return origCells;
+    }
+
+    // total widthDelta for both this change and neighbor's change
+    let widthDelta = defaultWidth - currentWidth;
+    if (neighbor) widthDelta *= 2;
+
+    return changeBorderWidth(cells, { row, col, target, widthDelta });
+};
+
+
 export const handleResetBorderWidth = (currentState, action) => {
     let newGrid = currentState.grid.present;
-    const cells = newGrid.cells;
 
-    const cellsToChange = targetCells(
-        action.row,
-        action.col,
-        cells.length - 1,
-        cells[action.row].length - 1,
-        action.target
-    );
+    const cells = resetSingleBorderWidth(newGrid.cells, action);
 
-    const neighbor = cellsToChange.length > 1;
+    newGrid = newGrid.set('cells', cells);
 
-    for (let i = 0; i < cellsToChange.length; i++) {
-        const c = cellsToChange[i];
-        const target = (action.target + i * 2) % 4;
-        const targetBorderWidth = `${idToBorderName(target)}Width`;
-        const origStyles = get(cells, [...c, 'style']);
+    return currentState.set('grid', insert(currentState.grid, newGrid));
+};
 
-        // if no current styles, do nothing
-        if (origStyles === undefined) return currentState;
+export const handleClearAllBorders = (currentState, action) => {
+    let newGrid = currentState.grid.present;
+    let cells = newGrid.cells;
 
-        const defaultWidth = defaults[targetBorderWidth](neighbor);
-
-        const currentWidth = get(cells, [...c, 'style', targetBorderWidth]);
-
-        // total widthDelta for both this change and neighbor' change
-        const widthDelta = (defaultWidth - currentWidth) * 2;
-
-        // do nothing if this width hasn't been set or it is already the default
-        if (currentWidth === undefined || widthDelta === 0) {
-            return currentState;
-        }
-
-        const deltas = styleDeltas(target, widthDelta, neighbor);
-
-        const newStyles = mapValues(deltas, (v, k) => {
-            let origOrDefault = origStyles[k];
-            if (origOrDefault === undefined) {
-                origOrDefault = defaults[k](neighbor, c[0]);
-            }
-
-            return v + origOrDefault;
-        });
-
-        // merge each new style into the grid
-        for (const style of Object.keys(newStyles)) {
-            newGrid = newGrid.setIn(['cells', ...c, 'style', style], newStyles[style]);
-        }
+    for (let target = 0; target < 4; target++) {
+        cells = resetSingleBorderWidth(cells, { ...action, target });
     }
+
+    newGrid = newGrid.set('cells', cells);
 
     return currentState.set('grid', insert(currentState.grid, newGrid));
 };

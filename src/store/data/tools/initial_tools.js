@@ -28,7 +28,7 @@ export const clearContentTool = immutable({
     mode: 'clear',
 });
 
-export const clearBorderTool = immutable({
+export const resetAllBordersTool = immutable({
     name: 'Reset All Borders',
     clear: 'all_borders',
     materialIcon: 'border_all',
@@ -202,7 +202,7 @@ export const sideTools = immutable([
     {
         name: 'Cell',
         materialIcon: 'select_all',
-        tools: [fillCellTool, removeFillTool, clearContentTool, clearBorderTool, resetCellTool],
+        tools: [fillCellTool, removeFillTool, clearContentTool, resetAllBordersTool, resetCellTool],
     },
     {
         name: 'Border',
