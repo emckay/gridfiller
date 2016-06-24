@@ -188,7 +188,7 @@ export const handleApplyBorderStyleTool = (currentState, action, tool) => {
     return currentState.set('grid', insert(currentState.grid, newGrid));
 };
 
-export const resetSingleBorderWidth = (origCells, { row, col, target }) => {
+export const clearBorderWidth = (origCells, { row, col, target }) => {
     const cells = origCells;
 
     // check if the border has a neighbor (matters for default and delta)
@@ -212,25 +212,67 @@ export const resetSingleBorderWidth = (origCells, { row, col, target }) => {
 };
 
 
-export const handleResetBorderWidth = (currentState, action) => {
+export const handleClearBorderWidth = (currentState, action) => {
     let newGrid = currentState.grid.present;
 
-    const cells = resetSingleBorderWidth(newGrid.cells, action);
+    const cells = clearBorderWidth(newGrid.cells, action);
 
     newGrid = newGrid.set('cells', cells);
 
     return currentState.set('grid', insert(currentState.grid, newGrid));
 };
 
-export const handleClearAllBorders = (currentState, action) => {
+export const clearBorderStyle = (startingCells, { row, col, target }) => {
+    let cells = startingCells;
+
+    const cellsToChange = targetCells(
+        row,
+        col,
+        cells.length - 1,
+        cells[row].length - 1,
+        target
+    );
+
+    for (let i = 0; i < cellsToChange.length; i++) {
+        const c = cellsToChange[i];
+        const origStyles = get(startingCells, [...c, 'style']);
+
+        // flip target border for neighboring cell (if top clicked, change bottom of above cell)
+        const thisTarget = (target + i * 2) % 4;
+
+        const targetName = `${idToBorderName(thisTarget)}Style`;
+
+        if (origStyles[targetName] === undefined) {
+            continue;
+        }
+
+        cells = cells.setIn([...c, 'style', targetName], defaults[targetName]());
+    }
+
+    return cells;
+};
+
+export const handleApplyToAll = (currentState, action, func) => {
     let newGrid = currentState.grid.present;
     let cells = newGrid.cells;
 
     for (let target = 0; target < 4; target++) {
-        cells = resetSingleBorderWidth(cells, { ...action, target });
+        cells = func(cells, { ...action, target });
     }
 
     newGrid = newGrid.set('cells', cells);
 
     return currentState.set('grid', insert(currentState.grid, newGrid));
+};
+
+export const handleClearAllBorderWidths = (currentState, action) =>
+    handleApplyToAll(currentState, action, clearBorderWidth);
+
+export const handleClearAllBorderStyles = (currentState, action) =>
+    handleApplyToAll(currentState, action, clearBorderStyle);
+
+export const handleClearAllBorders = (currentState, action) => {
+    let nextState = handleClearAllBorderWidths(currentState, action);
+    nextState = handleClearAllBorderStyles(nextState, action);
+    return nextState;
 };

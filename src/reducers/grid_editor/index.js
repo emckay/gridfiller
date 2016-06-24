@@ -17,7 +17,7 @@ import {
 import {
     handleApplyBorderWidthTool,
     handleApplyBorderStyleTool,
-    handleResetBorderWidth,
+    handleClearBorderWidth,
     handleClearAllBorders,
 } from './border_styles';
 
@@ -131,8 +131,7 @@ const handleApplyClearTool = (currentState, action, tool) => {
         const presentGrid = currentState.grid.present;
         const newGrid = presentGrid.setIn(contentInd, emptyContents());
         return currentState.set('grid', insert(currentState.grid, newGrid));
-    }
-    else if (tool.clear === 'all_borders') {
+    } else if (tool.clear === 'all_borders') {
         return handleClearAllBorders(currentState, action);
     }
 
@@ -151,7 +150,7 @@ const handleApplyActiveStyleTool = (currentState, action) => {
         if (get(tool, ['style', 'width']) !== undefined) {
             return handleApplyBorderWidthTool(currentState, action, tool);
         } else if (tool.clear !== undefined) {
-            return handleResetBorderWidth(currentState, action, tool);
+            return handleClearBorderWidth(currentState, action, tool);
         }
 
         return handleApplyBorderStyleTool(currentState, action, tool);

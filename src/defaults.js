@@ -30,14 +30,14 @@ export const contentLeft = (contentId) => {
 
 export const borderWidth = constants['border-width'];
 
-const defaultBorderWidthFunc =
+const defaultBorderWidth =
     (neighbor) => (neighbor ? constants['border-width'] : constants['border-width'] * 2);
 
 const marginTop = (neighbor, row) => (row > 0 ? 0 : -1);
 const marginLeft = () => 0;
 const width = () => cellWidth();
 const height = () => width();
-const borderStyle = () => 'solid';
+const defaultBorderStyle = () => 'solid';
 
 export default {
     cellWidth,
@@ -45,13 +45,17 @@ export default {
     contentTop,
     contentLeft,
     borderWidth,
-    borderTopWidth: defaultBorderWidthFunc,
-    borderRightWidth: defaultBorderWidthFunc,
-    borderBottomWidth: defaultBorderWidthFunc,
-    borderLeftWidth: defaultBorderWidthFunc,
+    borderTopWidth: defaultBorderWidth,
+    borderRightWidth: defaultBorderWidth,
+    borderBottomWidth: defaultBorderWidth,
+    borderLeftWidth: defaultBorderWidth,
+    borderTopStyle: defaultBorderStyle,
+    borderRightStyle: defaultBorderStyle,
+    borderBottomStyle: defaultBorderStyle,
+    borderLeftStyle: defaultBorderStyle,
+    borderStyle: defaultBorderStyle,
     marginTop,
     marginLeft,
     width,
     height,
-    borderStyle,
 };

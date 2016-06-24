@@ -6,19 +6,11 @@ import defaults from '../../../src/defaults';
 import actions from '../../../src/actions';
 import reducer from '../../../src/reducers/grid_editor';
 
+import { stateToCell, stateToContentStyle } from './helpers';
+
 import gridEditor from '../../fixtures/grid_editor';
 
 import { borderStyleTests, clearBorderTests } from './border_styles.js';
-
-const stateToCell = (state, cell) => (
-    get(state, ['grid', 'present', 'cells', ...cell])
-);
-
-const stateToContentStyle = (state, cell, contentId, style) => (
-    get(stateToCell(state, cell),
-        ['content', contentId, 'style', style]
-    )
-);
 
 describe('grid editor reducer', () => {
     context('with undefined initial state and unknown action', () => {

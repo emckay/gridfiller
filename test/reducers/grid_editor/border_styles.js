@@ -1,6 +1,8 @@
 import { expect } from 'chai';
 import get from 'lodash/get';
 
+import { changeStyle, expectStyle } from './helpers';
+
 import actions from '../../../src/actions';
 
 import gridEditor from '../../fixtures/grid_editor';
@@ -26,7 +28,7 @@ const checkStyles = (state, cell, msg) => {
 };
 
 export const clearBorderTests = (reducer) => {
-    context('with clear border clear tools', () => {
+    context('with clear single border width', () => {
         const cellStyleInd = (row, col) =>
             ['grid', 'present', 'cells', row, col, 'style'];
 
@@ -57,50 +59,32 @@ export const clearBorderTests = (reducer) => {
         });
     });
 
-    context('with clear all border', () => {
-        const cellStyleInd = (row, col) =>
-            ['grid', 'present', 'cells', row, col, 'style'];
-
-
+    context('with clear all border widths and styles', () => {
         let initialState = gridEditor.withResetAllBordersTool;
 
         const cell = [4, 2];
         const rightCell = [cell[0], cell[1] + 1];
-        const leftCell = [cell[0], cell[1] - 1];
+        const aboveCell = [cell[0] - 1, cell[1]];
+        const belowCell = [cell[0] + 1, cell[1]];
 
-        initialState = initialState.setIn(
-            [...cellStyleInd(...cell), 'borderRightWidth'],
-            3
-        );
-        initialState = initialState.setIn(
-            [...cellStyleInd(...cell), 'borderLeftWidth'],
-            10
-        );
-        initialState = initialState.setIn(
-            [...cellStyleInd(...rightCell), 'borderLeftWidth'],
-            3
-        );
+        initialState = changeStyle(initialState, cell, 'borderRightWidth', 3);
+        initialState = changeStyle(initialState, rightCell, 'borderLeftWidth', 3);
+        initialState = changeStyle(initialState, cell, 'borderTopWidth', 10);
+        initialState = changeStyle(initialState, aboveCell, 'borderBottomWidth', 10);
+        initialState = changeStyle(initialState, cell, 'borderBottomStyle', 'dashed');
+        initialState = changeStyle(initialState, belowCell, 'borderBottomStyle', 'dashed');
 
-        initialState = initialState.setIn(
-            [...cellStyleInd(...leftCell), 'borderRightWidth'],
-            10
-        );
         const action = actions.applyActiveStyleTool(...cell, 1);
         const nextState = reducer(initialState, action);
 
         it('resets borders in this cell', () => {
-            expect(get(nextState, [...cellStyleInd(...cell), 'borderRightWidth']))
-                .to.eq(1);
-
-            expect(get(nextState, [...cellStyleInd(...cell), 'borderLeftWidth']))
-                .to.eq(1);
+            expectStyle(nextState, cell, 'borderRightWidth', 1);
+            expectStyle(nextState, cell, 'borderTopWidth', 1);
         });
 
         it('resets borders in adjacent cells', () => {
-            expect(get(nextState, [...cellStyleInd(...rightCell), 'borderLeftWidth']))
-                .to.eq(1);
-            expect(get(nextState, [...cellStyleInd(...leftCell), 'borderRightWidth']))
-                .to.eq(1);
+            expectStyle(nextState, rightCell, 'borderLeftWidth', 1);
+            expectStyle(nextState, aboveCell, 'borderBottomWidth', 1);
         });
     });
 };
