@@ -7,16 +7,11 @@ import actions from '../../../src/actions';
 import reducer from '../../../src/reducers/grid_editor';
 
 import {
-    stateToContentStyle,
-    changeContentText,
-    expectContentText,
-    changeStyle,
-    expectStyle,
+    getContentStyle,
+    expectContentStyle,
 } from './helpers';
 
 import gridEditor from '../../fixtures/grid_editor';
-
-import { borderStyleTests, clearBorderTests } from './border_styles.js';
 
 describe('grid editor reducer', () => {
     context('with undefined initial state and unknown action', () => {
@@ -127,10 +122,6 @@ describe('grid editor reducer', () => {
             });
         });
 
-        borderStyleTests(reducer);
-
-        clearBorderTests(reducer);
-
         context('content styles', () => {
             const cell = [0, 0];
 
@@ -140,8 +131,7 @@ describe('grid editor reducer', () => {
 
                 it('changes style', () => {
                     const nextState = reducer(initialState, action);
-                    expect(stateToContentStyle(nextState, cell, 'main', 'backgroundColor'))
-                        .to.eq('red');
+                    expectContentStyle(nextState, cell, 'main', 'backgroundColor', 'red');
                 });
             });
 
@@ -151,8 +141,7 @@ describe('grid editor reducer', () => {
 
                 it('changes style', () => {
                     const nextState = reducer(initialState, action);
-                    expect(stateToContentStyle(nextState, cell, 3, 'backgroundColor'))
-                        .to.eq('red');
+                    expectContentStyle(nextState, cell, 3, 'backgroundColor', 'red');
                 });
             });
 
@@ -162,16 +151,14 @@ describe('grid editor reducer', () => {
 
                 it('changes to bold first', () => {
                     const nextState = reducer(initialState, action);
-                    expect(stateToContentStyle(nextState, cell, 3, 'fontWeight'))
-                        .to.eq('bold');
+                    expectContentStyle(nextState, cell, 3, 'fontWeight', 'bold');
                 });
 
                 it('unsets on second click', () => {
                     const firstState = reducer(initialState, action);
                     const secondState = reducer(firstState, action);
 
-                    expect(stateToContentStyle(secondState, cell, 3, 'fontWeight'))
-                        .to.eq(undefined);
+                    expectContentStyle(secondState, cell, 3, 'fontWeight', undefined);
                 });
             });
 
@@ -180,30 +167,30 @@ describe('grid editor reducer', () => {
                     const initialState = gridEditor.withMiniContentUpTool;
                     const action = actions.applyActiveStyleTool(...cell, 2);
                     const nextState = reducer(initialState, action);
-                    expect(stateToContentStyle(nextState, cell, 2, 'top')).to.eq(-2);
+                    expectContentStyle(nextState, cell, 2, 'top', -2);
 
                     const secondState = reducer(nextState, action);
-                    expect(stateToContentStyle(secondState, cell, 2, 'top')).to.eq(-4);
+                    expectContentStyle(secondState, cell, 2, 'top', -4);
                 });
 
                 it('moves main top by -2 each time', () => {
                     const initialState = gridEditor.withMainContentUpTool;
                     const action = actions.applyActiveStyleTool(...cell, 'main');
                     const nextState = reducer(initialState, action);
-                    expect(stateToContentStyle(nextState, cell, 'main', 'top')).to.eq(-2);
+                    expectContentStyle(nextState, cell, 'main', 'top', -2);
 
                     const secondState = reducer(nextState, action);
-                    expect(stateToContentStyle(secondState, cell, 'main', 'top')).to.eq(-4);
+                    expectContentStyle(secondState, cell, 'main', 'top', -4);
                 });
 
                 it('moves main left by +2 each time', () => {
                     const initialState = gridEditor.withMainContentRightTool;
                     const action = actions.applyActiveStyleTool(...cell, 'main');
                     const nextState = reducer(initialState, action);
-                    expect(stateToContentStyle(nextState, cell, 'main', 'left')).to.eq(2);
+                    expectContentStyle(nextState, cell, 'main', 'left', 2);
 
                     const secondState = reducer(nextState, action);
-                    expect(stateToContentStyle(secondState, cell, 'main', 'left')).to.eq(4);
+                    expectContentStyle(secondState, cell, 'main', 'left', 4);
                 });
 
                 it('increases font size', () => {
@@ -211,7 +198,7 @@ describe('grid editor reducer', () => {
                     const action = actions.applyActiveStyleTool(...cell, 'main');
                     const nextState = reducer(initialState, action);
 
-                    expect(stateToContentStyle(nextState, cell, 'main', 'fontSize'))
+                    expect(getContentStyle(nextState, cell, 'main', 'fontSize'))
                         .to.be.greaterThan(defaults.contentFontSize('main'));
                 });
 
@@ -220,59 +207,8 @@ describe('grid editor reducer', () => {
                     const action = actions.applyActiveStyleTool(...cell, 4);
                     const nextState = reducer(initialState, action);
 
-                    expect(stateToContentStyle(nextState, cell, 4, 'fontSize'))
+                    expect(getContentStyle(nextState, cell, 4, 'fontSize'))
                         .to.be.lessThan(defaults.contentFontSize(4));
-                });
-            });
-        });
-
-        context('clear tools', () => {
-            context('clear content tool', () => {
-                it('resets all content', () => {
-                    let initialState = gridEditor.withClearContentTool;
-                    const cell = [2, 3];
-                    initialState = changeContentText(initialState, cell, 0, 'hello');
-                    initialState = changeContentText(initialState, cell, 1, 'hello2');
-                    initialState = changeContentText(initialState, cell, 'main', 'hello3');
-                    const action = actions.applyActiveStyleTool(...cell);
-                    const nextState = reducer(initialState, action);
-
-                    expectContentText(nextState, cell, 0, '');
-                    expectContentText(nextState, cell, 1, '');
-                    expectContentText(nextState, cell, 'main', '');
-                });
-            });
-
-            context('clear all tool', () => {
-                let initialState = gridEditor.withClearAllTool;
-                const cell = [4, 6];
-                const aboveCell = [cell[0] - 1, cell[1]];
-
-                initialState = changeContentText(initialState, cell, 0, 'hello');
-                initialState = changeContentText(initialState, cell, 1, 'hello2');
-                initialState = changeContentText(initialState, cell, 'main', 'hello3');
-
-                initialState = changeStyle(initialState, cell, 'borderTopWidth', 4);
-                initialState = changeStyle(initialState, aboveCell, 'borderBottomWidth', 4);
-
-                initialState = changeStyle(initialState, cell, 'backgroundColor', 'red');
-
-                const action = actions.applyActiveStyleTool(...cell);
-                const nextState = reducer(initialState, action);
-
-                it('resets all content', () => {
-                    expectContentText(nextState, cell, 0, '');
-                    expectContentText(nextState, cell, 1, '');
-                    expectContentText(nextState, cell, 'main', '');
-                });
-
-                it('resets all borders', () => {
-                    expectStyle(nextState, cell, 'borderTopWidth', undefined);
-                    expectStyle(nextState, aboveCell, 'borderBottomWidth', 1);
-                });
-
-                it('resets other styles', () => {
-                    expectStyle(nextState, cell, 'backgroundColor', undefined);
                 });
             });
         });

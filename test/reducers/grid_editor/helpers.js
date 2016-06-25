@@ -22,12 +22,11 @@ export const changeContentText = (state, cell, contentId, value) =>
 export const expectContentText = (state, cell, contentId, value) =>
     expect(get(state, [...cellContentInd(...cell, contentId), 'text'])).to.eq(value);
 
-export const stateToCell = (state, cell) => (
-    get(state, cellInd(...cell))
-);
+export const contentStyleInd = (row, col, contentId, style) =>
+    [...cellInd(row, col), 'content', contentId, 'style', style]
 
-export const stateToContentStyle = (state, cell, contentId, style) => (
-    get(stateToCell(state, cell),
-        ['content', contentId, 'style', style]
-    )
-);
+export const getContentStyle = (state, cell, contentId, style) =>
+    get(state, contentStyleInd(...cell, contentId, style));
+
+export const expectContentStyle = (state, cell, contentId, style, value) =>
+    expect(getContentStyle(state, cell, contentId, style)).to.eq(value);
