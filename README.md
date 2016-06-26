@@ -23,14 +23,15 @@ This project is a work in progress. The following features still need to be adde
 - ~~Vertical center content divs~~
 - ~~Arrow key cell navigation~~
 - ~~Reset checkpoints~~
-- Clear all content formatting tool
-- Version numbers for migrations in grid serialization
+- ~~Clear all content formatting tool~~
 - Cell copy and pasting/cell template gallery
 - Better styling for content input
 - Save state in localstorage
 - Appropriate cursor behavior
 - Flexible number of rows/cols
 - Puzzle type templates
+- Version numbers for migrations in grid serialization
+- Error handling for invalid state
 
 Known issues:
 
