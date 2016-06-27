@@ -34,8 +34,8 @@ describe('grid editor reducer', () => {
 
     context('with existing initial state and some other action', () => {
         it('does not erase activeCellContent', () => {
-            const initialState = gridEditor.withActiveContentId(2, 3, 'main');
-            const activeCellContent = { row: 2, col: 3, contentId: 'main' };
+            const initialState = gridEditor.withActiveContentId(2, 3, 'main', 'main');
+            const activeCellContent = { row: 2, col: 3, contentId: 'main', gridId: 'main' };
 
             expect(initialState.activeCellContent).to.eql(activeCellContent);
 
@@ -127,7 +127,7 @@ describe('grid editor reducer', () => {
 
             context('with main content style tool', () => {
                 const initialState = gridEditor.withContentStyleTool;
-                const action = actions.applyActiveStyleTool(...cell, 'main');
+                const action = actions.applyActiveStyleTool(...cell, { target: 'main' });
 
                 it('changes style', () => {
                     const nextState = reducer(initialState, action);
@@ -137,7 +137,7 @@ describe('grid editor reducer', () => {
 
             context('with mini content style tool', () => {
                 const initialState = gridEditor.withContentStyleTool;
-                const action = actions.applyActiveStyleTool(...cell, 3);
+                const action = actions.applyActiveStyleTool(...cell, { target: 3 });
 
                 it('changes style', () => {
                     const nextState = reducer(initialState, action);
@@ -147,7 +147,7 @@ describe('grid editor reducer', () => {
 
             context('with toggle content style tool', () => {
                 const initialState = gridEditor.withContentBoldTool;
-                const action = actions.applyActiveStyleTool(...cell, 3);
+                const action = actions.applyActiveStyleTool(...cell, { target: 3 });
 
                 it('changes to bold first', () => {
                     const nextState = reducer(initialState, action);
@@ -165,7 +165,7 @@ describe('grid editor reducer', () => {
             context('with relative content style tool', () => {
                 it('moves mini top by -2 each time', () => {
                     const initialState = gridEditor.withMiniContentUpTool;
-                    const action = actions.applyActiveStyleTool(...cell, 2);
+                    const action = actions.applyActiveStyleTool(...cell, { target: 2 });
                     const nextState = reducer(initialState, action);
                     expectContentStyle(nextState, cell, 2, 'top', -2);
 
@@ -175,7 +175,7 @@ describe('grid editor reducer', () => {
 
                 it('moves main top by -2 each time', () => {
                     const initialState = gridEditor.withMainContentUpTool;
-                    const action = actions.applyActiveStyleTool(...cell, 'main');
+                    const action = actions.applyActiveStyleTool(...cell, { target: 'main' });
                     const nextState = reducer(initialState, action);
                     expectContentStyle(nextState, cell, 'main', 'top', -2);
 
@@ -185,7 +185,7 @@ describe('grid editor reducer', () => {
 
                 it('moves main left by +2 each time', () => {
                     const initialState = gridEditor.withMainContentRightTool;
-                    const action = actions.applyActiveStyleTool(...cell, 'main');
+                    const action = actions.applyActiveStyleTool(...cell, { target: 'main' });
                     const nextState = reducer(initialState, action);
                     expectContentStyle(nextState, cell, 'main', 'left', 2);
 
@@ -195,7 +195,7 @@ describe('grid editor reducer', () => {
 
                 it('increases font size', () => {
                     const initialState = gridEditor.withFontIncreaseTool;
-                    const action = actions.applyActiveStyleTool(...cell, 'main');
+                    const action = actions.applyActiveStyleTool(...cell, { target: 'main' });
                     const nextState = reducer(initialState, action);
 
                     expect(getContentStyle(nextState, cell, 'main', 'fontSize'))
@@ -204,7 +204,7 @@ describe('grid editor reducer', () => {
 
                 it('decreases mini font size', () => {
                     const initialState = gridEditor.withMiniFontDecreaseTool;
-                    const action = actions.applyActiveStyleTool(...cell, 4);
+                    const action = actions.applyActiveStyleTool(...cell, { target: 4 });
                     const nextState = reducer(initialState, action);
 
                     expect(getContentStyle(nextState, cell, 4, 'fontSize'))

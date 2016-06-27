@@ -10,6 +10,7 @@ import actions from '../actions';
 import { GridContainer } from './grid/grid.js';
 import { Tools } from './tools/tools.js';
 import { TopToolbarContainer } from './tools/top_toolbar';
+import { GalleryContainer } from './gallery';
 
 export class GridEditor extends React.Component {
     componentDidMount() {
@@ -56,7 +57,10 @@ export class GridEditor extends React.Component {
                 <h1>Grid Filler</h1>
                 <TopToolbarContainer />
                 <div className="editor">
-                    <GridContainer />
+                    <div className="grid-gallery">
+                        <GridContainer gridId="main" />
+                        <GalleryContainer />
+                    </div>
                     <Tools />
                 </div>
             </div>

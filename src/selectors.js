@@ -13,6 +13,7 @@ export const getMode = (state) => {
     return 'view';
 };
 export const getActiveCellContent = (state) => getGridEditor(state).activeCellContent;
+export const getGallery = (state) => getGrid(state).gallery;
 
 export default {
     getGridEditor,
@@ -27,4 +28,5 @@ export default {
     getSecondaryColor,
     getMode,
     getActiveCellContent,
+    getGallery,
 };

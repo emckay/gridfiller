@@ -1,8 +1,9 @@
-export const applyActiveStyleTool = (row, col, target) => ({
+export const applyActiveStyleTool = (row, col, { target, gridId } = { }) => ({
     type: 'APPLY_ACTIVE_STYLE_TOOL',
     row,
     col,
     target,
+    gridId,
 });
 
 export const updateCellContent = (text) => ({

@@ -8,8 +8,8 @@ const setActiveTool = (gridEditor, tool = tools.staticTool, mode = 'Cell') => im
     gridEditor.merge({ tools: { activeStyleTool: tool, mode } })
 );
 
-const setActiveContent = (gridEditor, { row, col, contentId }) =>
-    gridEditor.set('activeCellContent', immutable({ row, col, contentId }));
+const setActiveContent = (gridEditor, activeContent) =>
+    gridEditor.set('activeCellContent', immutable(activeContent));
 
 const setSharedOptions = (gridEditor, sharedOption) => immutable(
     gridEditor.setIn(
@@ -39,8 +39,8 @@ export default {
     withBorderStyleTool: setActiveTool(ge, tools.toggleSolidDashedTool),
     withBorderWidthTool: (width = 2) =>
         setActiveTool(ge, tools.changeBorderWidthTool(width), 'Border'),
-    withActiveContentId: (row = 1, col = 2, contentId = '3') =>
-        setMode(setActiveContent(ge, { row, col, contentId }), 'Text'),
+    withActiveContentId: (row = 1, col = 2, contentId = '3', gridId = 'main') =>
+        setMode(setActiveContent(ge, { row, col, contentId, gridId }), 'Text'),
     withContentStyleTool: setSharedOptions(
         setActiveTool(ge, tools.contentFillTool(false)),
         { option: 'primaryColor', val: 'red' }

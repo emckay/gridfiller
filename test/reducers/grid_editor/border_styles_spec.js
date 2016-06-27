@@ -40,7 +40,7 @@ describe('border width tools', () => {
         const cells = adjacentCells(2, 4);
 
         it('handles top clicked', () => {
-            const action = actions.applyActiveStyleTool(...cells.clicked.pos, 0);
+            const action = actions.applyActiveStyleTool(...cells.clicked.pos, { target: 0 });
             const nextState = reducer(initialState, action);
 
             cells.clicked.styles = {
@@ -61,7 +61,7 @@ describe('border width tools', () => {
         });
 
         it('handles right clicked', () => {
-            const action = actions.applyActiveStyleTool(...cells.clicked.pos, 1);
+            const action = actions.applyActiveStyleTool(...cells.clicked.pos, { target: 1 });
             const nextState = reducer(initialState, action);
 
             cells.clicked.styles = {
@@ -82,7 +82,7 @@ describe('border width tools', () => {
         });
 
         it('handles bottom clicked', () => {
-            const action = actions.applyActiveStyleTool(...cells.clicked.pos, 2);
+            const action = actions.applyActiveStyleTool(...cells.clicked.pos, { target: 2 });
             const nextState = reducer(initialState, action);
 
             cells.clicked.styles = {
@@ -103,7 +103,7 @@ describe('border width tools', () => {
         });
 
         it('handles left clicked', () => {
-            const action = actions.applyActiveStyleTool(...cells.clicked.pos, 3);
+            const action = actions.applyActiveStyleTool(...cells.clicked.pos, { target: 3 });
             const nextState = reducer(initialState, action);
 
             cells.clicked.styles = {
@@ -124,9 +124,9 @@ describe('border width tools', () => {
         });
 
         it('handles left then right', () => {
-            const left = actions.applyActiveStyleTool(...cells.clicked.pos, 3);
+            const left = actions.applyActiveStyleTool(...cells.clicked.pos, { target: 3 });
             const firstState = reducer(initialState, left);
-            const right = actions.applyActiveStyleTool(...cells.clicked.pos, 1);
+            const right = actions.applyActiveStyleTool(...cells.clicked.pos, { target: 1 });
             const secondState = reducer(firstState, right);
 
             cells.clicked.styles = {
@@ -157,7 +157,7 @@ describe('border width tools', () => {
 
         it('handles decreasing twice', () => {
             const decreasingState = gridEditor.withBorderWidthTool(-2);
-            const action = actions.applyActiveStyleTool(...cells.clicked.pos, 0);
+            const action = actions.applyActiveStyleTool(...cells.clicked.pos, { target: 0 });
             const firstState = reducer(decreasingState, action);
             const secondState = reducer(firstState, action);
 
@@ -183,7 +183,7 @@ describe('border width tools', () => {
         const cells = adjacentCells(1, 9);
 
         it('handles right clicked', () => {
-            const action = actions.applyActiveStyleTool(...cells.clicked.pos, 1);
+            const action = actions.applyActiveStyleTool(...cells.clicked.pos, { target: 1 });
             const nextState = reducer(initialState, action);
 
             cells.clicked.styles = {
@@ -196,7 +196,7 @@ describe('border width tools', () => {
         });
 
         it('handles right clicked twice', () => {
-            const action = actions.applyActiveStyleTool(...cells.clicked.pos, 1);
+            const action = actions.applyActiveStyleTool(...cells.clicked.pos, { target: 1 });
             const firstState = reducer(initialState, action);
             const secondState = reducer(firstState, action);
 
@@ -214,7 +214,7 @@ describe('border width tools', () => {
         const cells = adjacentCells(9, 1);
 
         it('handles bottom clicked', () => {
-            const action = actions.applyActiveStyleTool(...cells.clicked.pos, 2);
+            const action = actions.applyActiveStyleTool(...cells.clicked.pos, { target: 2 });
             const nextState = reducer(initialState, action);
 
             cells.clicked.styles = {
@@ -231,7 +231,7 @@ describe('border width tools', () => {
         const cells = adjacentCells(2, 0);
 
         it('handles left clicked', () => {
-            const action = actions.applyActiveStyleTool(...cells.clicked.pos, 3);
+            const action = actions.applyActiveStyleTool(...cells.clicked.pos, { target: 3 });
             const nextState = reducer(initialState, action);
 
             cells.clicked.styles = {
@@ -248,7 +248,7 @@ describe('border width tools', () => {
         const cells = adjacentCells(0, 2);
 
         it('handles top clicked', () => {
-            const action = actions.applyActiveStyleTool(...cells.clicked.pos, 0);
+            const action = actions.applyActiveStyleTool(...cells.clicked.pos, { target: 0 });
             const nextState = reducer(initialState, action);
 
             cells.clicked.styles = {
@@ -261,7 +261,7 @@ describe('border width tools', () => {
         });
 
         it('handles bottom clicked', () => {
-            const action = actions.applyActiveStyleTool(...cells.clicked.pos, 2);
+            const action = actions.applyActiveStyleTool(...cells.clicked.pos, { target: 2 });
             const nextState = reducer(initialState, action);
 
             cells.clicked.styles = {
@@ -282,7 +282,7 @@ describe('border style tools', () => {
         const cells = adjacentCells(2, 2);
 
         it('handles top click', () => {
-            const action = actions.applyActiveStyleTool(...cells.clicked.pos, 0);
+            const action = actions.applyActiveStyleTool(...cells.clicked.pos, { target: 0 });
             const nextState = reducer(initialState, action);
 
             cells.clicked.styles = {
@@ -299,7 +299,7 @@ describe('border style tools', () => {
         });
 
         it('handles right click', () => {
-            const action = actions.applyActiveStyleTool(...cells.clicked.pos, 1);
+            const action = actions.applyActiveStyleTool(...cells.clicked.pos, { target: 1 });
             const nextState = reducer(initialState, action);
 
             cells.clicked.styles = {
@@ -316,7 +316,7 @@ describe('border style tools', () => {
         });
 
         it('handles two clicks', () => {
-            const action = actions.applyActiveStyleTool(...cells.clicked.pos, 1);
+            const action = actions.applyActiveStyleTool(...cells.clicked.pos, { target: 1 });
             const firstState = reducer(initialState, action);
             const secondState = reducer(firstState, action);
 

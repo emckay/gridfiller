@@ -6,7 +6,7 @@ import reducer from '../../../src/reducers/grid_editor/';
 import gridEditor from '../../fixtures/grid_editor';
 
 describe('TOGGLE_ACTIVE_CELL_CONTENT', () => {
-    const action = actions.toggleActiveCellContent(1, 2, '3');
+    const action = actions.toggleActiveCellContent(1, 2, { contentId: '3', gridId: 'main' });
 
     context('without existing active cell content', () => {
         const initialState = gridEditor.withoutActiveTool;

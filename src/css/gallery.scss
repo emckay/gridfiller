@@ -1,0 +1,15 @@
+.gallery {
+    display: flex;
+    justify-content: space-around;
+    margin: 0 10px;
+
+    .grid {
+        &:first-child {
+            margin-left: 0;
+        }
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+}

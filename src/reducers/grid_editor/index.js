@@ -7,7 +7,11 @@ import mapValues from 'lodash/mapValues';
 import defaults from '../../defaults';
 import { emptyContents } from '../../store/data/grids/empty_cell';
 
-import { insert, runAndInsert, fillSharedOptions } from './helpers';
+import {
+    insert,
+    runAndInsert,
+    fillSharedOptions,
+} from './helpers';
 
 import gridReducer from '../grid';
 import toolsReducer from '../tools';
@@ -17,23 +21,24 @@ import {
 } from './active_cell_content';
 
 import {
-    handleApplyBorderWidthTool,
-    handleApplyBorderStyleTool,
+    insertChangeBorderWidth,
+    insertToggleBorderStyle,
     clearBorderWidth,
     clearAllBorders,
 } from './border_styles';
 
-const handleApplyCellStyleTool = (currentState, action, tool) => {
-    const presentGrid = currentState.grid.present;
-    const filledTool = fillSharedOptions(tool, get(currentState, ['tools', 'sharedOptions']));
+const applyCellStyle = (cells, action, tool, sharedOptions) => {
+    const filledTool = fillSharedOptions(tool, sharedOptions);
 
-    let newGrid = presentGrid;
+    let newCells = cells;
     for (const k of Object.keys(filledTool.style)) {
-        newGrid = newGrid.setIn(['cells', action.row, action.col, 'style', k], filledTool.style[k]);
+        newCells = newCells.setIn([action.row, action.col, 'style', k], filledTool.style[k]);
     }
 
-    return currentState.set('grid', insert(currentState.grid, newGrid));
+    return newCells;
 };
+
+const handleApplyCellStyleTool = runAndInsert(applyCellStyle);
 
 const defaultValue = (style, target) => {
     switch (style) {
@@ -108,11 +113,11 @@ const handleApplyClearTool = (currentState, action, tool) => {
     }
 
     if (tool.clear === 'all_content') {
-        return insertClearAllContent(currentState, action);
+        return insertClearAllContent(currentState, action.gridId, action);
     } else if (tool.clear === 'all_borders') {
-        return insertClearAllBorders(currentState, action);
+        return insertClearAllBorders(currentState, action.gridId, action);
     } else if (tool.clear === 'all') {
-        return insertClearAll(currentState, action);
+        return insertClearAll(currentState, action.gridId, action);
     }
 
     return currentState;
@@ -127,15 +132,22 @@ const handleApplyActiveStyleTool = (currentState, action) => {
     if (tool === undefined) {
         return currentState;
     } else if (mode === undefined || mode === 'cell') {
-        return handleApplyCellStyleTool(currentState, action, tool);
+        return handleApplyCellStyleTool(
+            currentState,
+            action.gridId,
+            action,
+            tool,
+            get(currentState, ['tools', 'sharedOptions'])
+        );
     } else if (mode === 'single-border') {
         if (get(tool, ['style', 'width']) !== undefined) {
-            return handleApplyBorderWidthTool(currentState, action, tool);
+            const widthDelta = get(tool, ['style', 'width']);
+            return insertChangeBorderWidth(currentState, action.gridId, { widthDelta, ...action });
         } else if (tool.clear !== undefined) {
-            return insertClearBorderWidth(currentState, action, tool);
+            return insertClearBorderWidth(currentState, action.gridId, action, tool);
         }
-
-        return handleApplyBorderStyleTool(currentState, action, tool);
+        console.log('tool', tool.style.style);
+        return insertToggleBorderStyle(currentState, action.gridId, action, tool.style.style);
     } else if (mode === 'mini-content-style' || mode === 'main-content-style') {
         return handleApplyContentStyleTool(currentState, action, tool);
     } else if (mode === 'clear') {
@@ -145,24 +157,19 @@ const handleApplyActiveStyleTool = (currentState, action) => {
     return currentState;
 };
 
-const handleUpdateCellContent = (currentState, { text }) => {
-    const target = currentState.activeCellContent;
+const updateCellContent = (cells, target, { text }) => {
+    if (target === undefined) return cells;
 
-    if (target === undefined) return currentState;
-
-    const currentGrid = currentState.grid.present;
-
-    const newGrid = currentGrid.setIn([
-        'cells',
+    return cells.setIn([
         target.row,
         target.col,
         'content',
         target.contentId,
         'text',
     ], text);
-
-    return currentState.set('grid', insert(currentState.grid, newGrid));
 };
+
+const insertUpdateCellContent = runAndInsert(updateCellContent);
 
 export default function (currentState = immutable({}), action) {
     switch (action.type) {
@@ -170,7 +177,11 @@ export default function (currentState = immutable({}), action) {
             return handleApplyActiveStyleTool(currentState, action);
         }
         case 'UPDATE_CELL_CONTENT': {
-            return handleUpdateCellContent(currentState, action);
+            const target = currentState.activeCellContent;
+            if (target === undefined) {
+                return currentState;
+            }
+            return insertUpdateCellContent(currentState, target.gridId, target, action);
         }
         case 'TOGGLE_ACTIVE_CELL_CONTENT': {
             return handleToggleActiveCellContent(currentState, action);

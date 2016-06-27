@@ -13,8 +13,12 @@ export class Grid extends React.Component {
         return shallowCompare(this, nextProps, nextState);
     }
     render() {
-        const { activeCellContent = {} } = this.props;
-
+        const { activeCellContent = {}, gridId } = this.props;
+        const isActive = (i, j) => (
+            i === activeCellContent.row
+            && j === activeCellContent.col
+            && gridId === activeCellContent.gridId
+        );
         return (
             <div className={`grid ${this.props.mode}-mode`}>
                 {this.props.rows.map((row, i) => (
@@ -28,7 +32,7 @@ export class Grid extends React.Component {
                                 clickHandler={this.props.applyActiveStyleTool}
                                 contentToggleHandler={this.props.toggleActiveCellContent}
                                 activeContentId={
-                                    i === activeCellContent.row && j === activeCellContent.col ?
+                                    isActive(i, j) ?
                                     activeCellContent.contentId :
                                     undefined
                                 }
@@ -47,20 +51,24 @@ Grid.propTypes = {
     toggleActiveCellContent: React.PropTypes.func,
     mode: React.PropTypes.string.isRequired,
     activeCellContent: React.PropTypes.object,
+    gridId: React.PropTypes.string.isRequired,
 };
 
-const mapStateToProps = (state) => ({
-    rows: selectors.getCells(state),
-    mode: (selectors.getMode(state) || '').toLowerCase(),
-    activeCellContent: selectors.getActiveCellContent(state),
-});
+const mapStateToProps = (state, ownProps) => {
+    const rows = ownProps.rows || selectors.getCells(state);
+    return {
+        rows,
+        mode: (selectors.getMode(state) || '').toLowerCase(),
+        activeCellContent: selectors.getActiveCellContent(state),
+    };
+};
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = (dispatch, ownProps) => ({
     applyActiveStyleTool: (row, col, target) => {
-        dispatch(actions.applyActiveStyleTool(row, col, target));
+        dispatch(actions.applyActiveStyleTool(row, col, { target, gridId: ownProps.gridId }));
     },
     toggleActiveCellContent: (row, col, target) => {
-        dispatch(actions.toggleActiveCellContent(row, col, target));
+        dispatch(actions.toggleActiveCellContent(row, col, { contentId: target, gridId: ownProps.gridId }));
         dispatch(autofill('content', 'content', ''));
         document.getElementById('content_field').focus();
     },

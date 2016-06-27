@@ -77,7 +77,7 @@ describe('clear tools', () => {
             [...cellStyleInd(...adjCell), 'borderLeftWidth'],
             3
         );
-        const action = actions.applyActiveStyleTool(...cell, 1);
+        const action = actions.applyActiveStyleTool(...cell, { target: 1 });
         const nextState = reducer(initialState, action);
 
         it('resets border in this cell', () => {
@@ -104,7 +104,7 @@ describe('clear tools', () => {
         initialState = changeStyle(initialState, cell, 'borderBottomStyle', 'dashed');
         initialState = changeStyle(initialState, belowCell, 'borderBottomStyle', 'dashed');
 
-        const action = actions.applyActiveStyleTool(...cell, 1);
+        const action = actions.applyActiveStyleTool(...cell, { target: 1 });
         const nextState = reducer(initialState, action);
 
         it('resets borders in this cell', () => {

@@ -30,3 +30,6 @@ export const getContentStyle = (state, cell, contentId, style) =>
 
 export const expectContentStyle = (state, cell, contentId, style, value) =>
     expect(getContentStyle(state, cell, contentId, style)).to.eq(value);
+
+export const getGalleryCell = (state, gridId) =>
+    get(state, ['grid', 'present', 'gallery', gridId, 0, 0]);

@@ -1,17 +1,20 @@
 import immutable from 'seamless-immutable';
+import { gridInd } from './helpers.js';
+import get from 'lodash/get';
 
-export const handleToggleActiveCellContent = (currentState, { row, col, contentId }) => {
+export const handleToggleActiveCellContent = (currentState, { gridId, row, col, contentId }) => {
     const currentActive = currentState.activeCellContent;
     let different = false;
 
     if (currentActive !== undefined) {
         if (row !== currentActive.row) different = true;
         if (col !== currentActive.col) different = true;
+        if (gridId !== currentActive.gridId) different = true;
         if (contentId !== currentActive.contentId) different = true;
     }
 
     if (currentActive === undefined || different) {
-        return currentState.set('activeCellContent', immutable({ row, col, contentId }));
+        return currentState.set('activeCellContent', immutable({ gridId, row, col, contentId }));
     }
 
     return currentState.set('activeCellContent', undefined);
@@ -55,7 +58,7 @@ const onEdge = (direction, contentId) =>
     (direction === 2 && contentId > 5) ||
     (direction === 3 && contentId % 3 === 0);
 
-export const handleMoveActiveCellContent = (currentState, { direction }) => {
+export const handleMoveActiveCellContent = (currentState, { gridId, direction }) => {
     if (currentState.activeCellContent === undefined) return currentState;
 
     let { row, col, contentId } = currentState.activeCellContent;
@@ -72,12 +75,14 @@ export const handleMoveActiveCellContent = (currentState, { direction }) => {
         contentId = moveMini(direction, idInt, jumpedCell).toString();
     }
 
-    const numRows = currentState.grid.present.cells.length;
+    const grid = get(currentState, gridInd(gridId));
+
+    const numRows = grid.length;
 
     if (row < 0) row = numRows + row;
     else if (row >= numRows) row = row % numRows;
 
-    const numCols = currentState.grid.present.cells[row].length;
+    const numCols = grid[row].length;
     if (col < 0) col = numCols + col;
     else if (col >= numCols) col = col % numCols;
 
