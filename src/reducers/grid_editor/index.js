@@ -3,6 +3,7 @@ import undoable from 'redux-undo';
 import immutable from 'seamless-immutable';
 import get from 'lodash/get';
 import mapValues from 'lodash/mapValues';
+import pickBy from 'lodash/pickBy';
 
 import defaults from '../../defaults';
 import { emptyContents } from '../../store/data/grids/empty_cell';
@@ -11,6 +12,7 @@ import {
     insert,
     runAndInsert,
     fillSharedOptions,
+    activeGrid,
 } from './helpers';
 
 import gridReducer from '../grid';
@@ -39,6 +41,27 @@ const applyCellStyle = (cells, action, tool, sharedOptions) => {
 };
 
 const handleApplyCellStyleTool = runAndInsert(applyCellStyle);
+
+const pasteCell = (cells, copiedCell, sourceGrid, targetCellInd) => {
+    let newCells = cells;
+
+    const borderStyles = pickBy(copiedCell.style, (v, k) => k.includes('border'));
+    const nonBorderStyles = pickBy(copiedCell.style, (v, k) => !k.includes('border'));
+
+    newCells = newCells.setIn(
+        [...targetCellInd, 'style'],
+        nonBorderStyles
+    );
+
+    newCells = newCells.setIn(
+        [...targetCellInd, 'content'],
+        copiedCell.content
+    );
+
+    return newCells;
+};
+
+const insertPasteCell = runAndInsert(pasteCell);
 
 const defaultValue = (style, target) => {
     switch (style) {
@@ -127,11 +150,11 @@ const insertClearBorderWidth = runAndInsert(clearBorderWidth);
 
 const handleApplyActiveStyleTool = (currentState, action) => {
     const tool = get(currentState, ['tools', 'activeStyleTool']);
-    const mode = get(currentState, ['tools', 'activeStyleTool', 'mode']);
+    const mode = get(currentState, ['tools', 'activeStyleTool', 'mode']) || 'cell';
 
     if (tool === undefined) {
         return currentState;
-    } else if (mode === undefined || mode === 'cell') {
+    } else if (mode === 'cell' && tool.style !== undefined) {
         return handleApplyCellStyleTool(
             currentState,
             action.gridId,
@@ -146,12 +169,33 @@ const handleApplyActiveStyleTool = (currentState, action) => {
         } else if (tool.clear !== undefined) {
             return insertClearBorderWidth(currentState, action.gridId, action, tool);
         }
-        console.log('tool', tool.style.style);
         return insertToggleBorderStyle(currentState, action.gridId, action, tool.style.style);
     } else if (mode === 'mini-content-style' || mode === 'main-content-style') {
         return handleApplyContentStyleTool(currentState, action, tool);
     } else if (mode === 'clear') {
         return handleApplyClearTool(currentState, action, tool);
+    }
+
+    if (tool.copy === 'cell') {
+        return currentState.set('copiedCell', {
+            row: action.row,
+            col: action.col,
+            gridId: action.gridId,
+        });
+    }
+
+    if (tool.paste === 'cell') {
+        const ind = currentState.copiedCell;
+        if (ind === undefined) return currentState;
+        const copiedCell = get(activeGrid(currentState, ind.gridId), [ind.row, ind.col]);
+
+        return insertPasteCell(
+            currentState,
+            action.gridId,
+            copiedCell,
+            activeGrid(currentState, action.gridId),
+            [action.row, action.col]
+        );
     }
 
     return currentState;

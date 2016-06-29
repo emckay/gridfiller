@@ -4,7 +4,7 @@ import initialGridEditor from '../../src/store/data/grid_editor';
 import { tenByTen } from '../../src/store/data/grids/initial_grids';
 import tools from './tools';
 
-const setActiveTool = (gridEditor, tool = tools.staticTool, mode = 'Cell') => immutable(
+const setActiveTool = (gridEditor, tool = tools.staticTool, mode = 'cell') => immutable(
     gridEditor.merge({ tools: { activeStyleTool: tool, mode } })
 );
 
@@ -17,6 +17,9 @@ const setSharedOptions = (gridEditor, sharedOption) => immutable(
         sharedOption.val
     )
 );
+
+const setCopiedCell = (gridEditor, copiedCellInd) =>
+    gridEditor.set('copiedCell', copiedCellInd);
 
 const addUndoHistoryToGrid = (gridEditor) => {
     const oldGrid = gridEditor.grid;
@@ -60,4 +63,7 @@ export default {
     withClearAllTool: setActiveTool(ge, tools.clearAllTool),
     withResetSingleBorderTool: setActiveTool(ge, tools.resetSingleBorderTool),
     withResetAllBordersTool: setActiveTool(ge, tools.resetAllBordersTool),
+    withCopyTool: setActiveTool(ge, tools.copyTool),
+    withPasteTool: (copiedCellInd) =>
+        setCopiedCell(setActiveTool(ge, tools.pasteTool), copiedCellInd),
 };

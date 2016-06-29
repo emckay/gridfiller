@@ -5,7 +5,6 @@ import mapValues from 'lodash/mapValues';
 import defaults from '../../defaults';
 
 import {
-    insert,
     hasNeighbor,
     targetCells,
     idToBorderName,

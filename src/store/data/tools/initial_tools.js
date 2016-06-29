@@ -43,6 +43,20 @@ export const clearAllTool = immutable({
     mode: 'clear',
 });
 
+export const copyTool = immutable({
+    name: 'Copy Cell',
+    mode: 'cell',
+    materialIcon: 'content_copy',
+    copy: 'cell',
+});
+
+export const pasteTool = immutable({
+    name: 'Paste Cell',
+    mode: 'cell',
+    materialIcon: 'content_paste',
+    paste: 'cell',
+});
+
 export const changeBorderWidthTool = (width, icon) => immutable({
     name: `Change Width (${width})`,
     style: {
@@ -202,7 +216,15 @@ export const sideTools = immutable([
     {
         name: 'Cell',
         materialIcon: 'select_all',
-        tools: [fillCellTool, removeFillTool, clearContentTool, resetAllBordersTool, clearAllTool],
+        tools: [
+            copyTool,
+            pasteTool,
+            fillCellTool,
+            removeFillTool,
+            clearContentTool,
+            resetAllBordersTool,
+            clearAllTool,
+        ],
     },
     {
         name: 'Border',
