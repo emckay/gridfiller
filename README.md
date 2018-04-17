@@ -19,11 +19,11 @@ This project is a work in progress. The following features still need to be adde
 
 - ~~Relative content styles tools (e.g. position, font size)~~
 - ~~Toggle content style tools (e.g. bold/italic)~~
-- ~~Style settings page~~
 - ~~Vertical center content divs~~
 - ~~Arrow key cell navigation~~
 - ~~Reset checkpoints~~
 - ~~Clear all content formatting tool~~
+- Style settings page
 - Cell copy and pasting/cell template gallery
 - Better styling for content input
 - Save state in localstorage
@@ -35,9 +35,6 @@ This project is a work in progress. The following features still need to be adde
 
 Known issues:
 
-- Cells still active for content adding after mode has switchd
+- Cells still active for content adding after mode has switched
 - Events in undo history should be throttled and limited
 - Application freezes when importing invalid state
-
-
-Source Code Copyright 2016 Eric McKay
